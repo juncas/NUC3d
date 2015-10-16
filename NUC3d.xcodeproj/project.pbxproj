@@ -57,7 +57,6 @@
 		E34642971BD1329B007BB96D /* TVD-RK3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TVD-RK3.h"; path = "src/TVD-RK3.h"; sourceTree = SOURCE_ROOT; };
 		E34642981BD1329B007BB96D /* NUC3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NUC3d.cpp; path = src/NUC3d.cpp; sourceTree = SOURCE_ROOT; };
 		E34642991BD1329B007BB96D /* centraldifference6th.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = centraldifference6th.cpp; path = src/centraldifference6th.cpp; sourceTree = SOURCE_ROOT; };
-		E346429A1BD1329B007BB96D /* cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cell.h; path = src/cell.h; sourceTree = SOURCE_ROOT; };
 		E346429B1BD1329B007BB96D /* TVD-RK3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "TVD-RK3.cpp"; path = "src/TVD-RK3.cpp"; sourceTree = SOURCE_ROOT; };
 		E346429C1BD1329B007BB96D /* weno5js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5js.cpp; path = src/weno5js.cpp; sourceTree = SOURCE_ROOT; };
 		E346429D1BD1329B007BB96D /* weno5js.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = weno5js.h; path = src/weno5js.h; sourceTree = SOURCE_ROOT; };
@@ -96,36 +95,91 @@
 		E346427D1BD131C9007BB96D /* NUC3d */ = {
 			isa = PBXGroup;
 			children = (
-				E34642851BD1329B007BB96D /* meshgrid.cpp */,
-				E34642861BD1329B007BB96D /* euler3d.cpp */,
-				E34642871BD1329B007BB96D /* MPICommunicator.cpp */,
-				E34642881BD1329B007BB96D /* MPICommunicator.h */,
-				E34642891BD1329B007BB96D /* IOcontroller.cpp */,
-				E346428A1BD1329B007BB96D /* euler3d.h */,
-				E346428B1BD1329B007BB96D /* meshgrid.h */,
-				E346428C1BD1329B007BB96D /* meshblock.h */,
-				E346428D1BD1329B007BB96D /* meshblock.cpp */,
-				E346428E1BD1329B007BB96D /* physicsModel.cpp */,
-				E346428F1BD1329B007BB96D /* physicsModel.h */,
-				E34642901BD1329B007BB96D /* fieldOperator.cpp */,
-				E34642911BD1329B007BB96D /* IOcontroller.h */,
-				E34642921BD1329B007BB96D /* fieldOperator.h */,
-				E34642931BD1329B007BB96D /* MPICommunicatorBase.h */,
-				E34642941BD1329B007BB96D /* field.h */,
-				E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */,
-				E34642961BD1329B007BB96D /* centraldifference6th.h */,
-				E34642971BD1329B007BB96D /* TVD-RK3.h */,
+				E34642B41BD13418007BB96D /* BoundaryConditions */,
+				E34642B31BD1340D007BB96D /* MPI */,
+				E34642B21BD133E8007BB96D /* Grid */,
+				E34642B11BD133D8007BB96D /* PhysicsModel */,
+				E34642B01BD133CD007BB96D /* FieldOperator */,
+				E34642AF1BD133C6007BB96D /* IOcontroler */,
+				E34642AE1BD133BF007BB96D /* Field */,
 				E34642981BD1329B007BB96D /* NUC3d.cpp */,
-				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
-				E346429A1BD1329B007BB96D /* cell.h */,
-				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
-				E346429C1BD1329B007BB96D /* weno5js.cpp */,
-				E346429D1BD1329B007BB96D /* weno5js.h */,
-				E346429E1BD1329B007BB96D /* field.cpp */,
-				E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */,
 				E34642A01BD1329B007BB96D /* NUC3d.h */,
 			);
 			path = NUC3d;
+			sourceTree = "<group>";
+		};
+		E34642AE1BD133BF007BB96D /* Field */ = {
+			isa = PBXGroup;
+			children = (
+				E346429E1BD1329B007BB96D /* field.cpp */,
+				E34642941BD1329B007BB96D /* field.h */,
+			);
+			name = Field;
+			sourceTree = "<group>";
+		};
+		E34642AF1BD133C6007BB96D /* IOcontroler */ = {
+			isa = PBXGroup;
+			children = (
+				E34642891BD1329B007BB96D /* IOcontroller.cpp */,
+				E34642911BD1329B007BB96D /* IOcontroller.h */,
+			);
+			name = IOcontroler;
+			sourceTree = "<group>";
+		};
+		E34642B01BD133CD007BB96D /* FieldOperator */ = {
+			isa = PBXGroup;
+			children = (
+				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
+				E34642971BD1329B007BB96D /* TVD-RK3.h */,
+				E346429C1BD1329B007BB96D /* weno5js.cpp */,
+				E346429D1BD1329B007BB96D /* weno5js.h */,
+				E34642901BD1329B007BB96D /* fieldOperator.cpp */,
+				E34642921BD1329B007BB96D /* fieldOperator.h */,
+				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
+				E34642961BD1329B007BB96D /* centraldifference6th.h */,
+			);
+			name = FieldOperator;
+			sourceTree = "<group>";
+		};
+		E34642B11BD133D8007BB96D /* PhysicsModel */ = {
+			isa = PBXGroup;
+			children = (
+				E346428E1BD1329B007BB96D /* physicsModel.cpp */,
+				E346428F1BD1329B007BB96D /* physicsModel.h */,
+			);
+			name = PhysicsModel;
+			sourceTree = "<group>";
+		};
+		E34642B21BD133E8007BB96D /* Grid */ = {
+			isa = PBXGroup;
+			children = (
+				E346428D1BD1329B007BB96D /* meshblock.cpp */,
+				E346428C1BD1329B007BB96D /* meshblock.h */,
+				E34642851BD1329B007BB96D /* meshgrid.cpp */,
+				E346428B1BD1329B007BB96D /* meshgrid.h */,
+				E34642861BD1329B007BB96D /* euler3d.cpp */,
+				E346428A1BD1329B007BB96D /* euler3d.h */,
+			);
+			name = Grid;
+			sourceTree = "<group>";
+		};
+		E34642B31BD1340D007BB96D /* MPI */ = {
+			isa = PBXGroup;
+			children = (
+				E34642871BD1329B007BB96D /* MPICommunicator.cpp */,
+				E34642881BD1329B007BB96D /* MPICommunicator.h */,
+				E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */,
+				E34642931BD1329B007BB96D /* MPICommunicatorBase.h */,
+			);
+			name = MPI;
+			sourceTree = "<group>";
+		};
+		E34642B41BD13418007BB96D /* BoundaryConditions */ = {
+			isa = PBXGroup;
+			children = (
+				E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */,
+			);
+			name = BoundaryConditions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
