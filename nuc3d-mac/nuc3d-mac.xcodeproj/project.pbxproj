@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E3F1D2E11BD126C000378A06 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F1D2E01BD126C000378A06 /* main.cpp */; };
+		E36C996D1BD1272700BB4BCE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C996C1BD1272700BB4BCE /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		E3F1D2DB1BD126C000378A06 /* CopyFiles */ = {
+		E36C99671BD1272700BB4BCE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -23,12 +23,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E3F1D2DD1BD126C000378A06 /* nuc3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nuc3d; sourceTree = BUILT_PRODUCTS_DIR; };
-		E3F1D2E01BD126C000378A06 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E36C99691BD1272700BB4BCE /* nuc3d-mac */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "nuc3d-mac"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E36C996C1BD1272700BB4BCE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E3F1D2DA1BD126C000378A06 /* Frameworks */ = {
+		E36C99661BD1272700BB4BCE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -38,94 +38,94 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E3F1D2D41BD126C000378A06 = {
+		E36C99601BD1272700BB4BCE = {
 			isa = PBXGroup;
 			children = (
-				E3F1D2DF1BD126C000378A06 /* nuc3d */,
-				E3F1D2DE1BD126C000378A06 /* Products */,
+				E36C996B1BD1272700BB4BCE /* nuc3d-mac */,
+				E36C996A1BD1272700BB4BCE /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		E3F1D2DE1BD126C000378A06 /* Products */ = {
+		E36C996A1BD1272700BB4BCE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E3F1D2DD1BD126C000378A06 /* nuc3d */,
+				E36C99691BD1272700BB4BCE /* nuc3d-mac */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E3F1D2DF1BD126C000378A06 /* nuc3d */ = {
+		E36C996B1BD1272700BB4BCE /* nuc3d-mac */ = {
 			isa = PBXGroup;
 			children = (
-				E3F1D2E01BD126C000378A06 /* main.cpp */,
+				E36C996C1BD1272700BB4BCE /* main.cpp */,
 			);
-			path = nuc3d;
+			path = "nuc3d-mac";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E3F1D2DC1BD126C000378A06 /* nuc3d */ = {
+		E36C99681BD1272700BB4BCE /* nuc3d-mac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E3F1D2E41BD126C000378A06 /* Build configuration list for PBXNativeTarget "nuc3d" */;
+			buildConfigurationList = E36C99701BD1272700BB4BCE /* Build configuration list for PBXNativeTarget "nuc3d-mac" */;
 			buildPhases = (
-				E3F1D2D91BD126C000378A06 /* Sources */,
-				E3F1D2DA1BD126C000378A06 /* Frameworks */,
-				E3F1D2DB1BD126C000378A06 /* CopyFiles */,
+				E36C99651BD1272700BB4BCE /* Sources */,
+				E36C99661BD1272700BB4BCE /* Frameworks */,
+				E36C99671BD1272700BB4BCE /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = nuc3d;
-			productName = nuc3d;
-			productReference = E3F1D2DD1BD126C000378A06 /* nuc3d */;
+			name = "nuc3d-mac";
+			productName = "nuc3d-mac";
+			productReference = E36C99691BD1272700BB4BCE /* nuc3d-mac */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		E3F1D2D51BD126C000378A06 /* Project object */ = {
+		E36C99611BD1272700BB4BCE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jun Peng";
 				TargetAttributes = {
-					E3F1D2DC1BD126C000378A06 = {
+					E36C99681BD1272700BB4BCE = {
 						CreatedOnToolsVersion = 7.0.1;
 					};
 				};
 			};
-			buildConfigurationList = E3F1D2D81BD126C000378A06 /* Build configuration list for PBXProject "nuc3d" */;
+			buildConfigurationList = E36C99641BD1272700BB4BCE /* Build configuration list for PBXProject "nuc3d-mac" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = E3F1D2D41BD126C000378A06;
-			productRefGroup = E3F1D2DE1BD126C000378A06 /* Products */;
+			mainGroup = E36C99601BD1272700BB4BCE;
+			productRefGroup = E36C996A1BD1272700BB4BCE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E3F1D2DC1BD126C000378A06 /* nuc3d */,
+				E36C99681BD1272700BB4BCE /* nuc3d-mac */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		E3F1D2D91BD126C000378A06 /* Sources */ = {
+		E36C99651BD1272700BB4BCE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3F1D2E11BD126C000378A06 /* main.cpp in Sources */,
+				E36C996D1BD1272700BB4BCE /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		E3F1D2E21BD126C000378A06 /* Debug */ = {
+		E36C996E1BD1272700BB4BCE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -167,7 +167,7 @@
 			};
 			name = Debug;
 		};
-		E3F1D2E31BD126C000378A06 /* Release */ = {
+		E36C996F1BD1272700BB4BCE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -202,14 +202,14 @@
 			};
 			name = Release;
 		};
-		E3F1D2E51BD126C000378A06 /* Debug */ = {
+		E36C99711BD1272700BB4BCE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		E3F1D2E61BD126C000378A06 /* Release */ = {
+		E36C99721BD1272700BB4BCE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -219,24 +219,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E3F1D2D81BD126C000378A06 /* Build configuration list for PBXProject "nuc3d" */ = {
+		E36C99641BD1272700BB4BCE /* Build configuration list for PBXProject "nuc3d-mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E3F1D2E21BD126C000378A06 /* Debug */,
-				E3F1D2E31BD126C000378A06 /* Release */,
+				E36C996E1BD1272700BB4BCE /* Debug */,
+				E36C996F1BD1272700BB4BCE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E3F1D2E41BD126C000378A06 /* Build configuration list for PBXNativeTarget "nuc3d" */ = {
+		E36C99701BD1272700BB4BCE /* Build configuration list for PBXNativeTarget "nuc3d-mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E3F1D2E51BD126C000378A06 /* Debug */,
-				E3F1D2E61BD126C000378A06 /* Release */,
+				E36C99711BD1272700BB4BCE /* Debug */,
+				E36C99721BD1272700BB4BCE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = E3F1D2D51BD126C000378A06 /* Project object */;
+	rootObject = E36C99611BD1272700BB4BCE /* Project object */;
 }

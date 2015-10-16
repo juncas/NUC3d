@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>nuc3d.xcscheme</key>
+		<key>nuc3d-mac.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>E3F1D2DC1BD126C000378A06</key>
+		<key>E36C99681BD1272700BB4BCE</key>
 		<dict>
 			<key>primary</key>
 			<true/>

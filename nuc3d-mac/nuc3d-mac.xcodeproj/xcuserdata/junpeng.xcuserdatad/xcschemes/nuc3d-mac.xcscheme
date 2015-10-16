@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E3F1D2DC1BD126C000378A06"
-               BuildableName = "nuc3d"
-               BlueprintName = "nuc3d"
-               ReferencedContainer = "container:nuc3d.xcodeproj">
+               BlueprintIdentifier = "E36C99681BD1272700BB4BCE"
+               BuildableName = "nuc3d-mac"
+               BlueprintName = "nuc3d-mac"
+               ReferencedContainer = "container:nuc3d-mac.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3F1D2DC1BD126C000378A06"
-            BuildableName = "nuc3d"
-            BlueprintName = "nuc3d"
-            ReferencedContainer = "container:nuc3d.xcodeproj">
+            BlueprintIdentifier = "E36C99681BD1272700BB4BCE"
+            BuildableName = "nuc3d-mac"
+            BlueprintName = "nuc3d-mac"
+            ReferencedContainer = "container:nuc3d-mac.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3F1D2DC1BD126C000378A06"
-            BuildableName = "nuc3d"
-            BlueprintName = "nuc3d"
-            ReferencedContainer = "container:nuc3d.xcodeproj">
+            BlueprintIdentifier = "E36C99681BD1272700BB4BCE"
+            BuildableName = "nuc3d-mac"
+            BlueprintName = "nuc3d-mac"
+            ReferencedContainer = "container:nuc3d-mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3F1D2DC1BD126C000378A06"
-            BuildableName = "nuc3d"
-            BlueprintName = "nuc3d"
-            ReferencedContainer = "container:nuc3d.xcodeproj">
+            BlueprintIdentifier = "E36C99681BD1272700BB4BCE"
+            BuildableName = "nuc3d-mac"
+            BlueprintName = "nuc3d-mac"
+            ReferencedContainer = "container:nuc3d-mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
