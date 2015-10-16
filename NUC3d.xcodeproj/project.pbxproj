@@ -6,6 +6,22 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642851BD1329B007BB96D /* meshgrid.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642891BD1329B007BB96D /* IOcontroller.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A51BD1329B007BB96D /* meshblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428D1BD1329B007BB96D /* meshblock.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428E1BD1329B007BB96D /* physicsModel.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A71BD1329B007BB96D /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642901BD1329B007BB96D /* fieldOperator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642981BD1329B007BB96D /* NUC3d.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642991BD1329B007BB96D /* centraldifference6th.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429B1BD1329B007BB96D /* TVD-RK3.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429C1BD1329B007BB96D /* weno5js.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642AC1BD1329B007BB96D /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429E1BD1329B007BB96D /* field.cpp */; settings = {ASSET_TAGS = (); }; };
+		E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */; settings = {ASSET_TAGS = (); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		E34642791BD131C9007BB96D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,6 +36,34 @@
 
 /* Begin PBXFileReference section */
 		E346427B1BD131C9007BB96D /* NUC3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NUC3d; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34642851BD1329B007BB96D /* meshgrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshgrid.cpp; path = src/meshgrid.cpp; sourceTree = SOURCE_ROOT; };
+		E34642861BD1329B007BB96D /* euler3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = euler3d.cpp; path = src/euler3d.cpp; sourceTree = SOURCE_ROOT; };
+		E34642871BD1329B007BB96D /* MPICommunicator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicator.cpp; path = src/MPICommunicator.cpp; sourceTree = SOURCE_ROOT; };
+		E34642881BD1329B007BB96D /* MPICommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicator.h; path = src/MPICommunicator.h; sourceTree = SOURCE_ROOT; };
+		E34642891BD1329B007BB96D /* IOcontroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOcontroller.cpp; path = src/IOcontroller.cpp; sourceTree = SOURCE_ROOT; };
+		E346428A1BD1329B007BB96D /* euler3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = euler3d.h; path = src/euler3d.h; sourceTree = SOURCE_ROOT; };
+		E346428B1BD1329B007BB96D /* meshgrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = meshgrid.h; path = src/meshgrid.h; sourceTree = SOURCE_ROOT; };
+		E346428C1BD1329B007BB96D /* meshblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = meshblock.h; path = src/meshblock.h; sourceTree = SOURCE_ROOT; };
+		E346428D1BD1329B007BB96D /* meshblock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshblock.cpp; path = src/meshblock.cpp; sourceTree = SOURCE_ROOT; };
+		E346428E1BD1329B007BB96D /* physicsModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsModel.cpp; path = src/physicsModel.cpp; sourceTree = SOURCE_ROOT; };
+		E346428F1BD1329B007BB96D /* physicsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsModel.h; path = src/physicsModel.h; sourceTree = SOURCE_ROOT; };
+		E34642901BD1329B007BB96D /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
+		E34642911BD1329B007BB96D /* IOcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOcontroller.h; path = src/IOcontroller.h; sourceTree = SOURCE_ROOT; };
+		E34642921BD1329B007BB96D /* fieldOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fieldOperator.h; path = src/fieldOperator.h; sourceTree = SOURCE_ROOT; };
+		E34642931BD1329B007BB96D /* MPICommunicatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicatorBase.h; path = src/MPICommunicatorBase.h; sourceTree = SOURCE_ROOT; };
+		E34642941BD1329B007BB96D /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = field.h; path = src/field.h; sourceTree = SOURCE_ROOT; };
+		E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BoundaryConditionsTopo.h; path = src/BoundaryConditionsTopo.h; sourceTree = SOURCE_ROOT; };
+		E34642961BD1329B007BB96D /* centraldifference6th.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = centraldifference6th.h; path = src/centraldifference6th.h; sourceTree = SOURCE_ROOT; };
+		E34642971BD1329B007BB96D /* TVD-RK3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TVD-RK3.h"; path = "src/TVD-RK3.h"; sourceTree = SOURCE_ROOT; };
+		E34642981BD1329B007BB96D /* NUC3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NUC3d.cpp; path = src/NUC3d.cpp; sourceTree = SOURCE_ROOT; };
+		E34642991BD1329B007BB96D /* centraldifference6th.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = centraldifference6th.cpp; path = src/centraldifference6th.cpp; sourceTree = SOURCE_ROOT; };
+		E346429A1BD1329B007BB96D /* cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cell.h; path = src/cell.h; sourceTree = SOURCE_ROOT; };
+		E346429B1BD1329B007BB96D /* TVD-RK3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "TVD-RK3.cpp"; path = "src/TVD-RK3.cpp"; sourceTree = SOURCE_ROOT; };
+		E346429C1BD1329B007BB96D /* weno5js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5js.cpp; path = src/weno5js.cpp; sourceTree = SOURCE_ROOT; };
+		E346429D1BD1329B007BB96D /* weno5js.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = weno5js.h; path = src/weno5js.h; sourceTree = SOURCE_ROOT; };
+		E346429E1BD1329B007BB96D /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = field.cpp; path = src/field.cpp; sourceTree = SOURCE_ROOT; };
+		E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicatorBase.cpp; path = src/MPICommunicatorBase.cpp; sourceTree = SOURCE_ROOT; };
+		E34642A01BD1329B007BB96D /* NUC3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NUC3d.h; path = src/NUC3d.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +96,34 @@
 		E346427D1BD131C9007BB96D /* NUC3d */ = {
 			isa = PBXGroup;
 			children = (
+				E34642851BD1329B007BB96D /* meshgrid.cpp */,
+				E34642861BD1329B007BB96D /* euler3d.cpp */,
+				E34642871BD1329B007BB96D /* MPICommunicator.cpp */,
+				E34642881BD1329B007BB96D /* MPICommunicator.h */,
+				E34642891BD1329B007BB96D /* IOcontroller.cpp */,
+				E346428A1BD1329B007BB96D /* euler3d.h */,
+				E346428B1BD1329B007BB96D /* meshgrid.h */,
+				E346428C1BD1329B007BB96D /* meshblock.h */,
+				E346428D1BD1329B007BB96D /* meshblock.cpp */,
+				E346428E1BD1329B007BB96D /* physicsModel.cpp */,
+				E346428F1BD1329B007BB96D /* physicsModel.h */,
+				E34642901BD1329B007BB96D /* fieldOperator.cpp */,
+				E34642911BD1329B007BB96D /* IOcontroller.h */,
+				E34642921BD1329B007BB96D /* fieldOperator.h */,
+				E34642931BD1329B007BB96D /* MPICommunicatorBase.h */,
+				E34642941BD1329B007BB96D /* field.h */,
+				E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */,
+				E34642961BD1329B007BB96D /* centraldifference6th.h */,
+				E34642971BD1329B007BB96D /* TVD-RK3.h */,
+				E34642981BD1329B007BB96D /* NUC3d.cpp */,
+				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
+				E346429A1BD1329B007BB96D /* cell.h */,
+				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
+				E346429C1BD1329B007BB96D /* weno5js.cpp */,
+				E346429D1BD1329B007BB96D /* weno5js.h */,
+				E346429E1BD1329B007BB96D /* field.cpp */,
+				E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */,
+				E34642A01BD1329B007BB96D /* NUC3d.h */,
 			);
 			path = NUC3d;
 			sourceTree = "<group>";
@@ -112,6 +184,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E34642A71BD1329B007BB96D /* fieldOperator.cpp in Sources */,
+				E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */,
+				E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */,
+				E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */,
+				E34642A51BD1329B007BB96D /* meshblock.cpp in Sources */,
+				E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */,
+				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
+				E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */,
+				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
+				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
+				E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */,
+				E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */,
+				E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
