@@ -1,0 +1,318 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E3C3CC001BD11B71002D5FFF /* meshgrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBE51BD11B71002D5FFF /* meshgrid.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC011BD11B71002D5FFF /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBE61BD11B71002D5FFF /* euler3d.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC021BD11B71002D5FFF /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBE71BD11B71002D5FFF /* MPICommunicator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC031BD11B71002D5FFF /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBE91BD11B71002D5FFF /* IOcontroller.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC041BD11B71002D5FFF /* meshblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBED1BD11B71002D5FFF /* meshblock.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC051BD11B71002D5FFF /* physicsModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBEE1BD11B71002D5FFF /* physicsModel.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC061BD11B71002D5FFF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBF01BD11B71002D5FFF /* fieldOperator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC071BD11B71002D5FFF /* NUC3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBF81BD11B71002D5FFF /* NUC3d.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC081BD11B71002D5FFF /* centraldifference6th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBF91BD11B71002D5FFF /* centraldifference6th.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC091BD11B71002D5FFF /* TVD-RK3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBFA1BD11B71002D5FFF /* TVD-RK3.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC0A1BD11B71002D5FFF /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBFB1BD11B71002D5FFF /* weno5js.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC0B1BD11B71002D5FFF /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBFD1BD11B71002D5FFF /* field.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3C3CC0C1BD11B71002D5FFF /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C3CBFE1BD11B71002D5FFF /* MPICommunicatorBase.cpp */; settings = {ASSET_TAGS = (); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E3C3CBD81BD11B43002D5FFF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E3C3CBDA1BD11B43002D5FFF /* nuc3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nuc3d; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3C3CBE51BD11B71002D5FFF /* meshgrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshgrid.cpp; path = ../../src/meshgrid.cpp; sourceTree = "<group>"; };
+		E3C3CBE61BD11B71002D5FFF /* euler3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = euler3d.cpp; path = ../../src/euler3d.cpp; sourceTree = "<group>"; };
+		E3C3CBE71BD11B71002D5FFF /* MPICommunicator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicator.cpp; path = ../../src/MPICommunicator.cpp; sourceTree = "<group>"; };
+		E3C3CBE81BD11B71002D5FFF /* MPICommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicator.h; path = ../../src/MPICommunicator.h; sourceTree = "<group>"; };
+		E3C3CBE91BD11B71002D5FFF /* IOcontroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOcontroller.cpp; path = ../../src/IOcontroller.cpp; sourceTree = "<group>"; };
+		E3C3CBEA1BD11B71002D5FFF /* euler3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = euler3d.h; path = ../../src/euler3d.h; sourceTree = "<group>"; };
+		E3C3CBEB1BD11B71002D5FFF /* meshgrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = meshgrid.h; path = ../../src/meshgrid.h; sourceTree = "<group>"; };
+		E3C3CBEC1BD11B71002D5FFF /* meshblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = meshblock.h; path = ../../src/meshblock.h; sourceTree = "<group>"; };
+		E3C3CBED1BD11B71002D5FFF /* meshblock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshblock.cpp; path = ../../src/meshblock.cpp; sourceTree = "<group>"; };
+		E3C3CBEE1BD11B71002D5FFF /* physicsModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsModel.cpp; path = ../../src/physicsModel.cpp; sourceTree = "<group>"; };
+		E3C3CBEF1BD11B71002D5FFF /* physicsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsModel.h; path = ../../src/physicsModel.h; sourceTree = "<group>"; };
+		E3C3CBF01BD11B71002D5FFF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = ../../src/fieldOperator.cpp; sourceTree = "<group>"; };
+		E3C3CBF11BD11B71002D5FFF /* IOcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOcontroller.h; path = ../../src/IOcontroller.h; sourceTree = "<group>"; };
+		E3C3CBF21BD11B71002D5FFF /* fieldOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fieldOperator.h; path = ../../src/fieldOperator.h; sourceTree = "<group>"; };
+		E3C3CBF31BD11B71002D5FFF /* MPICommunicatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicatorBase.h; path = ../../src/MPICommunicatorBase.h; sourceTree = "<group>"; };
+		E3C3CBF41BD11B71002D5FFF /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = field.h; path = ../../src/field.h; sourceTree = "<group>"; };
+		E3C3CBF51BD11B71002D5FFF /* BoundaryConditionsTopo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BoundaryConditionsTopo.h; path = ../../src/BoundaryConditionsTopo.h; sourceTree = "<group>"; };
+		E3C3CBF61BD11B71002D5FFF /* centraldifference6th.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = centraldifference6th.h; path = ../../src/centraldifference6th.h; sourceTree = "<group>"; };
+		E3C3CBF71BD11B71002D5FFF /* TVD-RK3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TVD-RK3.h"; path = "../../src/TVD-RK3.h"; sourceTree = "<group>"; };
+		E3C3CBF81BD11B71002D5FFF /* NUC3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NUC3d.cpp; path = ../../src/NUC3d.cpp; sourceTree = "<group>"; };
+		E3C3CBF91BD11B71002D5FFF /* centraldifference6th.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = centraldifference6th.cpp; path = ../../src/centraldifference6th.cpp; sourceTree = "<group>"; };
+		E3C3CBFA1BD11B71002D5FFF /* TVD-RK3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "TVD-RK3.cpp"; path = "../../src/TVD-RK3.cpp"; sourceTree = "<group>"; };
+		E3C3CBFB1BD11B71002D5FFF /* weno5js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5js.cpp; path = ../../src/weno5js.cpp; sourceTree = "<group>"; };
+		E3C3CBFC1BD11B71002D5FFF /* weno5js.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = weno5js.h; path = ../../src/weno5js.h; sourceTree = "<group>"; };
+		E3C3CBFD1BD11B71002D5FFF /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = field.cpp; path = ../../src/field.cpp; sourceTree = "<group>"; };
+		E3C3CBFE1BD11B71002D5FFF /* MPICommunicatorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicatorBase.cpp; path = ../../src/MPICommunicatorBase.cpp; sourceTree = "<group>"; };
+		E3C3CBFF1BD11B71002D5FFF /* NUC3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NUC3d.h; path = ../../src/NUC3d.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E3C3CBD71BD11B43002D5FFF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E3C3CBD11BD11B43002D5FFF = {
+			isa = PBXGroup;
+			children = (
+				E3C3CBDC1BD11B43002D5FFF /* nuc3d */,
+				E3C3CBDB1BD11B43002D5FFF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E3C3CBDB1BD11B43002D5FFF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E3C3CBDA1BD11B43002D5FFF /* nuc3d */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E3C3CBDC1BD11B43002D5FFF /* nuc3d */ = {
+			isa = PBXGroup;
+			children = (
+				E3C3CBE51BD11B71002D5FFF /* meshgrid.cpp */,
+				E3C3CBE61BD11B71002D5FFF /* euler3d.cpp */,
+				E3C3CBE71BD11B71002D5FFF /* MPICommunicator.cpp */,
+				E3C3CBE81BD11B71002D5FFF /* MPICommunicator.h */,
+				E3C3CBE91BD11B71002D5FFF /* IOcontroller.cpp */,
+				E3C3CBEA1BD11B71002D5FFF /* euler3d.h */,
+				E3C3CBEB1BD11B71002D5FFF /* meshgrid.h */,
+				E3C3CBEC1BD11B71002D5FFF /* meshblock.h */,
+				E3C3CBED1BD11B71002D5FFF /* meshblock.cpp */,
+				E3C3CBEE1BD11B71002D5FFF /* physicsModel.cpp */,
+				E3C3CBEF1BD11B71002D5FFF /* physicsModel.h */,
+				E3C3CBF01BD11B71002D5FFF /* fieldOperator.cpp */,
+				E3C3CBF11BD11B71002D5FFF /* IOcontroller.h */,
+				E3C3CBF21BD11B71002D5FFF /* fieldOperator.h */,
+				E3C3CBF31BD11B71002D5FFF /* MPICommunicatorBase.h */,
+				E3C3CBF41BD11B71002D5FFF /* field.h */,
+				E3C3CBF51BD11B71002D5FFF /* BoundaryConditionsTopo.h */,
+				E3C3CBF61BD11B71002D5FFF /* centraldifference6th.h */,
+				E3C3CBF71BD11B71002D5FFF /* TVD-RK3.h */,
+				E3C3CBF81BD11B71002D5FFF /* NUC3d.cpp */,
+				E3C3CBF91BD11B71002D5FFF /* centraldifference6th.cpp */,
+				E3C3CBFA1BD11B71002D5FFF /* TVD-RK3.cpp */,
+				E3C3CBFB1BD11B71002D5FFF /* weno5js.cpp */,
+				E3C3CBFC1BD11B71002D5FFF /* weno5js.h */,
+				E3C3CBFD1BD11B71002D5FFF /* field.cpp */,
+				E3C3CBFE1BD11B71002D5FFF /* MPICommunicatorBase.cpp */,
+				E3C3CBFF1BD11B71002D5FFF /* NUC3d.h */,
+			);
+			path = nuc3d;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E3C3CBD91BD11B43002D5FFF /* nuc3d */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E3C3CBE11BD11B43002D5FFF /* Build configuration list for PBXNativeTarget "nuc3d" */;
+			buildPhases = (
+				E3C3CBD61BD11B43002D5FFF /* Sources */,
+				E3C3CBD71BD11B43002D5FFF /* Frameworks */,
+				E3C3CBD81BD11B43002D5FFF /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = nuc3d;
+			productName = nuc3d;
+			productReference = E3C3CBDA1BD11B43002D5FFF /* nuc3d */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E3C3CBD21BD11B43002D5FFF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Jun Peng";
+				TargetAttributes = {
+					E3C3CBD91BD11B43002D5FFF = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+				};
+			};
+			buildConfigurationList = E3C3CBD51BD11B43002D5FFF /* Build configuration list for PBXProject "nuc3d" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E3C3CBD11BD11B43002D5FFF;
+			productRefGroup = E3C3CBDB1BD11B43002D5FFF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E3C3CBD91BD11B43002D5FFF /* nuc3d */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E3C3CBD61BD11B43002D5FFF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3C3CC061BD11B71002D5FFF /* fieldOperator.cpp in Sources */,
+				E3C3CC011BD11B71002D5FFF /* euler3d.cpp in Sources */,
+				E3C3CC081BD11B71002D5FFF /* centraldifference6th.cpp in Sources */,
+				E3C3CC031BD11B71002D5FFF /* IOcontroller.cpp in Sources */,
+				E3C3CC041BD11B71002D5FFF /* meshblock.cpp in Sources */,
+				E3C3CC091BD11B71002D5FFF /* TVD-RK3.cpp in Sources */,
+				E3C3CC0B1BD11B71002D5FFF /* field.cpp in Sources */,
+				E3C3CC001BD11B71002D5FFF /* meshgrid.cpp in Sources */,
+				E3C3CC0C1BD11B71002D5FFF /* MPICommunicatorBase.cpp in Sources */,
+				E3C3CC021BD11B71002D5FFF /* MPICommunicator.cpp in Sources */,
+				E3C3CC0A1BD11B71002D5FFF /* weno5js.cpp in Sources */,
+				E3C3CC051BD11B71002D5FFF /* physicsModel.cpp in Sources */,
+				E3C3CC071BD11B71002D5FFF /* NUC3d.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E3C3CBDF1BD11B43002D5FFF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E3C3CBE01BD11B43002D5FFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E3C3CBE21BD11B43002D5FFF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E3C3CBE31BD11B43002D5FFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E3C3CBD51BD11B43002D5FFF /* Build configuration list for PBXProject "nuc3d" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E3C3CBDF1BD11B43002D5FFF /* Debug */,
+				E3C3CBE01BD11B43002D5FFF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E3C3CBE11BD11B43002D5FFF /* Build configuration list for PBXNativeTarget "nuc3d" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E3C3CBE21BD11B43002D5FFF /* Debug */,
+				E3C3CBE31BD11B43002D5FFF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E3C3CBD21BD11B43002D5FFF /* Project object */;
+}
