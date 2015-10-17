@@ -26,13 +26,14 @@ namespace nuc3d
 
 		VectorField xyz;
 		VectorField xyz_center;
-		
-		EulerData3D myEuler;//This version solves Euler equations only
+        PDEData3d myPDE;
+        std::shared_ptr<EulerData3D> pMyFlow;//This version solves Euler equations only
 
 		std::vector<bufferData> myBuffers;//finished
 										  // How many buffer to be decided
 										  // vector length is set to the number of equations
-		
+        fieldOperator3d myOperator;
+        
 		//Boundary setBoundary;
 		//Boundary conditions should be owned by each grid
 		

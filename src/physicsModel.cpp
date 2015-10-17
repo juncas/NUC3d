@@ -28,6 +28,12 @@ myRiemannMap(
     { "LF",&nuc3d::physicsModel::RiemannLF }
 }
              ),
+myModelMap(
+{
+    {"Euler",&nuc3d::physicsModel::Euler},
+    {"NavierStokes",&nuc3d::physicsModel::NaiverStokes}
+}
+           ),
 myModelParameters(
 { {"Reynolds",1000},{"Mach",0.5},{"Pt",0.72},{"Gamma",1.4} }
                   )
@@ -62,6 +68,14 @@ myModelParameters(
             std::cout<<"Riemann Solver name "<<myEoSName<<" does not exist ,using default!"
             << std::endl;
             myEoSName="AUSM";
+        }
+        
+        if(myModelMap.find(myModelName)==myModelMap.end())
+        {
+            std::cout<<"Model name "<<myEoSName<<" does not exist ,using default!"
+            << std::endl;
+            myEoSName="Euler";
+            
         }
         
         while (readPhysFile(file));
@@ -146,6 +160,14 @@ void nuc3d::physicsModel::initial(EulerData3D &myEuler)
              myEuler.jacobian,
              myEuler.W_Euler,
              myEuler.Q_Euler);
+}
+
+void nuc3d::physicsModel::Euler()
+{
+}
+
+void nuc3d::physicsModel::NaiverStokes()
+{
 }
 
 void nuc3d::physicsModel::con2prim(const std::string &EoSName,

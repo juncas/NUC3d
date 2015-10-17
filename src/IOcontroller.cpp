@@ -31,7 +31,7 @@ nuc3d::IOController::IOController():
 
 {
 	std::ifstream file("IOController.in");
-	auto count=ioMethods.size()+ioTimeIntegral.size();
+	auto count=myTimeController.size()+myIOController.size();
 	if(file)
 	{
 		while(readIOFile(file,ioMethods,ioTimeIntegral))

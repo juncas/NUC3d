@@ -19,13 +19,10 @@ namespace nuc3d
 		double dataLocal;
 		int nblocks;
 
-		MPIComunicator3d_nonblocking myComm; //finished
-		IOController myCtrler;//finished
-		physicsModel myPhys;//finished
-		fieldOperator3d myOperator;		
-
-		std::vector<MeshBlock> myBlocks;//In this version only one grid in each domain
-								   //Field data are stored in these blocks
+		MPIComunicator3d_nonblocking myComm;
+		IOController myCtrler;
+		physicsModel myPhys;
+		std::vector<MeshBlock> myBlocks;
 
 	public:
 
@@ -37,8 +34,9 @@ namespace nuc3d
 		void solve();
 
 	private:
-		void solveFlux();
-		void solveViscous();
+        void solveRiemann();
+		void solveInvicidFlux();
+		void solveViscousFLux();
 		void solveGetRHS();
 		void solveIntegral();
 

@@ -129,10 +129,10 @@
 		E34642B01BD133CD007BB96D /* FieldOperator */ = {
 			isa = PBXGroup;
 			children = (
-				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
-				E34642971BD1329B007BB96D /* TVD-RK3.h */,
 				E346429C1BD1329B007BB96D /* weno5js.cpp */,
 				E346429D1BD1329B007BB96D /* weno5js.h */,
+				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
+				E34642971BD1329B007BB96D /* TVD-RK3.h */,
 				E34642901BD1329B007BB96D /* fieldOperator.cpp */,
 				E34642921BD1329B007BB96D /* fieldOperator.h */,
 				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
@@ -367,6 +367,7 @@
 				E34642841BD131C9007BB96D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

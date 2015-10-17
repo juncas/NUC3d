@@ -46,6 +46,8 @@ namespace nuc3d
 			VectorField &,
 			VectorField &,
 			double &);
+        
+        typedef void (physicsModel::*pModel)();
 
 		int neqs;
 		std::string myEoSName;
@@ -56,6 +58,8 @@ namespace nuc3d
 		std::map<std::string, pEoSBWD> myEosBWDMap;
 
 		std::map<std::string, pRiemann> myRiemannMap;
+        std::map<std::string, pModel> myModelMap;
+        
 		std::map<std::string, double> myModelParameters; //parameters for EoS
 	public:
 		physicsModel();
@@ -65,7 +69,8 @@ namespace nuc3d
 		int getEqNum(){return neqs;};
 		void initial(EulerData3D &);
 	private:
-
+        void Euler();
+        void NaiverStokes();
 		void RiemannSolver(const std::string &,
 			const Field &,
 			const VectorField &,

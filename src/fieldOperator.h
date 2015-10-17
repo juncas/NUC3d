@@ -41,6 +41,8 @@ namespace nuc3d
     {
         friend class fieldOperator3d;
     protected:
+        
+        int nstep;
         ~integration()=default;
 
     private:
@@ -86,6 +88,7 @@ namespace nuc3d
     class fieldOperator3d//should only operate on fields
     {
         int bufferSize;
+        
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
         std::vector<std::shared_ptr<differential>> myDifferenters;
 
@@ -138,7 +141,7 @@ namespace nuc3d
         void setMethodIvsY();
         void setMethodIvsZ();
 
-        void setTimeMethod();
+        void setTimeMethod(const VectorField &);
 
         void setDiffMethodX();
         void setDiffMethodY();

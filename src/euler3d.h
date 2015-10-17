@@ -8,16 +8,44 @@
 
 namespace nuc3d 
 {
+    class PDEData3d
+    {
+        friend class MeshBlock;
+        friend class meshGrid;
+        int nEquations;
+        
+        //a PDE is consist of such four vectors
+        // other vectors are intermediate data
+        /*
+         dQ   df     dg     dh
+         -- + ---- + ---- + ----- = 0
+         dt   dxi    deta   dzeta
+         */
+        VectorField Q_Euler;
+        
+        VectorField dfdxi;
+        VectorField dgdeta;
+        VectorField dhdzeta;
+    
+        
+        VectorField Q0_Euler;
+        
+        //temperary conservative fields for time marching
+        VectorField Qi_Euler;
+        VectorField Qii_Euler;
+        VectorField Qiii_Euler;
+    public:
+        PDEData3d(int,int,int,int);
+        ~PDEData3d();
+    };
 
-	class EulerData3D
+    class EulerData3D
 	{
 		friend class MeshBlock;
 		friend class meshGrid;
 		friend class physicsModel;
-		
-		int nEquations;
-		
-		Field jacobian;
+    protected:
+        Field jacobian;
 
 		VectorField xi_xyz;
 		VectorField eta_xyz;
@@ -25,17 +53,8 @@ namespace nuc3d
 
 		VectorField W0_Euler;//primitive values (T,e,alpha)
 
-	//flow fields;
-
 		VectorField W_Euler;//primitive values (rho,u,v,w,p)
-
-		//conservative values
-		VectorField Q_Euler;
-
-		//temperary conservative fields for time marching
-		VectorField Qi_Euler;
-		VectorField Qii_Euler;
-		VectorField Qiii_Euler;
+        
 
 		//Intermediate fields for Reimann problem
 		VectorField FluxL_xi;
@@ -55,10 +74,6 @@ namespace nuc3d
 		VectorField reconstFluxL_zeta;
 		VectorField reconstFluxR_zeta;
 		VectorField reconstFlux_zeta;
-
-		VectorField dfdxi;
-		VectorField dfdeta;
-		VectorField dfdzeta;
 		VectorField RHS;
 
 		double dt;
@@ -68,14 +83,54 @@ namespace nuc3d
 
 
 	public:
-		EulerData3D(const int nx,const int ny,const int nz,const int addEq);
+		EulerData3D( int nx, int ny, int nz, int addEq);
 		~EulerData3D();
-	public:
+    };
+    
+    class EulerReactiveData3D : public EulerData3D
+    {
+        friend class MeshBlock;
+        friend class meshGrid;
+        friend class physicsModel;
+        
+        VectorField sourceTerm;
+        
+        
+        
+    };
 
+    class NaiverStokesData3d : public EulerData3D
+    {
+        friend class MeshBlock;
+        friend class meshGrid;
+        friend class physicsModel;
+        
+    protected:
+        VectorField du;
+        VectorField dv;
+        VectorField dw;
+        VectorField dt;
+        
+        VectorField tau;
+        
+        VectorField fv;
+        VectorField gv;
+        VectorField hv;
+        
+        
+    
+        
+        
+        
+        
+    };
+    
+    class NaiverStokesReactiveData3d : public NaiverStokesData3d
+    {
+        VectorField sourceTerm;
 
-	private:
-		
-	};
+        
+    };
 }
 
 #endif

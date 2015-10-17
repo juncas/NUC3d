@@ -80,15 +80,33 @@ void nuc3d::meshGrid::initial()
 
 void nuc3d::meshGrid::solve()
 {
+    while (myCtrler.solve()) {
+        int rkstep=0;
+        
+        while(myOperator.myIntegrators->nstep>rkstep)
+        {
+            solveRiemann();
+            solveBounaryConditions();
+            solveInvicidFlux();
+            solveViscousFLux();
+            solveGetRHS();
+            solveIntegral();
+        }
+        
+    }
+    
+}
+
+void nuc3d::meshGrid::solveRiemann()
+{
 	for (auto iterBlocks = myBlocks.begin(); iterBlocks != myBlocks.end(); ++iterBlocks)
 	{
 		myPhys.solve(iterBlocks->myEuler);
 	}
 
-		solveFlux();
 }
 
-void nuc3d::meshGrid::solveFlux()
+void nuc3d::meshGrid::solveInvicidFlux()
 {
 
 	for (int i = 0; i < myPhys.getEqNum(); i++)
@@ -217,6 +235,16 @@ void nuc3d::meshGrid::solveFlux()
 		}
 	}
 
+}
+
+void nuc3d::meshGrid::solveViscousFLux()
+{
+    
+}
+
+void nuc3d::meshGrid::solveGetRHS()
+{
+    
 }
 /**************************************************************************************
 								End of definition

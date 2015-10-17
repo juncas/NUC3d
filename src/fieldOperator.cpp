@@ -11,14 +11,14 @@ namespace nuc3d
 /**************************************************************************************
   Definition of constructors and destructors
  **************************************************************************************/
-fieldOperator3d::fieldOperator3d():
+fieldOperator3d::fieldOperator3d(const VectorField &U):
     MethodMap
     (
      {
         {"scheme_time","RK3"},
         {"scheme_x_ivs","weno5js"},
         {"scheme_y_ivs","weno5js"},
-        {"scheme_z_ivs","weno5js"}
+        {"scheme_z_ivs","weno5js"},
         {"scheme_x_vis","cd6"},
         {"scheme_y_vis","cd6"},
         {"scheme_z_vis","cd6"}
@@ -54,7 +54,7 @@ fieldOperator3d::fieldOperator3d():
     setDiffMethodY();
     setDiffMethodZ();
 
-    setTimeMethod();
+    setTimeMethod(U);
 
     if( myInteroplators.size()!=3)
     {
@@ -193,13 +193,13 @@ void fieldOperator3d::setDiffMethodZ()
         myDifferenters.push_back(new centraldifference6th);
 }
 
-void fieldOperator3d::setTimeMethod()
+void fieldOperator3d::setTimeMethod(const VectorField &u)
 {
     MethodMap["scheme_time"];
     if(s=="RK3")
-        myIntegrators=new tvdrk3;
+        myIntegrators=new tvdrk3(u);
     else
-        myIntegrators=new tvdrk3;
+        myIntegrators=new tvdrk3(u);
 }
 
 void fieldOperator3d::reconstructionInner(
