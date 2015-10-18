@@ -17,9 +17,11 @@ void nuc3d::PDEData3d::setRHS(EulerData3D &myFluxes)
 {
     setDrivatives(myFluxes);
     for(auto iter=RHS.begin();iter!=RHS.end();iter++)
-        *iter=dfdxi[iter-RHS.begin()]
-        +dgdeta[iter-RHS.begin()]
-        +dhdzeta[iter-RHS.begin()];
+    {
+        *iter=dfdxi[iter-RHS.begin()];
+        *iter+=dgdeta[iter-RHS.begin()];
+        *iter+=dhdzeta[iter-RHS.begin()];
+    }
 }
 
 void nuc3d::PDEData3d::setDrivatives(EulerData3D &myFluxes)
