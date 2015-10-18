@@ -50,6 +50,10 @@ namespace nuc3d
 		int neqs;
 		std::string myEoSName;
 		std::string myRiemannName;
+<<<<<<< HEAD
+=======
+        std::string myModelName;
+>>>>>>> origin/master
 
 		std::map<std::string, pEoSFWD> myEosFWDMap;
 		std::map<std::string, pEoSBWD> myEosBWDMap;
@@ -59,7 +63,11 @@ namespace nuc3d
 	public:
 		physicsModel();
 		~physicsModel();
+<<<<<<< HEAD
 
+=======
+        std::string getMyModelName(){return myModelName;};
+>>>>>>> origin/master
 		void solve(EulerData3D &);
 		int getEqNum(){return neqs;};
 		void initial(EulerData3D &);
