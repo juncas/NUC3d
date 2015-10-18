@@ -37,6 +37,11 @@ nuc3d::VectorField& nuc3d::PDEData3d::getRHS(EulerData3D &myFluxes)
     return RHS;
 }
 
+nuc3d::VectorField& nuc3d::PDEData3d::getQ()
+{
+    return Q_Euler;
+}
+
 nuc3d::PDEData3d::~PDEData3d()
 {}
 /**************************************************************************************
@@ -48,7 +53,8 @@ FluxL(neqs,Field(nx0,ny0,nz0)),
 FluxR(neqs,Field(nx0,ny0,nz0)),
 reconstFluxL(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
 reconstFluxR(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
-reconstFlux(neqs,Field(nx0,ny0,nz0))
+reconstFlux(neqs,Field(nx0,ny0,nz0)),
+maxEigen(0.0)
 {
     
 }

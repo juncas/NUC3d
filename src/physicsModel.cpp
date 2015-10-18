@@ -30,13 +30,15 @@ myRiemannMap(
              ),
 myModelMap(
 {
-    {"Euler",&nuc3d::physicsModel::Euler},
-    {"NavierStokes",&nuc3d::physicsModel::NaiverStokes}
+    {"Euler","Euler3d"},
+    {"Euler-Reactive","EulerReactive3d"},
+    {"NS","NaiverStokes3d"},
+    {"NS-Reactive","NaiverStokesReactive3d"},
 }
            ),
 myModelParameters(
 { {"Reynolds",1000},{"Mach",0.5},{"Pt",0.72},{"Gamma",1.4} }
-                  )
+)
 {
     std::string str;
     std::ifstream file("PhysModel.in");
@@ -74,7 +76,7 @@ myModelParameters(
         {
             std::cout<<"Model name "<<myEoSName<<" does not exist ,using default!"
             << std::endl;
-            myEoSName="Euler";
+            myEoSName="Euler3d";
             
         }
         
@@ -91,7 +93,7 @@ myModelParameters(
 
 nuc3d::physicsModel::~physicsModel()
 {
-
+    
 }
 /**************************************************************************************
  Definition of member functions
@@ -116,11 +118,11 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
     
 }
 
-void  nuc3d::physicsModel::solve(EulerData3D &myEuler)
+void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D &myEuler)
 {
     con2prim(myEoSName,
              myEuler.jacobian,
-             myEuler.Q_Euler,
+             myPDE.getQ(),
              myEuler.W_Euler,
              myEuler.W0_Euler);
     
@@ -129,46 +131,34 @@ void  nuc3d::physicsModel::solve(EulerData3D &myEuler)
                   myEuler.xi_xyz,
                   myEuler.W_Euler,
                   myEuler.W0_Euler,
-                  myEuler.Q_Euler,
-                  myEuler.FluxL_xi,
-                  myEuler.FluxR_xi,
-                  myEuler.maxEigen_xi);
+                  myPDE.getQ(),
+                  myEuler.Flux_xi);
     
     RiemannSolver(myEoSName,
                   myEuler.jacobian,
                   myEuler.eta_xyz,
                   myEuler.W_Euler,
                   myEuler.W0_Euler,
-                  myEuler.Q_Euler,
-                  myEuler.FluxL_eta,
-                  myEuler.FluxR_eta,
-                  myEuler.maxEigen_eta);
+                  myPDE.getQ(),
+                  myEuler.Flux_eta);
     
     RiemannSolver(myEoSName,
                   myEuler.jacobian,
                   myEuler.zeta_xyz,
                   myEuler.W_Euler,
                   myEuler.W0_Euler,
-                  myEuler.Q_Euler,
-                  myEuler.FluxL_zeta,
-                  myEuler.FluxR_zeta,
-                  myEuler.maxEigen_zeta);
+                  myPDE.getQ(),
+                  myEuler.Flux_zeta);
 }
 
-void nuc3d::physicsModel::initial(EulerData3D &myEuler)
-{    prim2con(myEoSName,
-             myEuler.jacobian,
-             myEuler.W_Euler,
-             myEuler.Q_Euler);
-}
-
-void nuc3d::physicsModel::Euler()
+void nuc3d::physicsModel::initial(PDEData3d &myPDE,EulerData3D &myEuler)
 {
+    prim2con(myEoSName,
+              myEuler.jacobian,
+              myEuler.W_Euler,
+              myPDE.getQ());
 }
 
-void nuc3d::physicsModel::NaiverStokes()
-{
-}
 
 void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                                    const Field &Jacobian,
@@ -188,19 +178,18 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
         for (int j = 0; j < ny; ++j)
             for (int i = 0; i < nx; ++i)
             {
-                std::vector<double> value;
-                
                 auto iterRho = Q_vec.begin();
                 auto iterRhoU = Q_vec.begin() + 1;
                 auto iterRhoV = Q_vec.begin() + 2;
                 auto iterRhoW = Q_vec.begin() + 3;
                 auto iterRhoE = Q_vec.begin() + 4;
                 
-                rho = iterRho->getValue(i, j, k);
-                u = iterRhoU->getValue(i, j, k) / rho;
-                v = iterRhoV->getValue(i, j, k) / rho;
-                w = iterRhoW->getValue(i, j, k) / rho;
-                E = iterRhoE->getValue(i, j, k);
+                double jac=Jacobian.getValue(i, j, k);
+                rho = iterRho->getValue(i, j, k)*jac;
+                u = iterRhoU->getValue(i, j, k) / rho*jac;
+                v = iterRhoV->getValue(i, j, k) / rho*jac;
+                w = iterRhoW->getValue(i, j, k) / rho*jac;
+                E = iterRhoE->getValue(i, j, k)*jac;
                 
                 (this->*myEosFWDMap[EoSName])(
                                               rho,
@@ -227,7 +216,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 iterE0->setValue(i, j, k, p);
                 
                 for (auto iter = iterE0 + 1; iter != W_vec.end(); ++iter)
-                    iter->setValue(i, j, k, Q_vec[iter - W_vec.end()].getValue(i, j, k) / rho);
+                    iter->setValue(i, j, k, Q_vec[iter - W_vec.end()].getValue(i, j, k) / rho*jac);
                 
                 W0_vec[0].setValue(i, j, k, T);
                 W0_vec[1].setValue(i, j, k, e);
@@ -291,7 +280,7 @@ void nuc3d::physicsModel::prim2con(const std::string &EosName,
                 iterE0->setValue(i, j, k, E/jac);
                 
                 for (auto iter = iterE0 + 1; iter != Q_vec.end(); ++iter)
-                    iter->setValue(i, j, k, Q_vec[iter - Q_vec.end()].getValue(i, j, k) * rho);
+                    iter->setValue(i, j, k, Q_vec[iter - Q_vec.end()].getValue(i, j, k) * rho/jac);
             }
     
 }
@@ -302,12 +291,10 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                                         const VectorField &W_vec,
                                         const VectorField &W0_vec,
                                         const VectorField &Q_vec,
-                                        VectorField &FluxL,
-                                        VectorField &FluxR,
-                                        double &MaxEigen)
+                                        EulerFlux& myFlux)
 {
     if (myRiemannMap.find(SolverName) != myRiemannMap.end())
-        (this->*myRiemannMap[SolverName])(Jacobian, xx_xyz, W_vec, W0_vec, Q_vec, FluxL, FluxR, MaxEigen);
+        (this->*myRiemannMap[SolverName])(Jacobian, xx_xyz, W_vec, W0_vec, Q_vec, myFlux.FluxL, myFlux.FluxR, myFlux.maxEigen);
     else
         std::cout << "Riemann Solver " << SolverName << " does not exist!" << std::endl;
 };
@@ -361,7 +348,7 @@ void nuc3d::physicsModel::RiemannAUSM(
                 
                 U0=xx_x*u + xx_y*v + xx_z*w;
                 theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
-                MaxEigenLocal=abs(U0)+alpha*theta;
+                MaxEigenLocal=std::abs(U0)+alpha*theta;
                 mach = U0 / alpha;
                 
                 MaxEigen=(MaxEigen>=MaxEigenLocal)?MaxEigen:MaxEigenLocal;
@@ -404,17 +391,16 @@ void nuc3d::physicsModel::RiemannAUSM(
                 
             }
     
->>>>>>> origin/master
 };
 
 double nuc3d::physicsModel::getMachL(const double &mach)
 {
     double MachL;
     
-    if (abs(mach) < 1.0)
+    if (std::abs(mach) < 1.0)
         MachL = 0.25*pow((mach + 1.0), 2) + 0.125*pow(pow(mach, 2.0) - 1.0, 2);
     else
-        MachL = 0.50*(mach + abs(mach));
+        MachL = 0.50*(mach + std::abs(mach));
     
     return MachL;
     
@@ -425,10 +411,10 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     
     double MachR;
     
-    if (abs(mach) < 1.0)
+    if (std::abs(mach) < 1.0)
         MachR = -0.25*pow((mach - 1.0), 2) - 0.125*pow(pow(mach, 2.0) - 1.0, 2);
     else
-        MachR = 0.50*(mach - abs(mach));
+        MachR = 0.50*(mach - std::abs(mach));
     
     return MachR;
     
@@ -436,10 +422,10 @@ double nuc3d::physicsModel::getMachR(const double &mach)
 
 double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {    double pressureL;
-    if (abs(mach) < 1.0)
+    if (std::abs(mach) < 1.0)
         pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach) + 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2.0));
     else
-        pressureL = 0.50*p*(mach + abs(mach)) / mach;
+        pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
     
     return pressureL;
 }
@@ -447,10 +433,10 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 {
     double pressureR;
-    if (abs(mach) < 1.0)
+    if (std::abs(mach) < 1.0)
         pressureR = p*(0.25*pow(mach - 1.0, 2.0)*(2.0 + mach) - 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2));
     else
-        pressureR = 0.5*p*(mach - abs(mach)) / mach;
+        pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
     
     return pressureR;
 }
@@ -484,7 +470,7 @@ void nuc3d::physicsModel::EoSIdealGasFWD(const double &rho,
     p = (E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
     T = gamma*Mach*Mach*p / rho;
     e = p / rho / (gamma - 1.0);
-    alpha = sqrt(abs(T)) / Mach;
+    alpha = sqrt(std::abs(T)) / Mach;
 };
 
 void nuc3d::physicsModel::EoSIdealGasBWD(
@@ -500,7 +486,6 @@ void nuc3d::physicsModel::EoSIdealGasBWD(
                                          double & _E)
 {
     double gamma = myModelParameters["Gamma"];
-    double Mach = myModelParameters["Mach"];
     
     _rho = rho;
     _rhou= rho*u;

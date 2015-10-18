@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <iostream>
 #include "field.h"
-
+#include "fieldOperator.h"
+#include "physicsModel.h"
 
 namespace nuc3d
 {
@@ -44,6 +45,7 @@ namespace nuc3d
         
         
         VectorField& getRHS(EulerData3D &);
+        VectorField& getQ();
         
     protected:
         void setDrivatives(EulerData3D &);
@@ -52,11 +54,14 @@ namespace nuc3d
     
     class EulerFlux
     {
+        friend class physicsModel;
+        friend class fieldOperator3d;
         VectorField FluxL;
         VectorField FluxR;
         VectorField reconstFluxL;
         VectorField reconstFluxR;
         VectorField reconstFlux;
+        double maxEigen;
     public:
         EulerFlux(int,int,int,int,
                   int,int,int);
@@ -93,10 +98,6 @@ namespace nuc3d
         VectorField dhdzeta;
 
         double dt;
-        double maxEigen_xi;
-        double maxEigen_eta;
-        double maxEigen_zeta;
-        
     public:
         EulerData3D( int nx, int ny, int nz, int addEq);
         ~EulerData3D();
