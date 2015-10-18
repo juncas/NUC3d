@@ -8,6 +8,13 @@
 
 namespace nuc3d
 {
+    class PDEData3d;
+    class EulerFlux;
+    class EulerData3D;
+    class EulerReactiveData3D;
+    class NaiverStokesData3d;
+    class NaiverStokesReactiveData3d;
+    
     class PDEData3d
     {
         friend class MeshBlock;
@@ -18,24 +25,29 @@ namespace nuc3d
         // other vectors are intermediate data
         /*
          dQ   df     dg     dh
-         -- + ---- + ---- + ----- = 0
+         -- + ---- + ---- + ----- = source
          dt   dxi    deta   dzeta
          */
         
         //current vector
         VectorField Q_Euler;
-        
-        //working vector
-        VectorField Q0_Euler;
-        
-        
+                
         VectorField dfdxi;
         VectorField dgdeta;
         VectorField dhdzeta;
         
+        VectorField RHS;
+        
     public:
         PDEData3d(int,int,int,int);
         ~PDEData3d();
+        
+        
+        VectorField& getRHS(EulerData3D &);
+        
+    protected:
+        void setDrivatives(EulerData3D &);
+        void setRHS(EulerData3D &);
     };
     
     class EulerFlux
@@ -46,7 +58,8 @@ namespace nuc3d
         VectorField reconstFluxR;
         VectorField reconstFlux;
     public:
-        EulerFlux(int,int,int,int);
+        EulerFlux(int,int,int,int,
+                  int,int,int);
         ~EulerFlux();
         
     public:
@@ -65,28 +78,44 @@ namespace nuc3d
         VectorField eta_xyz;
         VectorField zeta_xyz;
         
+        VectorField W_Euler;//primitive values (rho,u,v,w,p,...)
         
-        VectorField W_Euler;//primitive values (rho,u,v,w,p)
-        
-        VectorField W0_Euler;//primitive values (T,e,alpha)
-        
+        VectorField W0_Euler;//acoustics values (T,e,alpha)
         
         //Intermediate fields for Reimann problem
         EulerFlux Flux_xi;
         EulerFlux Flux_eta;
         EulerFlux Flux_zeta;
         
-        VectorField RHS;
-        
+        //invicid derivatives
+        VectorField dfdxi;
+        VectorField dgdeta;
+        VectorField dhdzeta;
+
         double dt;
         double maxEigen_xi;
         double maxEigen_eta;
         double maxEigen_zeta;
         
-        
     public:
         EulerData3D( int nx, int ny, int nz, int addEq);
         ~EulerData3D();
+        
+        //used by field operators and Riemann solvers
+        EulerFlux& getFluxXi();
+        EulerFlux& getFluxEta();
+        EulerFlux& getFluxZeta();
+        
+        //used by field operators and PDE
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        
+        //used by Riemann solvers
+        VectorField& getPrimatives();
+        VectorField& getAcoustics();
+        
+        virtual void solveLocal();
     };
     
     class EulerReactiveData3D : virtual public EulerData3D
@@ -95,12 +124,21 @@ namespace nuc3d
         friend class meshGrid;
         friend class physicsModel;
         
-        VectorField sourceTerm;
+    protected:
+        VectorField source_xi;
+        VectorField source_eta;
+        VectorField source_zeta;
         
     public:
-        EulerReactiveData3D();
+        EulerReactiveData3D(int,int,int,int);
         ~EulerReactiveData3D();
         
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        virtual void solveLocal();
+    protected:
+        void setSource();
     };
     
     class NaiverStokesData3d : virtual public EulerData3D
@@ -113,38 +151,50 @@ namespace nuc3d
         VectorField du;
         VectorField dv;
         VectorField dw;
-        VectorField dt;
+        VectorField dT;
+        Field miu;
+        Field coeff;
         
         //viscous stresses
         VectorField tau;
         
         //viscous fluxes
-        VectorField fv;
-        VectorField gv;
-        VectorField hv;
+        VectorField Flux_xi_vis;
+        VectorField Flux_eta_vis;
+        VectorField Flux_zeta_vis;
         
         //viscous derivatives
         VectorField dfvdxi;
         VectorField dgvdeta;
         VectorField dhvdzeta;
-        
     public:
-        NaiverStokesData3d();
+        NaiverStokesData3d(int,int,int,int);
         ~NaiverStokesData3d();
         
     public:
-        void getViscousStress();
-        void getViscousFluxex();
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        virtual void solveLocal();
         
+    protected:
+        void setViscousFluxes();
     };
     
-    class NaiverStokesReactiveData3d : public EulerReactiveData3D,public NaiverStokesData3d
+    class NaiverStokesReactiveData3d : public EulerReactiveData3D, public NaiverStokesData3d
     {
-        
     public:
-        NaiverStokesReactiveData3d();
+        NaiverStokesReactiveData3d(int,int,int,int);
         ~NaiverStokesReactiveData3d();
+        
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        virtual void solveLocal();
     };
+    
+    
+
 }
 
 #endif
