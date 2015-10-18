@@ -6,8 +6,12 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+
 #include "euler3d.h"
 #include "MPICommunicator.h"
+#include "IOcontroller.h"
+#include "fieldOperator.h"
+#include "physicsModel.h"
 
 namespace nuc3d
 {
@@ -28,7 +32,6 @@ namespace nuc3d
         VectorField xyz_center;
         
         PDEData3d myPDE;
-        physicsModel &myPhysBLK;
         
         /*
          this shared point could be:
@@ -37,19 +40,21 @@ namespace nuc3d
          - NaiverStokesData3d;
          - NaiverStokesReactiveData3d;
          */
-        
         std::shared_ptr<EulerData3D> myFluxes;
         
-        std::vector<bufferData> myBuffers;//finished
+        physicsModel &myPhysBLK;
+        fieldOperator3d &myOperator;
+        MPIComunicator3d_nonblocking &myComm;
+
         
-        fieldOperator3d myOperator;
         
-        //Boundary setBoundary;
-        //Boundary conditions should be owned by each grid
+        std::vector<bufferData> myBuffers;
         
     public:
         
-        MeshBlock(int,int,int,int,int,const physicsModel &);
+        MeshBlock(int,int,int,int,int,const physicsModel &,
+                                    const fieldOperator3d &,
+                                    const MPIComunicator3d_nonblocking &);
         ~MeshBlock();
         
     public:

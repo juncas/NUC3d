@@ -7,14 +7,22 @@
 /**************************************************************************************
  Definition of constructors and destructors
  **************************************************************************************/
-nuc3d::MeshBlock::MeshBlock(int nx0,int ny0,int nz0,int bfwidth,const physicsModel &myPhys):
+nuc3d::MeshBlock::MeshBlock(int nx0,int ny0,int nz0,
+                            int bfwidth,
+                            int blkId,
+                            const physicsModel &PhysMod,
+                            const fieldOperator3d &FieldOp,
+                            const MPIComunicator3d_nonblocking &Commtor):
 nx(nx0),ny(ny0),nz(nz0),
 bufferWidth(bfwidth),
-xyz(3,Field(nx0,ny0,nz0)),
-myPDE(nx0,ny0,nz0,myPhys.getEqNum()),
-myPhysBLK(myPhys)
+myBlkId(blkId),
+xyz(3,Field(nx0+1,ny0+1,nz0+1)),
+xyz_center(3,Field(nx0,ny0,nz0))
 {
-    myOperator(myPDE.Q_Euler);
+    
+    myPhysBLK=PhysMod;
+    myOperator=FieldOp;
+    myComm=Commtor;
     
     if("Euler"==myPhysBLK.getMyModelName())
     {
@@ -39,7 +47,7 @@ myPhysBLK(myPhys)
         <<std::endl;
     }
     
-    for(int i=0;i<neqs;i++)
+    for(int i=0;i<myPhysBLK.getEqNum();i++)
         myBuffers.push_back(bufferData(nx0,ny0,nz0,bfwidth));
 };
 
@@ -53,12 +61,16 @@ nuc3d::MeshBlock::~MeshBlock()
 void nuc3d::MeshBlock::input(std::ifstream &myFile)
 {
     readData(myFile,xyz);
-    readData(myFile,myEuler.W_Euler);
+    readData(myFile,myFluxes->W_Euler);
 }
 
 void nuc3d::MeshBlock::readData(std::ifstream &myFile, VectorField &dataVec)
 {
     double value;
+    
+    int nx=(dataVec.begin())->getSizeX();
+    int ny=(dataVec.begin())->getSizeY();
+    int nz=(dataVec.begin())->getSizeZ();
     
     for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
     {
@@ -70,12 +82,14 @@ void nuc3d::MeshBlock::readData(std::ifstream &myFile, VectorField &dataVec)
                     iter->setValue(i, j, k, value);
                 }
     }
-    
 }
 
 void nuc3d::MeshBlock::writeData(std::ofstream &myFile, VectorField &dataVec)
 {
     double value;
+    int nx=(dataVec.begin())->getSizeX();
+    int ny=(dataVec.begin())->getSizeY();
+    int nz=(dataVec.begin())->getSizeZ();
     
     for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
     {
@@ -98,8 +112,11 @@ void nuc3d::MeshBlock::initial()
 void nuc3d::MeshBlock::initialXYZ()
 {
     for(auto iterXYZ=xyz.begin();iterXYZ!=xyz.end();++iterXYZ)
-        
-        }
+    {
+        //finish this part at oct 19 2015
+    }
+    
+}
 
 void nuc3d::MeshBlock::solve()
 {
