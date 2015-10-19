@@ -4,7 +4,7 @@
 
 namespace nuc3d
 {
-	class tvdrk3 : public integration
+	class tvdrk3rd : public integration
 	{	
         const double coeff_tvdrk3_alpha0[3][2] = { {1.0,1.0},
                                                    {3.0/4.0,1.0/4.0},
@@ -14,16 +14,16 @@ namespace nuc3d
         std::vector<VectorField> ui;
         VectorField u;
     public:
-    	tvdrk3(const VectorField &);
-    	~tvdrk3();
+    	tvdrk3rd();
+    	~tvdrk3rd();
     	 //TVD-RK 3rd order scheme functions
 
         void getRHS(
-                const Field &, // dfdx
-                const Field &, // dgdy
-                const Field &, // dhdz
+                const VectorField &, // dfdx
+                const VectorField &, // dgdy
+                const VectorField &, // dhdz
                 const double, // dt
-                Field &);  // Right-hand-side
+                VectorField &);  // Right-hand-side
 
         void integrationAll(
                 const VectorField &, // Right-hand-side: l*dt

@@ -12,6 +12,13 @@
 
 namespace nuc3d
 {
+    class PDEData3d;
+    class EulerFlux;
+    class EulerData3D;
+    class EulerReactiveData3D;
+    class NaiverStokesData3d;
+    class NaiverStokesReactiveData3d;
+
     class physicsModel
     {
         //rho rho*u rho*v rho*w E -> rho u v w p
@@ -65,9 +72,13 @@ namespace nuc3d
         ~physicsModel();
         
         std::string getMyModelName(){return myModelName;};
-        void solve(PDEData3d &,EulerData3D &);
+        
+        void solve(PDEData3d &, EulerData3D &);
+        
         int getEqNum(){return neqs;};
+        
         void initial(PDEData3d &,EulerData3D &);
+        
     private:
         void Euler();
         void NaiverStokes();

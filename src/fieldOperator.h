@@ -12,10 +12,18 @@
 
 namespace nuc3d
 {
+    class PDEData3d;
+    class EulerFlux;
+    class EulerData3D;
+    class EulerReactiveData3D;
+    class NaiverStokesData3d;
+    class NaiverStokesReactiveData3d;
+
     class interoplation
     {
         friend class fieldOperator3d;
-    protected:
+    public:
+        interoplation();
         ~interoplation()=default;
 
     private:
@@ -43,28 +51,32 @@ namespace nuc3d
     protected:
         
         int nstep;
-        ~integration()=default;
 
     private:
         virtual void getRHS(
-                const Field &, // dfdx
-                const Field &, // dgdy
-                const Field &, // dhdz
+                const VectorField &, // dfdx
+                const VectorField &, // dgdy
+                const VectorField &, // dhdz
                 const double, // dt
-                Field &) = 0;// Right-hand-side
+                VectorField &) = 0;// Right-hand-side
 
         virtual void integrationAll(
-                const Field &, // Right-hand-side: l*dt
-                const Field &, // u(nstep)
-                const Field &, // u_n
+                const VectorField &, // Right-hand-side: l*dt
+                const VectorField &, // u(nstep)
+                const VectorField &, // u_n
                 int , // n th step
-                Field &) = 0; // output
+                VectorField &) = 0; // output
+    public:
+        
+        integration();
+        ~integration()=default;
     };
 
     class differential
     {
         friend class fieldOperator3d;
-    protected:
+    public:
+        differential();
         ~differential()=default;
 
     private:
@@ -99,10 +111,11 @@ namespace nuc3d
 
     	public:
     		
-        fieldOperator3d();
+        fieldOperator3d(const VectorField &);
         ~fieldOperator3d();
 
         int getBufferSize(){return bufferSize;};
+        
         void reconstructionInner(const Field&, int, int, Field &);
 
         void reconstructionBoundary(

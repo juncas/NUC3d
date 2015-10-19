@@ -14,7 +14,7 @@ nuc3d::MeshBlock::MeshBlock(int nx0,int ny0,int nz0,
                             const fieldOperator3d &FieldOp,
                             const MPIComunicator3d_nonblocking &Commtor):
 nx(nx0),ny(ny0),nz(nz0),
-bufferWidth(bfwidth),
+bufferWidth(FieldOp),
 myBlkId(blkId),
 xyz(3,Field(nx0+1,ny0+1,nz0+1)),
 xyz_center(3,Field(nx0,ny0,nz0))
@@ -24,19 +24,19 @@ xyz_center(3,Field(nx0,ny0,nz0))
     myOperator=FieldOp;
     myComm=Commtor;
     
-    if("Euler"==myPhysBLK.getMyModelName())
+    if("Euler3d"==myPhysBLK.getMyModelName())
     {
         myEuler=std::make_shared<EulerData3D>(nx0,ny0,nz0,neqs);
     }
-    else if ("EulerReactive"==myPhysBLK.getMyModelName())
+    else if ("EulerReactive3d"==myPhysBLK.getMyModelName())
     {
         myEuler=std::make_shared<EulerReactiveData3D>(nx0,ny0,nz0,neqs);
     }
-    else if ("NaiverStokes"==myPhysBLK.getMyModelName())
+    else if ("NaiverStokes3d"==myPhysBLK.getMyModelName())
     {
         myEuler=std::make_shared<NaiverStokesData3d>(nx0,ny0,nz0,neqs);
     }
-    else if ("NaiverStokesReactive"==myPhysBLK.getMyModelName())
+    else if ("NaiverStokesReactive3d"==myPhysBLK.getMyModelName())
     {
         myEuler=std::make_shared<NaiverStokesReactiveData3d>(nx0,ny0,nz0,neqs);
     }
@@ -45,6 +45,7 @@ xyz_center(3,Field(nx0,ny0,nz0))
         std::cout <<"Model Name:"<<myPhysBLK.getMyModelName()
         <<"does not exist!"
         <<std::endl;
+        exit(-1);
     }
     
     for(int i=0;i<myPhysBLK.getEqNum();i++)
@@ -116,6 +117,12 @@ void nuc3d::MeshBlock::initialXYZ()
         //finish this part at oct 19 2015
     }
     
+}
+
+
+void nuc3d::MeshBlock::initialPDE()
+{
+    myPhysBLK.initial(myFluxes,myPDE);
 }
 
 void nuc3d::MeshBlock::solve()

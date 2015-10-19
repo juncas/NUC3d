@@ -19,7 +19,7 @@ namespace nuc3d
     {
         friend class physicsModel;
         friend class meshGrid;
-        
+    protected:
         int myBlkId;
         
         int nx;
@@ -71,6 +71,7 @@ namespace nuc3d
         void writeData(std::ofstream &, VectorField &);
         
         void initialXYZ();
+        void initialPDE();
         
         void putXYZ();
         void putEuler();

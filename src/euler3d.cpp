@@ -10,7 +10,9 @@ Q_Euler(neqs,Field(nx0,ny0,nz0)),
 dfdxi(neqs,Field(nx0,ny0,nz0)),
 dgdeta(neqs,Field(nx0,ny0,nz0)),
 dhdzeta(neqs,Field(nx0,ny0,nz0))
-{}
+{
+
+}
 
 
 void nuc3d::PDEData3d::setRHS(EulerData3D &myFluxes)
@@ -85,10 +87,7 @@ Flux_zeta(nx0,ny0,nz0,neqs,0,0,1),
 dfdxi(neqs,Field(nx0,ny0,nz0)),
 dgdeta(neqs,Field(nx0,ny0,nz0)),
 dhdzeta(neqs,Field(nx0,ny0,nz0)),
-dt(0.0),
-maxEigen_xi(0.0),
-maxEigen_eta(0.0),
-maxEigen_zeta(0.0)
+dt(0.0)
 {
 }
 
