@@ -64,9 +64,6 @@ void nuc3d::weno5js::interpolationInner(
     double flux[5];
     double h;
 
-    int itemp;
-    int jtemp;
-    int ktemp;
 
     int nx;
     int ny;
@@ -124,9 +121,6 @@ void nuc3d::weno5js::interpolationBoundary(
     double flux[5];
     double h;
 
-    int itemp;
-    int jtemp;
-    int ktemp;
 
     int nx;
     int ny;

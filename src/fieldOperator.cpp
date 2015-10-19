@@ -1,13 +1,13 @@
 #ifndef fieldOperator3d_cpp
 #define fieldOperator3d_cpp
+
 #include "fieldOperator.h"
 #include "weno5js.h"
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
 
 nuc3d::fieldOperator3d::fieldOperator3d(const VectorField &U):
-MethodMap
-(
+MethodMap(
  {
      {"scheme_time","RK3"},
      {"scheme_x_ivs","weno5js"},
@@ -38,6 +38,7 @@ MethodMap
         <<std::endl;
         exit(0);
     }
+    
     file.close();
     
     setMethodIvsX();
@@ -100,7 +101,8 @@ std::istream& nuc3d::fieldOperator3d::readIOFile(
     else if(word0.size())
     {
         std::cout<<"Parameter \'"<<word0<<"in file \'IOController.io\' is not supported!"<<std::endl;
-        std::cout<<"Make sure that every parameter exist in the following name list:"<<std::endl;
+        std::cout<<"Make sure that every parameter exist in the following name list:"
+        <<std::endl;
         for(auto beg=Methods.begin();beg!=Methods.end();beg++)
             std::cout<<beg->first<<" "<<beg->second<<std::endl;
     }
@@ -123,6 +125,7 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     }
 }
 
+
 void nuc3d::fieldOperator3d::setMethodIvsY()
 {
     std::string s=MethodMap["scheme_y_ivs"];
@@ -133,7 +136,10 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
         myInteroplators.push_back(std::make_shared<interoplation>(new weno5js));
     }
     else
-        myInteroplators.push_back(std::make_shared<interoplation>(new weno5js));}
+    {
+        myInteroplators.push_back(std::make_shared<interoplation>(new weno5js));
+    }
+}
 
 void nuc3d::fieldOperator3d::setMethodIvsZ()
 {
@@ -265,7 +271,7 @@ void nuc3d::fieldOperator3d::differenceBoundary(
                                                 const Field &fieldIN,
                                                 const Field &boundaryL,
                                                 const Field &boundaryR,
-                                                const int direction,
+                                                int direction,
                                                 Field &fieldOUT)
 {
     switch(direction)
@@ -287,11 +293,12 @@ void nuc3d::fieldOperator3d::differenceBoundary(
 void nuc3d::fieldOperator3d::timeIntegral (const VectorField& u0, // u0
                                            const VectorField& un, // un
                                            const VectorField& rhs, // rhs
-                                           const double dt,
+                                           double dt,
                                            VectorField &fieldOUT,
                                            int step)
 {
-        myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
+    myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
 }
+
 
 #endif

@@ -115,8 +115,8 @@ namespace nuc3d
                 const Field &,
                 const Field &,
                 const Field &,
-                const int,
-                const int,
+                 int,
+                 int,
                 Field &);
 
         void differenceInner(const Field&, int, Field &);
@@ -125,14 +125,14 @@ namespace nuc3d
                 const Field &,
                 const Field &,
                 const Field &,
-                const int,
+                 int,
                 Field &);
 
 
         void timeIntegral ( const VectorField&, // u0
                             const VectorField&, // un
                             const VectorField&, // rhs
-                            const double,
+                             double,
                             VectorField &,
                             int);
     private:

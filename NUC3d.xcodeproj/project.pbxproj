@@ -13,13 +13,13 @@
 		E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642891BD1329B007BB96D /* IOcontroller.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642A51BD1329B007BB96D /* meshblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428D1BD1329B007BB96D /* meshblock.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428E1BD1329B007BB96D /* physicsModel.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A71BD1329B007BB96D /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642901BD1329B007BB96D /* fieldOperator.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642981BD1329B007BB96D /* NUC3d.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642991BD1329B007BB96D /* centraldifference6th.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429B1BD1329B007BB96D /* TVD-RK3.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429C1BD1329B007BB96D /* weno5js.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642AC1BD1329B007BB96D /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429E1BD1329B007BB96D /* field.cpp */; settings = {ASSET_TAGS = (); }; };
 		E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */; settings = {ASSET_TAGS = (); }; };
+		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,7 +47,6 @@
 		E346428D1BD1329B007BB96D /* meshblock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshblock.cpp; path = src/meshblock.cpp; sourceTree = SOURCE_ROOT; };
 		E346428E1BD1329B007BB96D /* physicsModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = physicsModel.cpp; path = src/physicsModel.cpp; sourceTree = SOURCE_ROOT; };
 		E346428F1BD1329B007BB96D /* physicsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physicsModel.h; path = src/physicsModel.h; sourceTree = SOURCE_ROOT; };
-		E34642901BD1329B007BB96D /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
 		E34642911BD1329B007BB96D /* IOcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOcontroller.h; path = src/IOcontroller.h; sourceTree = SOURCE_ROOT; };
 		E34642921BD1329B007BB96D /* fieldOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fieldOperator.h; path = src/fieldOperator.h; sourceTree = SOURCE_ROOT; };
 		E34642931BD1329B007BB96D /* MPICommunicatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicatorBase.h; path = src/MPICommunicatorBase.h; sourceTree = SOURCE_ROOT; };
@@ -63,6 +62,7 @@
 		E346429E1BD1329B007BB96D /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = field.cpp; path = src/field.cpp; sourceTree = SOURCE_ROOT; };
 		E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicatorBase.cpp; path = src/MPICommunicatorBase.cpp; sourceTree = SOURCE_ROOT; };
 		E34642A01BD1329B007BB96D /* NUC3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NUC3d.h; path = src/NUC3d.h; sourceTree = SOURCE_ROOT; };
+		E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,10 +133,10 @@
 				E346429D1BD1329B007BB96D /* weno5js.h */,
 				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
 				E34642971BD1329B007BB96D /* TVD-RK3.h */,
-				E34642901BD1329B007BB96D /* fieldOperator.cpp */,
 				E34642921BD1329B007BB96D /* fieldOperator.h */,
 				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
 				E34642961BD1329B007BB96D /* centraldifference6th.h */,
+				E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -238,7 +238,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E34642A71BD1329B007BB96D /* fieldOperator.cpp in Sources */,
 				E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */,
 				E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */,
 				E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */,
@@ -249,6 +248,7 @@
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
 				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
 				E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */,
+				E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */,
 				E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */,
 				E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */,
 			);
