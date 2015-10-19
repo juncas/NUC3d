@@ -2,9 +2,11 @@
 #define tvdrk3_cpp
 #include "TVD-RK3.h"
 
-nuc3d::tvdrk3rd::tvdrk3rd()
+nuc3d::tvdrk3rd::tvdrk3rd(const VectorField &U)
 {
-    
+    for(int i=0;i<3;i++)
+        ui.push_back(U);
+    u=U;
 }
 
 

@@ -129,14 +129,11 @@ namespace nuc3d
                 Field &);
 
 
-        void timeIntegral ( const Field&, //dfdx
-                            const Field&, //dfdy
-                            const Field&, //dfdz
-                            const Field&, // u0
-                            const Field&, // un 
-                            const Field&, // rhs
+        void timeIntegral ( const VectorField&, // u0
+                            const VectorField&, // un
+                            const VectorField&, // rhs
                             const double,
-                            Field &,
+                            VectorField &,
                             int);
     private:
 		std::istream& readIOFile(

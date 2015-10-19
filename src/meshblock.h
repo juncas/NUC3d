@@ -52,9 +52,11 @@ namespace nuc3d
         
     public:
         
-        MeshBlock(int,int,int,int,int,const physicsModel &,
-                                    const fieldOperator3d &,
-                                    const MPIComunicator3d_nonblocking &);
+        MeshBlock(int,int,int,int,int,
+                  const physicsModel &,
+                  const fieldOperator3d &,
+                  const MPIComunicator3d_nonblocking &);
+        
         ~MeshBlock();
         
     public:

@@ -70,12 +70,12 @@ MethodMap
         <<std::endl;
     }
     
-};
+}
 
 nuc3d::fieldOperator3d::~fieldOperator3d()
 {
     
-};
+}
 /**************************************************************************************
  Definition of member functions
  **************************************************************************************/
@@ -118,7 +118,9 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
         myInteroplators.push_back(std::make_shared<interoplation>(new weno5js));
     }
     else
+    {
         myInteroplators.push_back(std::make_shared<interoplation>(new weno5js));
+    }
 }
 
 void nuc3d::fieldOperator3d::setMethodIvsY()
@@ -193,9 +195,9 @@ void nuc3d::fieldOperator3d::setTimeMethod(const VectorField &u)
     std::string s=MethodMap["scheme_time"];
     
     if(s=="RK3")
-        std::shared_ptr<integration> p(new tvdrk3rd);
+        myIntegrators.reset(new tvdrk3rd(u));
     else
-        myIntegrators=new tvdrk3(u);
+        myIntegrators.reset(new tvdrk3rd(u));
 }
 
 void nuc3d::fieldOperator3d::reconstructionInner(
@@ -229,13 +231,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationInner(fieldIN,boundaryL,boundaryR,1,0,0,upwind,fieldOUT);
+            myInteroplators[0]->interpolationBoundary(fieldIN,boundaryL,boundaryR,1,0,0,upwind,fieldOUT);
             break;
         case 1:
-            myInteroplators[1]->interpolationInner(fieldIN,boundaryL,boundaryR,0,1,0,upwind,fieldOUT);
+            myInteroplators[1]->interpolationBoundary(fieldIN,boundaryL,boundaryR,0,1,0,upwind,fieldOUT);
             break;
         case 2:
-            myInteroplators[2]->interpolationInner(fieldIN,boundaryL,boundaryR,0,0,1,upwind,fieldOUT);
+            myInteroplators[2]->interpolationBoundary(fieldIN,boundaryL,boundaryR,0,0,1,upwind,fieldOUT);
             break;
     }
     
@@ -248,13 +250,13 @@ void nuc3d::fieldOperator3d::differenceInner(const Field& fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->interpolationInner(fieldIN,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialInner(fieldIN,1,0,0,fieldOUT);
             break;
         case 1:
-            myDifferenters[1]->interpolationInner(fieldIN,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialInner(fieldIN,0,1,0,fieldOUT);
             break;
         case 2:
-            myDifferenters[2]->interpolationInner(fieldIN,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialInner(fieldIN,0,0,1,fieldOUT);
             break;
     }
 }
@@ -269,32 +271,27 @@ void nuc3d::fieldOperator3d::differenceBoundary(
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->interpolationInner(fieldIN,boundaryL,boundaryR,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialBoundary(fieldIN,boundaryL,boundaryR,1,0,0,fieldOUT);
             break;
         case 1:
-            myDifferenters[1]->interpolationInner(fieldIN,boundaryL,boundaryR,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialBoundary(fieldIN,boundaryL,boundaryR,0,1,0,fieldOUT);
             break;
         case 2:
-            myDifferenters[2]->interpolationInner(fieldIN,boundaryL,boundaryR,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialBoundary(fieldIN,boundaryL,boundaryR,0,0,1,fieldOUT);
             break;
     }
     
 }
 
 
-void nuc3d::fieldOperator3d::timeIntegral (
-                                           const Field& dfdx, //dfdx
-                                           const Field& dfdy, //dfdy
-                                           const Field& dfdz, //dfdz
-                                           const Field& u0, // u0
-                                           const Field& un, // un
-                                           const Field& rhs, // rhs
+void nuc3d::fieldOperator3d::timeIntegral (const VectorField& u0, // u0
+                                           const VectorField& un, // un
+                                           const VectorField& rhs, // rhs
                                            const double dt,
-                                           Field &fieldOUT,
+                                           VectorField &fieldOUT,
                                            int step)
 {
-    myIntegrators->getRHS(dfdx,dfdy,dfdz,dt, rhs);
-    myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
-    
+        myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
 }
+
 #endif
