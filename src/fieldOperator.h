@@ -12,13 +12,6 @@
 
 namespace nuc3d
 {
-    class PDEData3d;
-    class EulerFlux;
-    class EulerData3D;
-    class EulerReactiveData3D;
-    class NaiverStokesData3d;
-    class NaiverStokesReactiveData3d;
-
     class interoplation
     {
         friend class fieldOperator3d;

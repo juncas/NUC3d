@@ -5,13 +5,6 @@
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
 
-/**************************************************************************************
- Definition of class IOController:
- This class is used to store numerical method input parameters.
- **************************************************************************************/
-/**************************************************************************************
- Definition of constructors and destructors
- **************************************************************************************/
 nuc3d::fieldOperator3d::fieldOperator3d(const VectorField &U):
 MethodMap
 (
