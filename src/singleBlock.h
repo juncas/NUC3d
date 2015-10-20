@@ -5,44 +5,58 @@
 //  Created by Jun Peng on 15/10/20.
 //  Copyright © 2015年 Jun Peng. All rights reserved.
 //
-
 #ifndef singleBlock_hpp
 #define singleBlock_hpp
-#include "block.hpp"
+#include "block.h"
+#include "physicsModel.h"
+#include "IOcontroller.h"
+#include "fieldOperator.h"
+#include "MPICommunicator.h"
 
 namespace nuc3d
 {
     
     class singleBlock : public block
     {
+        MPIComunicator3d_nonblocking myComm;
+        IOController myCtrler;
+        physicsModel myPhys;
+        fieldOperator3d myOperator;
+    
     public:
-        singleBlock();
+        singleBlock(int&, char **&);
         ~singleBlock();
         
-        void solveRiemann();
-        void solveBoundaryConditions();
-        void solveInvicidFlux();
-        void solveViscousFLux();
-        void solveGetRHS();
-        void solveIntegral();
+        void initialBlock();
         
-        void input(std::ifstream &);
         void initial();
         
-        void output(std::ofstream &);
+        void solve();
         
-        void setMyId(int Id) { myBlkId = Id; };
+        void output();
         
+    private:
+        void solveRiemann();
+        
+        void solveBoundaryConditions();
+        
+        void solveInvicidFlux();
+        
+        void solveViscousFLux();
+        
+        void solveGetRHS();
+        
+        void solveIntegral();
+        
+        void printRES();
+    
     private:
         void readData(std::ifstream &, VectorField &);
         void writeData(std::ofstream &, VectorField &);
         
         void initialXYZ();
         void initialPDE();
-        
-        void putXYZ();
-        void putEuler();
-        
+                
     };
 }
 #endif /* singleBlock_hpp */

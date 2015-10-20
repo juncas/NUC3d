@@ -38,9 +38,9 @@
 
 /* Begin PBXFileReference section */
 		E30F019F1BD646440091F90C /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = block.cpp; path = src/block.cpp; sourceTree = SOURCE_ROOT; };
-		E30F01A01BD646440091F90C /* block.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = block.hpp; path = src/block.hpp; sourceTree = SOURCE_ROOT; };
+		E30F01A01BD646440091F90C /* block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = block.h; path = src/block.h; sourceTree = SOURCE_ROOT; };
 		E30F01A21BD646F50091F90C /* singleBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = singleBlock.cpp; path = src/singleBlock.cpp; sourceTree = SOURCE_ROOT; };
-		E30F01A31BD646F50091F90C /* singleBlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = singleBlock.hpp; path = src/singleBlock.hpp; sourceTree = SOURCE_ROOT; };
+		E30F01A31BD646F50091F90C /* singleBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = singleBlock.h; path = src/singleBlock.h; sourceTree = SOURCE_ROOT; };
 		E346427B1BD131C9007BB96D /* NUC3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NUC3d; sourceTree = BUILT_PRODUCTS_DIR; };
 		E34642851BD1329B007BB96D /* meshgrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = meshgrid.cpp; path = src/meshgrid.cpp; sourceTree = SOURCE_ROOT; };
 		E34642861BD1329B007BB96D /* euler3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = euler3d.cpp; path = src/euler3d.cpp; sourceTree = SOURCE_ROOT; };
@@ -161,14 +161,14 @@
 		E34642B21BD133E8007BB96D /* Grid */ = {
 			isa = PBXGroup;
 			children = (
-				E346428D1BD1329B007BB96D /* multiBlock.cpp */,
-				E346428C1BD1329B007BB96D /* multiBlock.h */,
+				E30F019F1BD646440091F90C /* block.cpp */,
+				E30F01A01BD646440091F90C /* block.h */,
 				E34642851BD1329B007BB96D /* meshgrid.cpp */,
 				E346428B1BD1329B007BB96D /* meshgrid.h */,
-				E30F019F1BD646440091F90C /* block.cpp */,
-				E30F01A01BD646440091F90C /* block.hpp */,
+				E346428D1BD1329B007BB96D /* multiBlock.cpp */,
+				E346428C1BD1329B007BB96D /* multiBlock.h */,
 				E30F01A21BD646F50091F90C /* singleBlock.cpp */,
-				E30F01A31BD646F50091F90C /* singleBlock.hpp */,
+				E30F01A31BD646F50091F90C /* singleBlock.h */,
 			);
 			name = Grid;
 			sourceTree = "<group>";

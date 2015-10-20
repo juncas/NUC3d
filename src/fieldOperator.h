@@ -8,7 +8,7 @@
 #include <map>
 #include <cmath>
 #include <memory>
-#include "field.h" 
+#include "field.h"
 
 namespace nuc3d
 {
@@ -18,24 +18,24 @@ namespace nuc3d
     public:
         interoplation();
         ~interoplation()=default;
-
+        
     private:
         virtual void interpolationInner(
-                const Field &,
-                const int,
-                const int,
-                const int,
-                const int,
-                Field &) = 0;
+                                        const Field &,
+                                        const int,
+                                        const int,
+                                        const int,
+                                        const int,
+                                        Field &) = 0;
         virtual void interpolationBoundary(
-                const Field &,
-                const Field &,
-                const Field &,
-                const int,
-                const int,
-                const int,
-                const int,
-                Field &) = 0;
+                                           const Field &,
+                                           const Field &,
+                                           const Field &,
+                                           const int,
+                                           const int,
+                                           const int,
+                                           const int,
+                                           Field &) = 0;
     };
     
     class integration
@@ -44,112 +44,115 @@ namespace nuc3d
     protected:
         
         int nstep;
-
+        
     private:
         virtual void getRHS(
-                const VectorField &, // dfdx
-                const VectorField &, // dgdy
-                const VectorField &, // dhdz
-                const double, // dt
-                VectorField &) = 0;// Right-hand-side
-
-        virtual void integrationAll(
-                const VectorField &, // Right-hand-side: l*dt
-                const VectorField &, // u(nstep)
-                const VectorField &, // u_n
-                int , // n th step
-                VectorField &) = 0; // output
-    public:
+                            const VectorField &, // dfdx
+                            const VectorField &, // dgdy
+                            const VectorField &, // dhdz
+                            const double, // dt
+                            VectorField &) = 0;// Right-hand-side
         
+        virtual void integrationAll(
+                                    const VectorField &, // Right-hand-side: l*dt
+                                    const VectorField &, // u(nstep)
+                                    const VectorField &, // u_n
+                                    int , // n th step
+                                    VectorField &) = 0; // output
+    public:
+        virtual void initial(const VectorField &);
         integration();
         ~integration()=default;
     };
-
+    
     class differential
     {
         friend class fieldOperator3d;
     public:
         differential();
         ~differential()=default;
-
+        
     private:
         virtual void differentialInner(
-                const Field &,
-                const int,
-                const int,
-                const int,
-                Field &) = 0;
-
+                                       const Field &,
+                                       const int,
+                                       const int,
+                                       const int,
+                                       Field &) = 0;
+        
         virtual void differentialBoundary(
-                const Field &,
-                const Field &,
-                const Field &,
-                const int,
-                const int,
-                const int,
-                Field &) = 0;
+                                          const Field &,
+                                          const Field &,
+                                          const Field &,
+                                          const int,
+                                          const int,
+                                          const int,
+                                          Field &) = 0;
     };
-
+    
     class fieldOperator3d//should only operate on fields
     {
         int bufferSize;
         
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
         std::vector<std::shared_ptr<differential>> myDifferenters;
-
+        
         std::shared_ptr<integration> myIntegrators;
-
-
+        
+        
         std::map<std::string,std::string> MethodMap;
-
-    	public:
-    		
-        fieldOperator3d(const VectorField &);
+        
+    public:
+        
+        
+        fieldOperator3d();
         ~fieldOperator3d();
-
+        void initial(const VectorField &);
+        
         int getBufferSize();
+        int getSteps(){return myIntegrators->nstep;}
         
         void reconstructionInner(const Field&, int, int, Field &);
-
+        
         void reconstructionBoundary(
-                const Field &,
-                const Field &,
-                const Field &,
-                 int,
-                 int,
-                Field &);
-
+                                    const Field &,
+                                    const Field &,
+                                    const Field &,
+                                    int,
+                                    int,
+                                    Field &);
+        
         void differenceInner(const Field&, int, Field &);
-
+        
         void differenceBoundary(
-                const Field &,
-                const Field &,
-                const Field &,
-                 int,
-                Field &);
-
-
+                                const Field &,
+                                const Field &,
+                                const Field &,
+                                int,
+                                Field &);
+        
+        
         void timeIntegral ( const VectorField&, // u0
-                            const VectorField&, // un
-                            const VectorField&, // rhs
-                             double,
-                            VectorField &,
-                            int);
+                           const VectorField&, // un
+                           const VectorField&, // rhs
+                           double,
+                           VectorField &,
+                           int);
     private:
-		std::istream& readIOFile(
-			std::istream&,
-			std::map<std::string, std::string> &);
-
+        std::istream& readIOFile(
+                                 std::istream&,
+                                 std::map<std::string, std::string> &);
+        
         void setMethodIvsX();
         void setMethodIvsY();
         void setMethodIvsZ();
-
-        void setTimeMethod(const VectorField &);
-
+        
+        void setTimeMethod();
+        
         void setDiffMethodX();
         void setDiffMethodY();
         void setDiffMethodZ();
-
+        
     };
 }
 

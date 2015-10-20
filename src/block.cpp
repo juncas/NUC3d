@@ -6,16 +6,24 @@
 //  Copyright © 2015年 Jun Peng. All rights reserved.
 //
 
-#include "block.hpp"
+#include "block.h"
+ nuc3d::block::block()
+{}
 
-nuc3d::block::block(int nx0,int ny0,int nz0,physicsModel &myPhy):
-nx(nx0),
-ny(ny0),
-nz(nz0),
-xyz(3,Field(nx0+1,ny0+1,nz0+1)),
-xyz_center(3,Field(nx0,ny0,nz0)),
-myPDE(nx0,ny0,nz0,myPhy.getEqNum())
+void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
 {
+    nx=nx0;
+    ny=ny0;
+    nz=nz0;
+    
+    for(int i=0;i<3;i++)
+    {
+        xyz.push_back(Field(nx0+1,ny0+1,nz0+1));
+        xyz_center.push_back(Field(nx0,ny0,nz0));
+    }
+    
+    myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
+    
     if("Euler3d"==myPhy.getMyModelName())
     {
         myFluxes=std::make_shared<nuc3d::EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
@@ -39,7 +47,7 @@ myPDE(nx0,ny0,nz0,myPhy.getEqNum())
         <<std::endl;
         exit(-1);
     }
-        
+    
 }
 
 nuc3d::block::~block()

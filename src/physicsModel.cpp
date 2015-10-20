@@ -118,44 +118,44 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
     
 }
 
-void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D &myEuler)
+void  nuc3d::physicsModel::solve(PDEData3d &myPDE,std::shared_ptr<EulerData3D> myEuler)
 {
     con2prim(myEoSName,
-             myEuler.jacobian,
+             myEuler->jacobian,
              myPDE.getQ(),
-             myEuler.W_Euler,
-             myEuler.W0_Euler);
+             myEuler->W_Euler,
+             myEuler->W0_Euler);
     
     RiemannSolver(myEoSName,
-                  myEuler.jacobian,
-                  myEuler.xi_xyz,
-                  myEuler.W_Euler,
-                  myEuler.W0_Euler,
+                  myEuler->jacobian,
+                  myEuler->xi_xyz,
+                  myEuler->W_Euler,
+                  myEuler->W0_Euler,
                   myPDE.getQ(),
-                  myEuler.Flux_xi);
+                  myEuler->Flux_xi);
     
     RiemannSolver(myEoSName,
-                  myEuler.jacobian,
-                  myEuler.eta_xyz,
-                  myEuler.W_Euler,
-                  myEuler.W0_Euler,
+                  myEuler->jacobian,
+                  myEuler->eta_xyz,
+                  myEuler->W_Euler,
+                  myEuler->W0_Euler,
                   myPDE.getQ(),
-                  myEuler.Flux_eta);
+                  myEuler->Flux_eta);
     
     RiemannSolver(myEoSName,
-                  myEuler.jacobian,
-                  myEuler.zeta_xyz,
-                  myEuler.W_Euler,
-                  myEuler.W0_Euler,
+                  myEuler->jacobian,
+                  myEuler->zeta_xyz,
+                  myEuler->W_Euler,
+                  myEuler->W0_Euler,
                   myPDE.getQ(),
-                  myEuler.Flux_zeta);
+                  myEuler->Flux_zeta);
 }
 
-void nuc3d::physicsModel::initial(PDEData3d &myPDE,EulerData3D &myEuler)
+void nuc3d::physicsModel::initial(PDEData3d &myPDE,std::shared_ptr<EulerData3D> myEuler)
 {
     prim2con(myEoSName,
-              myEuler.jacobian,
-              myEuler.W_Euler,
+              myEuler->jacobian,
+              myEuler->W_Euler,
               myPDE.getQ());
 }
 

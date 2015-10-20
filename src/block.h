@@ -16,9 +16,6 @@
 #include <memory>
 #include "field.h"
 #include "physicsModel.h"
-#include "IOcontroller.h"
-#include "fieldOperator.h"
-#include "MPICommunicator.h"
 
 namespace nuc3d
 {
@@ -35,7 +32,6 @@ namespace nuc3d
         VectorField xyz_center;
         
         PDEData3d myPDE;
-        std::vector<bufferData> myBuffers;
         
         /*
          this shared point could be:
@@ -46,7 +42,8 @@ namespace nuc3d
          */
         std::shared_ptr<EulerData3D> myFluxes;
         
-        block(int,int,int,physicsModel &);
+        block();
+        void initial(int,int,int,physicsModel &);
         ~block();
     };
     

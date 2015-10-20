@@ -168,10 +168,13 @@ namespace nuc3d
         VectorField RHS;
         
     public:
+        PDEData3d();
         PDEData3d(int,int,int,int);
         ~PDEData3d();
         
         
+        void initPDEData3d(int,int,int,int);
+
         VectorField& getRHS(EulerData3D &);
         VectorField& getQ();
         

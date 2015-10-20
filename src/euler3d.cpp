@@ -4,6 +4,9 @@
 /**************************************************************************************
  Member functions of class: PDEData3d
  **************************************************************************************/
+nuc3d::PDEData3d::PDEData3d()
+{}
+
 nuc3d::PDEData3d::PDEData3d(int nx0,int ny0,int nz0,int neqs):
 nEquations(neqs),
 Q_Euler(neqs,Field(nx0,ny0,nz0)),
@@ -11,9 +14,21 @@ dfdxi(neqs,Field(nx0,ny0,nz0)),
 dgdeta(neqs,Field(nx0,ny0,nz0)),
 dhdzeta(neqs,Field(nx0,ny0,nz0))
 {
-
+    
 }
 
+void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
+{
+    nEquations=neqs;
+    for(int i=0;i<neqs;i++)
+    {
+        Q_Euler.push_back(Field(nx0,ny0,nz0));
+        dfdxi.push_back(Field(nx0,ny0,nz0));
+        dgdeta.push_back(Field(nx0,ny0,nz0));
+        dhdzeta.push_back(Field(nx0,ny0,nz0));
+    }
+        
+}
 
 void nuc3d::PDEData3d::setRHS(EulerData3D &myFluxes)
 {

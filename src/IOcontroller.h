@@ -20,11 +20,16 @@ namespace nuc3d
         
 		IOController();
 		~IOController();
+        bool ifsolve();
+        bool ifsave();
+        void increaseStep();
         
 	public:
 		int getMethod(std::string);
 		double getValue(std::string);
 		std::istream& readIOFile(std::istream&,std::map<std::string,int> &,std::map<std::string,double> &);
+        
+        
 	};
 }
 #endif

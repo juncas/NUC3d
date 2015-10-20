@@ -1,6 +1,6 @@
 #ifndef meshBlock_cpp
 #define meshBlock_cpp
-#include "meshblock.h"
+#include "multiBlock.h"
 /**************************************************************************************
  Definition of class communicator: base class for communicators
  **************************************************************************************/

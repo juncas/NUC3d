@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "meshblock.h"
+#include "meshgrid.h"
 #include "MPICommunicator.h"
 #include "IOcontroller.h"
 #include "fieldOperator.h"

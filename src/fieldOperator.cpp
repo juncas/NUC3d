@@ -6,7 +6,7 @@
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
 
-nuc3d::fieldOperator3d::fieldOperator3d(const VectorField &U):
+nuc3d::fieldOperator3d::fieldOperator3d():
 MethodMap(
  {
      {"scheme_time","RK3"},
@@ -49,7 +49,7 @@ MethodMap(
     setDiffMethodY();
     setDiffMethodZ();
     
-    setTimeMethod(U);
+    setTimeMethod();
     
     if( myInteroplators.size()!=3)
     {
@@ -76,6 +76,11 @@ MethodMap(
 nuc3d::fieldOperator3d::~fieldOperator3d()
 {
     
+}
+
+void nuc3d::fieldOperator3d::initial(const VectorField &U)
+{
+    myIntegrators->initial(U);
 }
 /**************************************************************************************
  Definition of member functions
@@ -196,14 +201,14 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
                                  std::make_shared<differential>(new centraldifference6th));
 }
 
-void nuc3d::fieldOperator3d::setTimeMethod(const VectorField &u)
+void nuc3d::fieldOperator3d::setTimeMethod()
 {
     std::string s=MethodMap["scheme_time"];
     
     if(s=="RK3")
-        myIntegrators.reset(new tvdrk3rd(u));
+        myIntegrators.reset(new tvdrk3rd);
     else
-        myIntegrators.reset(new tvdrk3rd(u));
+        myIntegrators.reset(new tvdrk3rd);
 }
 
 void nuc3d::fieldOperator3d::reconstructionInner(

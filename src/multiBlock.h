@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include "block.h"
 #include "physicsModel.h"
 #include "IOcontroller.h"
 #include "fieldOperator.h"
@@ -13,37 +14,17 @@
 namespace nuc3d
 {    
        
-    class MeshBlock //contains field datas of a mesh block
+    class multiBlock : public block //contains field datas of a mesh block
     {
         friend class physicsModel;
         friend class meshGrid;
     protected:
         int myBlkId;
         
-        int nx;
-        int ny;
-        int nz;
-        
-        int bufferWidth;
-        
-        VectorField xyz;
-        VectorField xyz_center;
-        
-        PDEData3d myPDE;
-        
-        /*
-         this shared point could be:
-         - EulerData3D;
-         - EulerReactiveData3D;
-         - NaiverStokesData3d;
-         - NaiverStokesReactiveData3d;
-         */
-        std::shared_ptr<EulerData3D> myFluxes;
-        
-        physicsModel myPhys;
-        fieldOperator3d myOperator;
-        MPIComunicator3d_nonblocking myComm;
-        IOController myCtrler;
+        physicsModel &myPhys;
+        fieldOperator3d &myOperator;
+        MPIComunicator3d_nonblocking &myComm;
+        IOController &myCtrler;
         
         
         
@@ -52,10 +33,10 @@ namespace nuc3d
         
     public:
         // for single block configuration
-        MeshBlock(int& argc, char **& argv);
+        multiBlock(int& argc, char **& argv);
         
         // for single block configuration
-        MeshBlock(int,int,int,int,int,
+        multiBlock(int,int,int,int,int,
                   const physicsModel &,
                   const fieldOperator3d &,
                   const MPIComunicator3d_nonblocking &);

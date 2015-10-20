@@ -14,10 +14,11 @@ namespace nuc3d
         VectorField u;
         std::vector<VectorField> ui;
     public:
-    	tvdrk3rd(const VectorField&);
+    	tvdrk3rd();
     	~tvdrk3rd();
     	 //TVD-RK 3rd order scheme functions
-
+        
+        void initial(const VectorField &);
         void getRHS(
                 const VectorField &, // dfdx
                 const VectorField &, // dgdy

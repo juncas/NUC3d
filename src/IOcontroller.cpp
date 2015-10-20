@@ -109,6 +109,36 @@ double nuc3d::IOController::getValue(std::string s)
 	}
 };
 
+bool nuc3d::IOController::ifsolve()
+{
+    double currentTime=myTimeController["currentTime"];
+    double tl=myTimeController["tl"];
+    
+    int currentStep=myIOController["currentStep"];
+    int endStep=myIOController["endStep"];
+    
+    if((currentTime<=tl)&&(currentStep<endStep))
+        return true;
+    else
+        return false;
+}
+
+bool nuc3d::IOController::ifsave()
+{
+    int saveStep=myIOController["saveStep"];
+    int currentStep=myIOController["currentStep"];
+    
+    if(currentStep%saveStep)
+        return true;
+    else
+        return false;
+}
+
+void nuc3d::IOController::increaseStep()
+{
+    int istep=myIOController["currentStep"];
+    myIOController["currentStep"]=++istep;
+}
 /**************************************************************************************
 								End of definition
 **************************************************************************************/

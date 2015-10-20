@@ -73,12 +73,11 @@ namespace nuc3d
         
         std::string getMyModelName(){return myModelName;};
         
-        void solve(PDEData3d &, EulerData3D &);
+        void solve(PDEData3d &, std::shared_ptr<EulerData3D> );
         
         int getEqNum(){return neqs;};
         
-        void initial(PDEData3d &,EulerData3D &);
-        
+        void initial(PDEData3d &,std::shared_ptr<EulerData3D> );
     private:
         void Euler();
         void NaiverStokes();
