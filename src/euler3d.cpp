@@ -133,9 +133,14 @@ nuc3d::VectorField& nuc3d::EulerData3D::getAcoustics()
     return W0_Euler;
 }
 
+void nuc3d::EulerData3D::solveLocal()
+{
+}
 
 nuc3d::EulerData3D::~EulerData3D()
-{}
+{
+    
+}
 /**************************************************************************************
  Member functions of class: EulerReactiveData3D
  **************************************************************************************/

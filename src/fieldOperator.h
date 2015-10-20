@@ -107,7 +107,7 @@ namespace nuc3d
         fieldOperator3d(const VectorField &);
         ~fieldOperator3d();
 
-        int getBufferSize(){return bufferSize;};
+        int getBufferSize();
         
         void reconstructionInner(const Field&, int, int, Field &);
 

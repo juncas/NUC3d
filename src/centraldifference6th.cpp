@@ -34,10 +34,6 @@ void nuc3d::centraldifference6th::differentialInner(
     double flux[6];
     double h;
 
-    int itemp;
-    int jtemp;
-    int ktemp;
-
     int nx;
     int ny;
     int nz;
@@ -92,10 +88,6 @@ void nuc3d::centraldifference6th::differentialBoundary(
 {
     double flux[6];
     double h;
-
-    int itemp;
-    int jtemp;
-    int ktemp;
 
     int nx;
     int ny;

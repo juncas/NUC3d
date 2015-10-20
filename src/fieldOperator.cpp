@@ -300,5 +300,9 @@ void nuc3d::fieldOperator3d::timeIntegral (const VectorField& u0, // u0
     myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
 }
 
+int nuc3d::fieldOperator3d::getBufferSize()
+{
+    return bufferSize;
+}
 
 #endif

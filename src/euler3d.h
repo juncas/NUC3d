@@ -3,59 +3,17 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "field.h"
-#include "fieldOperator.h"
 #include "physicsModel.h"
 
 namespace nuc3d
 {
-    class PDEData3d;
-    class EulerFlux;
-    class EulerData3D;
-    class EulerReactiveData3D;
-    class NaiverStokesData3d;
-    class NaiverStokesReactiveData3d;
-    
-    class PDEData3d
-    {
-        friend class MeshBlock;
-        friend class meshGrid;
-        int nEquations;
-        
-        //a PDE is consist of such four vectors
-        // other vectors are intermediate data
-        /*
-         dQ   df     dg     dh
-         -- + ---- + ---- + ----- = source
-         dt   dxi    deta   dzeta
-         */
-        
-        //current vector
-        VectorField Q_Euler;
-                
-        VectorField dfdxi;
-        VectorField dgdeta;
-        VectorField dhdzeta;
-        
-        VectorField RHS;
-        
-    public:
-        PDEData3d(int,int,int,int);
-        ~PDEData3d();
-        
-        
-        VectorField& getRHS(EulerData3D &);
-        VectorField& getQ();
-        
-    protected:
-        void setDrivatives(EulerData3D &);
-        void setRHS(EulerData3D &);
-    };
+    class meshGrid;
+    class MeshBlock;
     
     class EulerFlux
     {
         friend class physicsModel;
-        friend class fieldOperator3d;
+        
         VectorField FluxL;
         VectorField FluxR;
         VectorField reconstFluxL;
@@ -73,8 +31,6 @@ namespace nuc3d
     
     class EulerData3D
     {
-        friend class MeshBlock;
-        friend class meshGrid;
         friend class physicsModel;
     protected:
         Field jacobian;
@@ -121,8 +77,6 @@ namespace nuc3d
     
     class EulerReactiveData3D : virtual public EulerData3D
     {
-        friend class MeshBlock;
-        friend class meshGrid;
         friend class physicsModel;
         
     protected:
@@ -144,8 +98,6 @@ namespace nuc3d
     
     class NaiverStokesData3d : virtual public EulerData3D
     {
-        friend class MeshBlock;
-        friend class meshGrid;
         friend class physicsModel;
         
     protected:
@@ -194,7 +146,39 @@ namespace nuc3d
         virtual void solveLocal();
     };
     
-    
+    class PDEData3d
+    {
+        int nEquations;
+        
+        //a PDE is consist of such four vectors
+        // other vectors are intermediate data
+        /*
+         dQ   df     dg     dh
+         -- + ---- + ---- + ----- = source
+         dt   dxi    deta   dzeta
+         */
+        
+        //current vector
+        VectorField Q_Euler;
+        
+        VectorField dfdxi;
+        VectorField dgdeta;
+        VectorField dhdzeta;
+        
+        VectorField RHS;
+        
+    public:
+        PDEData3d(int,int,int,int);
+        ~PDEData3d();
+        
+        
+        VectorField& getRHS(EulerData3D &);
+        VectorField& getQ();
+        
+    protected:
+        void setDrivatives(EulerData3D &);
+        void setRHS(EulerData3D &);
+    };
 
 }
 

@@ -17,8 +17,10 @@ namespace nuc3d
         std::map<std::string,int> myIOController;
         std::map<std::string,double> myTimeController;
 	public:
+        
 		IOController();
 		~IOController();
+        
 	public:
 		int getMethod(std::string);
 		double getValue(std::string);
