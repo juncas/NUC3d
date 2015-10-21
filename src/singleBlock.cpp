@@ -5,7 +5,6 @@
 //  Created by Jun Peng on 15/10/20.
 //  Copyright © 2015年 Jun Peng. All rights reserved.
 //
-
 #include "singleBlock.h"
 
 nuc3d::singleBlock::singleBlock(int& argc, char **&argv):
@@ -49,6 +48,10 @@ void nuc3d::singleBlock::initialBlock()
         
         block::initial(nx0, ny0, nz0, myPhys);
         myOperator.initial(myFluxes->getPrimatives());
+        for (int i=0; i<myPhys.getEqNum(); i++)
+        {
+            mybuffer.push_back(bufferData(nx0, ny0, nz0, myOperator.getBufferSize()));
+        }
         
         double x,y,z;
         
@@ -144,6 +147,60 @@ void nuc3d::singleBlock::solve()
     }
 }
 
+
+void nuc3d::singleBlock::solveRiemann()
+{
+    myPhys.solve(block::myPDE, myFluxes);
+}
+
+void nuc3d::singleBlock::solveBoundaryConditions()
+{
+    
+}
+
+void nuc3d::singleBlock::solveInvicidFlux()
+{
+    VectorField &pFlux =myFluxes->getFluxXi().FluxL;
+    VectorField &pReconFlux=myFluxes->getFluxXi().reconstFluxL;
+    
+    for (auto iter=pFlux.begin(); iter!=pFlux.end(); iter++)
+    {
+        Field &rf = pReconFlux[iter-pFlux.begin()];
+        
+        bufferData &bf=mybuffer[iter-pFlux.begin()];
+        
+        bf.setBufferSend(*iter);
+        
+        myComm.bufferSendRecv(bf, 0);
+        
+        myOperator.reconstructionInner(iter, 0, 1, rf);
+        
+        myOperator.reconstructionBoundary(iter, bf.BufferRecv[0], bf.BufferRecv[1], 0, 1, rf);
+    }
+    
+    
+    
+}
+
+void nuc3d::singleBlock::solveInvicidFluxL(EulerFlux &myFlux)
+{
+    
+}
+
+void nuc3d::singleBlock::solveViscousFLux()
+{
+    
+}
+
+void nuc3d::singleBlock::solveGetRHS()
+{
+    
+}
+
+void nuc3d::singleBlock::solveIntegral()
+{
+    
+}
 
 void nuc3d::singleBlock::readData(std::ifstream &myFile, VectorField &dataVec)
 {

@@ -8,10 +8,6 @@
 #ifndef singleBlock_hpp
 #define singleBlock_hpp
 #include "block.h"
-#include "physicsModel.h"
-#include "IOcontroller.h"
-#include "fieldOperator.h"
-#include "MPICommunicator.h"
 
 namespace nuc3d
 {
@@ -22,9 +18,10 @@ namespace nuc3d
         IOController myCtrler;
         physicsModel myPhys;
         fieldOperator3d myOperator;
-    
+                
     public:
         singleBlock(int&, char **&);
+        
         ~singleBlock();
         
         void initialBlock();

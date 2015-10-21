@@ -7,6 +7,7 @@
 //
 
 #include "block.h"
+
  nuc3d::block::block()
 {}
 
@@ -26,7 +27,7 @@ void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
     
     if("Euler3d"==myPhy.getMyModelName())
     {
-        myFluxes=std::make_shared<nuc3d::EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
+        myFluxes=std::make_shared<EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
     }
     else if ("EulerReactive3d"==myPhy.getMyModelName())
     {
@@ -51,6 +52,4 @@ void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
 }
 
 nuc3d::block::~block()
-{
-    
-}
+{}

@@ -9,10 +9,12 @@ namespace nuc3d
 {
     class meshGrid;
     class MeshBlock;
+    class singleBlock;
     
     class EulerFlux
     {
         friend class physicsModel;
+        friend class singleBlock;
         
         VectorField FluxL;
         VectorField FluxR;
