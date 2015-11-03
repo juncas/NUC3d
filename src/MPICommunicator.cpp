@@ -105,8 +105,8 @@ void nuc3d::bufferData::deallocatebuffer()
 /**************************************************************************************
 						Definition of constructors and destructors
 **************************************************************************************/
-nuc3d::MPIComunicator3d_nonblocking::MPIComunicator3d_nonblocking(int& argc, char **& argv) :
-	MPICommunicator(argc, argv)
+nuc3d::MPIComunicator3d_nonblocking::MPIComunicator3d_nonblocking() :
+	MPICommunicator()
 {
 	NeighBours = new int[6];
 	NeighBourFaces = new int[6];

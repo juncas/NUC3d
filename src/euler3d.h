@@ -9,10 +9,9 @@
 
 namespace nuc3d
 {
-    class meshGrid;
-    class MeshBlock;
-    class singleBlock;
     class EulerData3D;
+    class EulerFlux;
+    class PDEData3d;
     
     class EulerFlux
     {
@@ -59,7 +58,6 @@ namespace nuc3d
         VectorField dgdeta;
         VectorField dhdzeta;
         
-        
         double dt;
     public:
         EulerData3D( int nx, int ny, int nz, int addEq);
@@ -81,98 +79,26 @@ namespace nuc3d
         void setDerivativesEtaInv();
         void setDerivativesZetaInv();
         
-        
-        virtual bool ifvis(){return false;};
         //used by Riemann solvers
         VectorField& getPrimatives();
         VectorField& getAcoustics();
-        virtual void solve(fieldOperator3d &,bufferData &,physicsModel &);
-        virtual void solveInv(fieldOperator3d &,bufferData &);
-        virtual void solveLocal();
-    };
-    
-    class EulerReactiveData3D : virtual public EulerData3D
-    {
-        friend class physicsModel;
         
+        virtual void solve(PDEData3d &,
+                           fieldOperator3d &,
+                           bufferData &,
+                           physicsModel &);
     protected:
-        VectorField source_xi;
-        VectorField source_eta;
-        VectorField source_zeta;
+        void solveRiemann(PDEData3d &,
+                          physicsModel &);
         
-    public:
-        EulerReactiveData3D(int,int,int,int);
-        ~EulerReactiveData3D();
+        void solveInv(fieldOperator3d &,
+                      bufferData &);
         
-        virtual VectorField& getDrivativeXi();
-        virtual VectorField& getDrivativeEta();
-        virtual VectorField& getDrivativeZeta();
-        virtual void solve(fieldOperator3d &,bufferData &);
-        virtual void solveInv(fieldOperator3d &,bufferData &);
-        virtual void solveSource();
-        
+        virtual void solveVis(fieldOperator3d &,
+                              physicsModel &,
+                              bufferData &);
+    private:
         virtual void solveLocal();
-        
-        virtual bool ifvis(){return false;};
-    protected:
-        void setSource();
-    };
-    
-    class NaiverStokesData3d : virtual public EulerData3D
-    {
-        friend class physicsModel;
-        
-    public:
-        VectorField du;
-        VectorField dv;
-        VectorField dw;
-        VectorField dT;
-        Field miu;
-        Field coeff;
-        
-        //viscous stresses
-        VectorField tau;
-        
-        //viscous fluxes
-        VectorField Flux_xi_vis;
-        VectorField Flux_eta_vis;
-        VectorField Flux_zeta_vis;
-        
-        //viscous derivatives
-        VectorField dfvdxi;
-        VectorField dgvdeta;
-        VectorField dhvdzeta;
-    public:
-        NaiverStokesData3d(int,int,int,int);
-        ~NaiverStokesData3d();
-        
-    public:
-        virtual VectorField& getDrivativeXi();
-        virtual VectorField& getDrivativeEta();
-        virtual VectorField& getDrivativeZeta();
-        virtual void solveLocal();
-        virtual void solve(fieldOperator3d &,bufferData &);
-        virtual void solveInv(fieldOperator3d &,bufferData &);
-        virtual void solveVis(fieldOperator3d &,bufferData &);
-        
-    protected:
-        void setViscousFluxes();
-    };
-    
-    class NaiverStokesReactiveData3d : public EulerReactiveData3D, public NaiverStokesData3d
-    {
-    public:
-        NaiverStokesReactiveData3d(int,int,int,int);
-        ~NaiverStokesReactiveData3d();
-        
-        virtual VectorField& getDrivativeXi();
-        virtual VectorField& getDrivativeEta();
-        virtual VectorField& getDrivativeZeta();
-        virtual void solveLocal();
-        virtual void solve(fieldOperator3d &,bufferData &);
-        virtual void solveInv(fieldOperator3d &,bufferData &);
-        virtual void solveVis(fieldOperator3d &,bufferData &);
-        virtual void solveSource();
     };
     
     class PDEData3d

@@ -12,42 +12,39 @@
 namespace nuc3d
 {
     
-    class singleBlock : public block
+    class singleBlock
     {
         MPIComunicator3d_nonblocking myComm;
         IOController myCtrler;
         physicsModel myPhys;
         fieldOperator3d myOperator;
+        block myBlock;
                 
     public:
-        singleBlock(int&, char **&);
+        singleBlock();
         
         ~singleBlock();
         
         void initialBlock();
         
-        void initialPDE();
-        
         void solvePDE();
+        
+        void postprocess();
         
         void output();
         
 	private:
-
-		void solveInvicidFluxL(EulerFlux &, std::vector<bufferData> &, int);
-
-		void solveInvicidFluxR(EulerFlux &, std::vector<bufferData> &, int);
-
         void solveRiemann();
         
         void solveBoundaryConditions();
         
         void solveInvicidFlux();
         
-        void solveViscousFLux(EulerData3D &myEuler);
-        void solveViscousFLux(EulerReactiveData3D &myEuler);
-        void solveViscousFLux(NaiverStokesData3d &myEuler);
-        void solveViscousFLux(NaiverStokesReactiveData3d &myEule);
+        void solveInvicidFluxL(EulerFlux &, std::vector<bufferData> &, int);
+        
+        void solveInvicidFluxR(EulerFlux &, std::vector<bufferData> &, int);
+        
+        void solveViscousFLux();
         
         void solveGetRHS();
         

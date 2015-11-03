@@ -28,20 +28,6 @@ myRiemannMap(
     { "LF",&nuc3d::physicsModel::RiemannLF }
 }
              ),
-myModelMap(
-{
-    {"Euler",EulerData3D*},
-    {"Euler-Reactive",EulerReactiveData3D*},
-    {"NS",NaiverStokesData3d*},
-    {"NS-Reactive",NaiverStokesReactiveData3d*},
-}
-           ),
-myVisModelMap(
-{
-    {"Sutherland",&nuc3d::physicsModel::sutherland},
-    {"constant",&nuc3d::physicsModel::constant}
-}
-              ),
 myModelParameters(
 {
     {"Reynolds",1000},
@@ -51,7 +37,13 @@ myModelParameters(
     {"T_ref",110.4},
     {"T_inf",288.0}
 }
-                  )
+                ),
+myVisModelMap(
+{
+    {"Sutherland",&nuc3d::physicsModel::sutherland},
+    {"Constant",&nuc3d::physicsModel::constant}
+}
+              )
 {
     std::string str;
     std::ifstream file("PhysModel.in");
@@ -86,13 +78,6 @@ myModelParameters(
             myEoSName="AUSM";
         }
         
-        if(myModelMap.find(myModelName)==myModelMap.end())
-        {
-            std::cout<<"Model name "<<myEoSName<<" does not exist ,using default!"
-            << std::endl;
-            myEoSName="Euler3d";
-            
-        }
         
         if(myVisModelMap.find(myVisModelName)==myVisModelMap.end())
         {
@@ -140,7 +125,7 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
     
 }
 
-void  nuc3d::physicsModel::solve(PDEData3d &myPDE,std::shared_ptr<EulerData3D> myEuler)
+void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D  *myEuler)
 {
     con2prim(myEoSName,
              myEuler->jacobian,
@@ -171,6 +156,49 @@ void  nuc3d::physicsModel::solve(PDEData3d &myPDE,std::shared_ptr<EulerData3D> m
                   myEuler->W0_Euler,
                   myPDE.getQ(),
                   myEuler->Flux_zeta);
+}
+
+
+void nuc3d::physicsModel::getMiu(Field &T,
+                                 Field &miu,
+                                 Field &coeff)
+
+{
+    (this->*myVisModelMap[myVisModelName])(T,
+                                           miu,
+                                           coeff,
+                                           myModelParameters["Reynolds"],
+                                           myModelParameters["Mach"],
+                                           myModelParameters["pt"],
+                                           myModelParameters["gamma"],
+                                           myModelParameters["T_ref"],
+                                           myModelParameters["T_inf"]);
+}
+
+void nuc3d::physicsModel::sutherland(const Field &T,
+                                     Field &miu,
+                                     Field &coeff,
+                                     double Reynolds,
+                                     double Mach,
+                                     double pt,
+                                     double gamma,
+                                     double T_ref,
+                                     double T_inf)
+{
+    
+}
+
+void nuc3d::physicsModel::constant(const Field &T,
+                                   Field &miu,
+                                   Field &coeff,
+                                   double Reynolds,
+                                   double Mach,
+                                   double pt,
+                                   double gamma,
+                                   double T_ref,
+                                   double T_inf)
+{
+    
 }
 
 void nuc3d::physicsModel::initial(PDEData3d &myPDE,std::shared_ptr<EulerData3D> myEuler)

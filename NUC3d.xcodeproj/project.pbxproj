@@ -7,21 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E30F01A11BD646440091F90C /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F019F1BD646440091F90C /* block.cpp */; settings = {ASSET_TAGS = (); }; };
-		E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F01A21BD646F50091F90C /* singleBlock.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642851BD1329B007BB96D /* meshgrid.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642891BD1329B007BB96D /* IOcontroller.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A51BD1329B007BB96D /* multiBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428D1BD1329B007BB96D /* multiBlock.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428E1BD1329B007BB96D /* physicsModel.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642981BD1329B007BB96D /* NUC3d.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642991BD1329B007BB96D /* centraldifference6th.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429B1BD1329B007BB96D /* TVD-RK3.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429C1BD1329B007BB96D /* weno5js.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642AC1BD1329B007BB96D /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429E1BD1329B007BB96D /* field.cpp */; settings = {ASSET_TAGS = (); }; };
-		E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */; settings = {ASSET_TAGS = (); }; };
-		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E30F01A11BD646440091F90C /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F019F1BD646440091F90C /* block.cpp */; };
+		E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F01A21BD646F50091F90C /* singleBlock.cpp */; };
+		E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642851BD1329B007BB96D /* meshgrid.cpp */; };
+		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; };
+		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; };
+		E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642891BD1329B007BB96D /* IOcontroller.cpp */; };
+		E34642A51BD1329B007BB96D /* multiBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428D1BD1329B007BB96D /* multiBlock.cpp */; };
+		E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346428E1BD1329B007BB96D /* physicsModel.cpp */; };
+		E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642981BD1329B007BB96D /* NUC3d.cpp */; };
+		E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642991BD1329B007BB96D /* centraldifference6th.cpp */; };
+		E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429B1BD1329B007BB96D /* TVD-RK3.cpp */; };
+		E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429C1BD1329B007BB96D /* weno5js.cpp */; };
+		E34642AC1BD1329B007BB96D /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429E1BD1329B007BB96D /* field.cpp */; };
+		E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */; };
+		E38692CD1BE8F945001FB4EA /* eulerReactive3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692CB1BE8F945001FB4EA /* eulerReactive3d.cpp */; };
+		E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692CE1BE8FA1E001FB4EA /* NaiverStokes3d.cpp */; };
+		E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.c in Sources */ = {isa = PBXBuildFile; fileRef = E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.c */; };
+		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +71,12 @@
 		E346429E1BD1329B007BB96D /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = field.cpp; path = src/field.cpp; sourceTree = SOURCE_ROOT; };
 		E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicatorBase.cpp; path = src/MPICommunicatorBase.cpp; sourceTree = SOURCE_ROOT; };
 		E34642A01BD1329B007BB96D /* NUC3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NUC3d.h; path = src/NUC3d.h; sourceTree = SOURCE_ROOT; };
+		E38692CB1BE8F945001FB4EA /* eulerReactive3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = eulerReactive3d.cpp; path = src/eulerReactive3d.cpp; sourceTree = SOURCE_ROOT; };
+		E38692CC1BE8F945001FB4EA /* eulerReactive3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = eulerReactive3d.h; path = src/eulerReactive3d.h; sourceTree = SOURCE_ROOT; };
+		E38692CE1BE8FA1E001FB4EA /* NaiverStokes3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NaiverStokes3d.cpp; path = src/NaiverStokes3d.cpp; sourceTree = SOURCE_ROOT; };
+		E38692CF1BE8FA1E001FB4EA /* NaiverStokes3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NaiverStokes3d.h; path = src/NaiverStokes3d.h; sourceTree = SOURCE_ROOT; };
+		E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = NaiverStokesReactive3d.c; path = src/NaiverStokesReactive3d.c; sourceTree = SOURCE_ROOT; };
+		E38692D21BE8FAF5001FB4EA /* NaiverStokesReactive3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NaiverStokesReactive3d.h; path = src/NaiverStokesReactive3d.h; sourceTree = SOURCE_ROOT; };
 		E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -154,6 +163,12 @@
 				E346428A1BD1329B007BB96D /* euler3d.h */,
 				E346428E1BD1329B007BB96D /* physicsModel.cpp */,
 				E346428F1BD1329B007BB96D /* physicsModel.h */,
+				E38692CB1BE8F945001FB4EA /* eulerReactive3d.cpp */,
+				E38692CC1BE8F945001FB4EA /* eulerReactive3d.h */,
+				E38692CE1BE8FA1E001FB4EA /* NaiverStokes3d.cpp */,
+				E38692CF1BE8FA1E001FB4EA /* NaiverStokes3d.h */,
+				E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.c */,
+				E38692D21BE8FAF5001FB4EA /* NaiverStokesReactive3d.h */,
 			);
 			name = PhysicsModel;
 			sourceTree = "<group>";
@@ -257,12 +272,15 @@
 				E30F01A11BD646440091F90C /* block.cpp in Sources */,
 				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
 				E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */,
+				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.c in Sources */,
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
 				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
+				E38692CD1BE8F945001FB4EA /* eulerReactive3d.cpp in Sources */,
 				E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */,
 				E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */,
 				E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */,
 				E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */,
+				E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

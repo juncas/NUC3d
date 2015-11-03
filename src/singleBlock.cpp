@@ -6,21 +6,28 @@
 //  Copyright © 2015年 Jun Peng. All rights reserved.
 //
 #include "singleBlock.h"
+#include "mpi.h"
 
-nuc3d::singleBlock::singleBlock(int& argc, char **&argv):
-block(),
-myComm(argc, argv),
+nuc3d::singleBlock::singleBlock():
+myBlock(),
+myComm(),
 myCtrler(),
 myPhys(),
 myOperator()
 {
-    initialBlock();
+    
 }
 
 nuc3d::singleBlock::~singleBlock()
 {
     
 }
+
+/*==========================================================================
+
+ Initial Block functions:
+    -initialBlock()
+ =========================================================================*/
 
 void nuc3d::singleBlock::initialBlock()
 {
@@ -40,34 +47,45 @@ void nuc3d::singleBlock::initialBlock()
     
     std::ifstream myFile;
     
+    
+//read grid data
     myFile.open(filename_mesh);
     
     if (myFile)
     {
         myFile >> nx0 >> ny0 >> nz0;
         
-        block::initial(nx0, ny0, nz0, myPhys);
-        myOperator.initial(myFluxes->getPrimatives());
+    //initial block
+        myBlock.initial(nx0, ny0, nz0, myPhys);
+        
+    //initial field operator
+        myOperator.initial(myBlock.myFluxes->getPrimatives());
+        
+    //initial buffer
         for (int i=0; i<myPhys.getEqNum(); i++)
         {
-            mybuffer.push_back(bufferData(nx0, ny0, nz0, myOperator.getBufferSize()));
+            myBlock.mybuffer.push_back(bufferData(nx0, ny0, nz0, myOperator.getBufferSize()));
         }
         
+        
+    //read location data x,y,z at cell corner
         double x,y,z;
         
-        for(int k=0;k<nz+1;k++)
+        for(int k=0;k<myBlock.nz+1;k++)
         {
-            for(int j=0;j<ny+1;j++)
+            for(int j=0;j<myBlock.ny+1;j++)
             {
-                for(int i=0;i<nx+1;i++)
+                for(int i=0;i<myBlock.nx+1;i++)
                 {
                     myFile>>x>>y>>z;
-                    xyz[0].setValue(i, j, k, x);
-                    xyz[1].setValue(i, j, k, y);
-                    xyz[2].setValue(i, j, k, z);
+                    myBlock.xyz[0].setValue(i, j, k, x);
+                    myBlock.xyz[1].setValue(i, j, k, y);
+                    myBlock.xyz[2].setValue(i, j, k, z);
                 }
             }
         }
+        
+        
     }
     else
     {
@@ -76,22 +94,24 @@ void nuc3d::singleBlock::initialBlock()
     }
     myFile.close();
     
+    
+//read flow data
     myFile.open(filename_flow);
     
     if (myFile)
     {
         myFile >> nx0 >> ny0 >> nz0;
-        if (nx0==nx&&ny0==ny&&nz0==nz)
+        if (nx0==myBlock.nx&&ny0==myBlock.ny&&nz0==myBlock.nz)
         {
             double value;
-            for (auto iter=(myPDE.getQ()).begin();
-                 iter!=(myPDE.getQ()).end(); iter++)
+            for (auto iter=(myBlock.myPDE.getQ()).begin();
+                 iter!=(myBlock.myPDE.getQ()).end(); iter++)
             {
-                for(int k=0;k<nz+1;k++)
+                for(int k=0;k<myBlock.nz+1;k++)
                 {
-                    for(int j=0;j<ny+1;j++)
+                    for(int j=0;j<myBlock.ny+1;j++)
                     {
-                        for(int i=0;i<nx+1;i++)
+                        for(int i=0;i<myBlock.nx+1;i++)
                         {
                             myFile>>value;
                             iter->setValue(i, j, k, value);
@@ -116,13 +136,21 @@ void nuc3d::singleBlock::initialBlock()
     myFile.close();
 }
 
-void nuc3d::singleBlock::initialPDE()
-{
-    myPhys.initial(myPDE,myFluxes);
-}
+/*==========================================================================
+ 
+ Block solve functions:
+    -solvePDE()
+        --solveRiemann()
+        --solve BoundaryConditions()
+        --solveInvicidFlux()
+        --solveViscousFlux()
+        --solveGetRHS()
+        --solveIntegral(nstep)
+ =========================================================================*/
 
 void nuc3d::singleBlock::solvePDE()
 {
+    initialPDE();
     while (myCtrler.ifsolve())
     {
         int nstep=0;
@@ -131,8 +159,8 @@ void nuc3d::singleBlock::solvePDE()
             solveRiemann();
             solveBoundaryConditions();
             solveInvicidFlux();
-            solveViscousFLux(myFluxesMap[myFluxName]);
-            solveGetRHS(myPDE);
+            solveViscousFLux();
+            solveGetRHS();
             solveIntegral(nstep);
             nstep++;
         }
@@ -148,14 +176,15 @@ void nuc3d::singleBlock::solvePDE()
     }
 }
 
-void nuc3d::singleBlock::output()
+void nuc3d::singleBlock::initialPDE()
 {
+    myPhys.initial(myBlock.myPDE,myBlock.myFluxes);
 }
 
 
 void nuc3d::singleBlock::solveRiemann()
 {
-    myPhys.solve(block::myPDE, myFluxes);
+    myPhys.solve(myBlock.myPDE,myBlock.myFluxes);
 }
 
 void nuc3d::singleBlock::solveBoundaryConditions()
@@ -165,15 +194,15 @@ void nuc3d::singleBlock::solveBoundaryConditions()
 
 void nuc3d::singleBlock::solveInvicidFlux()
 {
-	solveInvicidFluxL(myFluxes->getFluxXi(), mybuffer, 0);
-	solveInvicidFluxL(myFluxes->getFluxEta(), mybuffer, 1);
-	solveInvicidFluxL(myFluxes->getFluxZeta(), mybuffer, 2);
+	solveInvicidFluxL(myBlock.myFluxes->getFluxXi(), myBlock.mybuffer, 0);
+	solveInvicidFluxL(myBlock.myFluxes->getFluxEta(), myBlock.mybuffer, 1);
+	solveInvicidFluxL(myBlock.myFluxes->getFluxZeta(), myBlock.mybuffer, 2);
 
-	solveInvicidFluxR(myFluxes->getFluxXi(), mybuffer, 0);
-	solveInvicidFluxR(myFluxes->getFluxEta(), mybuffer, 1);
-	solveInvicidFluxR(myFluxes->getFluxZeta(), mybuffer, 2);
+	solveInvicidFluxR(myBlock.myFluxes->getFluxXi(), myBlock.mybuffer, 0);
+	solveInvicidFluxR(myBlock.myFluxes->getFluxEta(), myBlock.mybuffer, 1);
+	solveInvicidFluxR(myBlock.myFluxes->getFluxZeta(), myBlock.mybuffer, 2);
     
-    myFluxes->setDerivativesInv();
+    myBlock.myFluxes->setDerivativesInv();
 }
 
 void nuc3d::singleBlock::solveInvicidFluxL(EulerFlux &myFlux,std::vector<bufferData> &myBuff, int dir)
@@ -226,39 +255,28 @@ void nuc3d::singleBlock::solveInvicidFluxR(EulerFlux &myFlux, std::vector<buffer
 
 }
 
-void nuc3d::singleBlock::solveViscousFLux(EulerData3D &myEuler  )
+void nuc3d::singleBlock::solveViscousFLux()
 {
-    
-}
-
-void nuc3d::singleBlock::solveViscousFLux(EulerReactiveData3D &myEuler  )
-{
-    
-}
-
-
-void nuc3d::singleBlock::solveViscousFLux(NaiverStokesData3d &myEuler  )
-{
-    myEuler.du
-}
-
-
-void nuc3d::singleBlock::solveViscousFLux(NaiverStokesReactiveData3d &myEuler  )
-{
+    myBlock.myFluxes->solveVis(myOperator);
 }
 
 void nuc3d::singleBlock::solveGetRHS()
 {
-    myPDE.getRHS(*myFluxes);
+    myBlock.myPDE.getRHS(*myBlock.myFluxes);
 }
 
 void nuc3d::singleBlock::solveIntegral(int step)
 {
-	myOperator.timeIntegral(myPDE.getRHS(*myFluxes),
-                            myPDE.getQ(),
+	myOperator.timeIntegral(myBlock.myPDE.getRHS(*myBlock.myFluxes),
+                            myBlock.myPDE.getQ(),
                             myCtrler.getValue("dt"),
                             step);
 }
+
+void nuc3d::singleBlock::output()
+{
+}
+
 
 void nuc3d::singleBlock::readData(std::ifstream &myFile, VectorField &dataVec)
 {

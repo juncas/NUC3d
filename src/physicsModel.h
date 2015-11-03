@@ -15,9 +15,6 @@ namespace nuc3d
     class PDEData3d;
     class EulerFlux;
     class EulerData3D;
-    class EulerReactiveData3D;
-    class NaiverStokesData3d;
-    class NaiverStokesReactiveData3d;
     
     class physicsModel
     {
@@ -57,9 +54,12 @@ namespace nuc3d
         typedef void (physicsModel::*pVisMod)(const Field &T,
                                               Field &miu,
                                               Field &coeff,
-                                              double pt,
+                                              double Reynolds,
                                               double Mach,
-                                              double gamma);
+                                              double pt,
+                                              double gamma,
+                                              double T_ref,
+                                              double T_inf);
         
         int neqs;
         std::string myEoSName;
@@ -71,7 +71,6 @@ namespace nuc3d
         std::map<std::string, pEoSBWD> myEosBWDMap;
         std::map<std::string, pRiemann> myRiemannMap;
         std::map<std::string, pVisMod> myVisModelMap;
-        std::map<std::string, std::string> myModelMap;
         
         std::map<std::string, double> myModelParameters; //parameters for EoS
     public:
@@ -80,7 +79,11 @@ namespace nuc3d
         
         std::string getMyModelName(){return myModelName;};
         
-        void solve(PDEData3d &, std::shared_ptr<EulerData3D> );
+        void solve(PDEData3d &, EulerData3D *);
+        
+        void getMiu(Field &,
+                    Field &,
+                    Field &);
         
         int getEqNum(){return neqs;};
         
@@ -105,8 +108,7 @@ namespace nuc3d
                       const VectorField &,
                       VectorField &);
         
-        void RiemannAUSM(
-                         const Field &,
+        void RiemannAUSM(const Field &,
                          const VectorField &,
                          const VectorField &,
                          const VectorField &,
@@ -115,8 +117,7 @@ namespace nuc3d
                          VectorField &,
                          double &);
         
-        void RiemannLF(
-                       const Field &,
+        void RiemannLF(const Field &,
                        const VectorField &,
                        const VectorField &,
                        const VectorField &,
@@ -135,8 +136,7 @@ namespace nuc3d
                             double &,
                             double &);//input rho,e output p,T
         
-        void EoSIdealGasBWD(
-                            const double &rho,
+        void EoSIdealGasBWD(const double &rho,
                             const double &u,
                             const double &v,
                             const double &w,
@@ -157,8 +157,7 @@ namespace nuc3d
                        double &,
                        double &);//input rho,e output p,T
         
-        void EoSJWLBWD(
-                       const double &rho,
+        void EoSJWLBWD(const double &rho,
                        const double &u,
                        const double &v,
                        const double &w,
@@ -172,16 +171,22 @@ namespace nuc3d
         void sutherland(const Field &T,
                         Field &miu,
                         Field &coeff,
-                        double pt,
+                        double Reynolds,
                         double Mach,
-                        double gamma);
+                        double pt,
+                        double gamma,
+                        double T_ref,
+                        double T_inf);
         
         void constant(const Field &T,
                         Field &miu,
                         Field &coeff,
-                        double pt,
+                        double Reynolds,
                         double Mach,
-                        double gamma);
+                        double pt,
+                        double gamma,
+                        double T_ref,
+                        double T_inf);
         
         std::istream& readPhysFile(std::istream& ios);
         

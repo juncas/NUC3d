@@ -11,7 +11,7 @@ namespace nuc3d
 		int myProc;
 		int nProc;		
 	public:
-		MPICommunicator(int&,char **&);
+		MPICommunicator();
 		~MPICommunicator();
 	public:
 		int getMyId() const {return myProc;};

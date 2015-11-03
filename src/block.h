@@ -21,6 +21,7 @@ namespace nuc3d
     class block
     {
         friend class physicsModel;
+        friend class singleBlock;
     protected:
         int nx;
         int ny;
@@ -42,7 +43,7 @@ namespace nuc3d
         
         std::vector<bufferData> mybuffer;
 
-        
+    public:
         block();
         void initial(int,int,int,physicsModel &);
         ~block();

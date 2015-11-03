@@ -39,7 +39,7 @@ namespace nuc3d
 		int* recvTags;
 
 	public:
-		MPIComunicator3d_nonblocking(int&, char **&);
+		MPIComunicator3d_nonblocking();
 		~MPIComunicator3d_nonblocking();
 
 	public:

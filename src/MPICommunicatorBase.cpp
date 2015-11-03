@@ -7,16 +7,10 @@
 /**************************************************************************************
 						Definition of constructors and destructors
 **************************************************************************************/
-nuc3d::MPICommunicator::MPICommunicator(int& argc,char **& argv)
+nuc3d::MPICommunicator::MPICommunicator()
 {
-	if(MPI_Init( &argc, &argv ))
-  {
-  	std::cout<<"ERROR: MPI Initialization failed!"<<std::endl;
-  	MPI_Abort ( MPI_COMM_WORLD,99 );
-  }
-  	MPI_Comm_rank(MPI_COMM_WORLD, &myProc);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myProc);
   	MPI_Comm_size(MPI_COMM_WORLD, &nProc);
-
 }
 
 nuc3d::MPICommunicator::~MPICommunicator()
