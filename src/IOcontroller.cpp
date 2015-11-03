@@ -98,15 +98,26 @@ double nuc3d::IOController::getValue(std::string s)
 	{
 		return myTimeController[s];	
 	}
-	else if(myIOController.find(s)!=myIOController.end())
-	{
-		return myIOController[s];
-	}
 	else
 	{		
 		std::cout<<"ERROR:Parameter \'"<<s<<" you are requring does not exist!"<<std::endl;
 		exit(0);
 	}
+};
+
+
+
+int nuc3d::IOController::getStep(std::string s)
+{
+    if(myIOController.find(s)!=myIOController.end())
+    {
+        return myIOController[s];
+    }
+    else
+    {
+        std::cout<<"ERROR:Parameter \'"<<s<<" you are requring does not exist!"<<std::endl;
+        exit(0);
+    }
 };
 
 bool nuc3d::IOController::ifsolve()
@@ -134,10 +145,24 @@ bool nuc3d::IOController::ifsave()
         return false;
 }
 
-void nuc3d::IOController::increaseStep()
+void nuc3d::IOController::renewStep()
 {
     int istep=myIOController["currentStep"];
     myIOController["currentStep"]=++istep;
+}
+
+void nuc3d::IOController::renewTime()
+{
+    double currentTime=myIOController["currentTime"];
+    double dt=myIOController["dt"];
+    currentTime+=dt;
+    myIOController["currentStep"]=currentTime;
+}
+
+void nuc3d::IOController::renew()
+{
+    renewStep();
+    renewTime();
 }
 /**************************************************************************************
 								End of definition

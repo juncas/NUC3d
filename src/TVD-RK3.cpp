@@ -53,47 +53,121 @@ void nuc3d::tvdrk3rd::getRHS(
 }
 
 
-void nuc3d::tvdrk3rd::integrationAll(
-                                     const VectorField &RHS, // Right-hand-side: l*dt
-                                     const VectorField &Ui, // u(nstep)
-                                     const VectorField &U0, // u_n
-                                     int nstep, // n th step
-                                     VectorField &Uii) // output: u(nstep+1)
+void nuc3d::tvdrk3rd::integrationAll(const VectorField &RHS, // Right-hand-side: l*dt
+                                           VectorField &Q, // u(nstep)
+                                     double dt,
+                                     int nstep)
 {
-    int nx=RHS.begin()->getSizeX();
-    int ny=RHS.begin()->getSizeY();
-    int nz=RHS.begin()->getSizeZ();
-    
-    
-    if( (nx==(Uii.begin()->getSizeX()))&&
-        (ny==(Uii.begin()->getSizeY()))&&
-        (nz==(Uii.begin()->getSizeZ())) )
+    switch(nstep)
     {
-        for (auto iter=Uii.begin(); iter!=Uii.end(); ++iter)
-        {
-            for(int k=0;k<nz;++k)
-            {
-                for(int j=0;j<ny;++j)
-                {
-                    for(int i=0;i<nx;++i)
-                    {
-                        double l=-RHS[iter-Uii.begin()].getValue(i,j,k);
-                        double u_step=Ui[iter-Uii.begin()].getValue(i,j,k);
-                        double u_n0=U0[iter-Uii.begin()].getValue(i,j,k);
-                        
-                        
-                        double u_n = coeff_tvdrk3_alpha0[nstep][0]*u_n0
-                        +coeff_tvdrk3_alpha0[nstep][1]*(l+u_step);
-                        
-                        iter->setValue(i,j,k,u_n);
-                    }
-                }
-            }
-
-        }
-        
+        case 1:
+            rk1st(RHS,Q,dt);
+            break;
+        case 2:
+            rk2nd(RHS,Q,dt);
+            break;
+        case 3:
+            rk3rd(RHS,Q,dt);
+            break;
     }
     
+}
+
+void nuc3d::tvdrk3rd::rk1st(const VectorField &RHS,
+                                  VectorField &un,
+                                    double dt)
+{
+    int nx=u0.begin()->getSizeX();
+    int ny=u0.begin()->getSizeY();
+    int nz=u0.begin()->getSizeZ();
+    
+    
+    for (auto iter=ui[0].begin(); iter!=ui[0].end(); ++iter)
+    {
+        u0=un;
+        for(int k=0;k<nz;++k)
+        {
+            for(int j=0;j<ny;++j)
+            {
+                for(int i=0;i<nx;++i)
+                {
+                    double rhs=-RHS[iter-ui[0].begin()].getValue(i,j,k);
+                    double q=iter->getValue(i, j, k);
+                    
+                    double u1 = coeff_tvdrk3_alpha0[nstep][0]*q
+                    +coeff_tvdrk3_alpha0[nstep][1]*rhs*dt;
+                    
+                    iter->setValue(i,j,k,u1);
+                }
+            }
+        }
+        un=ui[0];
+    }
+}
+
+void nuc3d::tvdrk3rd::rk2nd(const VectorField &RHS,
+                            VectorField &un,
+                            double dt)
+{
+    int nx=u0.begin()->getSizeX();
+    int ny=u0.begin()->getSizeY();
+    int nz=u0.begin()->getSizeZ();
+    
+    
+    for (auto iter=ui[1].begin(); iter!=ui[1].end(); ++iter)
+    {
+        for(int k=0;k<nz;++k)
+        {
+            for(int j=0;j<ny;++j)
+            {
+                for(int i=0;i<nx;++i)
+                {
+                    double rhs=-RHS[iter-ui[1].begin()].getValue(i,j,k);
+                    double q0=u0[iter-ui[1].begin()].getValue(i, j, k);
+                    double q1=ui[0][iter-ui[1].begin()].getValue(i, j, k);
+                    
+                    double u1 = coeff_tvdrk3_alpha0[1][0]*q0
+                    +coeff_tvdrk3_alpha0[1][1]*(rhs*dt+q1);
+                    
+                    iter->setValue(i,j,k,u1);
+                }
+            }
+        }
+        un=ui[1];
+    }
+}
+
+void nuc3d::tvdrk3rd::rk3rd(const VectorField &RHS,
+                            VectorField &un,
+                            double dt)
+{
+    int nx=u0.begin()->getSizeX();
+    int ny=u0.begin()->getSizeY();
+    int nz=u0.begin()->getSizeZ();
+    
+    
+    for (auto iter=ui[2].begin(); iter!=ui[2].end(); ++iter)
+    {
+        for(int k=0;k<nz;++k)
+        {
+            for(int j=0;j<ny;++j)
+            {
+                for(int i=0;i<nx;++i)
+                {
+                    double rhs=-RHS[iter-ui[2].begin()].getValue(i,j,k);
+                    double q0=u0[iter-ui[2].begin()].getValue(i, j, k);
+                    double q2=ui[1][iter-ui[2].begin()].getValue(i, j, k);
+
+                    
+                    double q1 = coeff_tvdrk3_alpha0[2][0]*q0
+                    +coeff_tvdrk3_alpha0[2][1]*(rhs*dt+q2);
+                    
+                    iter->setValue(i,j,k,q1);
+                }
+            }
+        }
+        un=ui[0];
+    }
 }
 
 #endif

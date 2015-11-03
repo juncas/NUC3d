@@ -18,7 +18,7 @@ namespace nuc3d
     class EulerReactiveData3D;
     class NaiverStokesData3d;
     class NaiverStokesReactiveData3d;
-
+    
     class physicsModel
     {
         //rho rho*u rho*v rho*w E -> rho u v w p
@@ -54,16 +54,23 @@ namespace nuc3d
                                                VectorField &,
                                                double &);
         
-        typedef void (physicsModel::*pModel)();
+        typedef void (physicsModel::*pVisMod)(const Field &T,
+                                              Field &miu,
+                                              Field &coeff,
+                                              double pt,
+                                              double Mach,
+                                              double gamma);
         
         int neqs;
         std::string myEoSName;
         std::string myRiemannName;
         std::string myModelName;
+        std::string myVisModelName;
         
         std::map<std::string, pEoSFWD> myEosFWDMap;
         std::map<std::string, pEoSBWD> myEosBWDMap;
         std::map<std::string, pRiemann> myRiemannMap;
+        std::map<std::string, pVisMod> myVisModelMap;
         std::map<std::string, std::string> myModelMap;
         
         std::map<std::string, double> myModelParameters; //parameters for EoS
@@ -79,8 +86,6 @@ namespace nuc3d
         
         void initial(PDEData3d &,std::shared_ptr<EulerData3D> );
     private:
-        void Euler();
-        void NaiverStokes();
         void RiemannSolver(const std::string &,
                            const Field &,
                            const VectorField &,
@@ -163,6 +168,20 @@ namespace nuc3d
                        double & _rhov,
                        double & _rhow,
                        double & _E);
+        
+        void sutherland(const Field &T,
+                        Field &miu,
+                        Field &coeff,
+                        double pt,
+                        double Mach,
+                        double gamma);
+        
+        void constant(const Field &T,
+                        Field &miu,
+                        Field &coeff,
+                        double pt,
+                        double Mach,
+                        double gamma);
         
         std::istream& readPhysFile(std::istream& ios);
         

@@ -5,7 +5,9 @@
  Member functions of class: PDEData3d
  **************************************************************************************/
 nuc3d::PDEData3d::PDEData3d()
-{}
+{
+
+}
 
 nuc3d::PDEData3d::PDEData3d(int nx0,int ny0,int nz0,int neqs):
 nEquations(neqs),
@@ -150,6 +152,89 @@ nuc3d::VectorField& nuc3d::EulerData3D::getAcoustics()
 
 void nuc3d::EulerData3D::solveLocal()
 {
+}
+
+void nuc3d::EulerData3D::setDerivativesInv()
+{
+    Flux_xi.combineFluxLR();
+    Flux_eta.combineFluxLR();
+    Flux_zeta.combineFluxLR();
+    
+    setDerivativesXiInv();
+    setDerivativesEtaInv();
+    setDerivativesZetaInv();
+}
+
+void nuc3d::EulerData3D::setDerivativesXiInv()
+{
+    VectorField &flux=Flux_xi.reconstFlux;
+    for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
+    {
+        int nx0=iter->getSizeX();
+        int ny0=iter->getSizeY();
+        int nz0=iter->getSizeZ();
+        
+        for (int k=0; k<nz0; k++)
+        {
+            for (int j=0; j<ny0; j++)
+            {
+                for (int i=1; i<nx0; i++)
+                {
+                    double df=iter->getValue(i, j, k)-iter->getValue(i-1, j, k);
+                    
+                    dfdxi[iter-flux.begin()].setValue(i-1, j, k, df);
+                }
+            }
+        }
+    }
+}
+
+void nuc3d::EulerData3D::setDerivativesEtaInv()
+{
+    VectorField &flux=Flux_eta.reconstFlux;
+    for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
+    {
+        int nx0=iter->getSizeX();
+        int ny0=iter->getSizeY();
+        int nz0=iter->getSizeZ();
+        
+        for (int k=0; k<nz0; k++)
+        {
+            for (int j=1; j<ny0; j++)
+            {
+                for (int i=0; i<nx0; i++)
+                {
+                    double df=iter->getValue(i, j, k)-iter->getValue(i, j-1, k);
+                    
+                    dgdeta[iter-flux.begin()].setValue(i, j-1, k, df);
+                }
+            }
+        }
+    }
+}
+
+void nuc3d::EulerData3D::setDerivativesZetaInv()
+{
+    VectorField &flux=Flux_zeta.reconstFlux;
+    for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
+    {
+        int nx0=iter->getSizeX();
+        int ny0=iter->getSizeY();
+        int nz0=iter->getSizeZ();
+        
+        for (int k=1; k<nz0; k++)
+        {
+            for (int j=0; j<ny0; j++)
+            {
+                for (int i=0; i<nx0; i++)
+                {
+                    double df=iter->getValue(i, j, k)-iter->getValue(i, j, k-1);
+                    
+                    dfdxi[iter-flux.begin()].setValue(i, j, k-1, df);
+                }
+            }
+        }
+    }
 }
 
 nuc3d::EulerData3D::~EulerData3D()

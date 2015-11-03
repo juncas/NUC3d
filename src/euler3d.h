@@ -4,17 +4,21 @@
 #include <cstdlib>
 #include <iostream>
 #include "physicsModel.h"
+#include "fieldOperator.h"
+#include "MPICommunicator.h"
 
 namespace nuc3d
 {
     class meshGrid;
     class MeshBlock;
     class singleBlock;
+    class EulerData3D;
     
     class EulerFlux
     {
         friend class physicsModel;
         friend class singleBlock;
+        friend class EulerData3D;
         
         VectorField FluxL;
         VectorField FluxR;
@@ -54,7 +58,8 @@ namespace nuc3d
         VectorField dfdxi;
         VectorField dgdeta;
         VectorField dhdzeta;
-
+        
+        
         double dt;
     public:
         EulerData3D( int nx, int ny, int nz, int addEq);
@@ -70,10 +75,19 @@ namespace nuc3d
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
         
+        void setDerivativesInv();
+        
+        void setDerivativesXiInv();
+        void setDerivativesEtaInv();
+        void setDerivativesZetaInv();
+        
+        
+        virtual bool ifvis(){return false;};
         //used by Riemann solvers
         VectorField& getPrimatives();
         VectorField& getAcoustics();
-        
+        virtual void solve(fieldOperator3d &,bufferData &,physicsModel &);
+        virtual void solveInv(fieldOperator3d &,bufferData &);
         virtual void solveLocal();
     };
     
@@ -93,7 +107,13 @@ namespace nuc3d
         virtual VectorField& getDrivativeXi();
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
+        virtual void solve(fieldOperator3d &,bufferData &);
+        virtual void solveInv(fieldOperator3d &,bufferData &);
+        virtual void solveSource();
+        
         virtual void solveLocal();
+        
+        virtual bool ifvis(){return false;};
     protected:
         void setSource();
     };
@@ -102,7 +122,7 @@ namespace nuc3d
     {
         friend class physicsModel;
         
-    protected:
+    public:
         VectorField du;
         VectorField dv;
         VectorField dw;
@@ -131,6 +151,9 @@ namespace nuc3d
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
         virtual void solveLocal();
+        virtual void solve(fieldOperator3d &,bufferData &);
+        virtual void solveInv(fieldOperator3d &,bufferData &);
+        virtual void solveVis(fieldOperator3d &,bufferData &);
         
     protected:
         void setViscousFluxes();
@@ -146,6 +169,10 @@ namespace nuc3d
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
         virtual void solveLocal();
+        virtual void solve(fieldOperator3d &,bufferData &);
+        virtual void solveInv(fieldOperator3d &,bufferData &);
+        virtual void solveVis(fieldOperator3d &,bufferData &);
+        virtual void solveSource();
     };
     
     class PDEData3d
@@ -176,15 +203,16 @@ namespace nuc3d
         
         
         void initPDEData3d(int,int,int,int);
-
+        
         VectorField& getRHS(EulerData3D &);
         VectorField& getQ();
+        virtual void solveInv(fieldOperator3d &op);
         
     protected:
         void setDrivatives(EulerData3D &);
         void setRHS(EulerData3D &);
     };
-
+    
 }
 
 #endif

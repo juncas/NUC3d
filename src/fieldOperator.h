@@ -46,19 +46,11 @@ namespace nuc3d
         int nstep;
         
     private:
-        virtual void getRHS(
-                            const VectorField &, // dfdx
-                            const VectorField &, // dgdy
-                            const VectorField &, // dhdz
-                            const double, // dt
-                            VectorField &) = 0;// Right-hand-side
         
-        virtual void integrationAll(
-                                    const VectorField &, // Right-hand-side: l*dt
-                                    const VectorField &, // u(nstep)
-                                    const VectorField &, // u_n
-                                    int , // n th step
-                                    VectorField &) = 0; // output
+        virtual void integrationAll(const VectorField &, // Right-hand-side: l*dt
+                            VectorField &, // u_n
+                            double,
+                            int); // step n
     public:
         virtual void initial(const VectorField &);
         integration();
@@ -132,11 +124,9 @@ namespace nuc3d
                                 Field &);
         
         
-        void timeIntegral ( const VectorField&, // u0
-                           const VectorField&, // un
+        void timeIntegral (      VectorField&, // un
                            const VectorField&, // rhs
                            double,
-                           VectorField &,
                            int);
     private:
         std::istream& readIOFile(

@@ -26,24 +26,32 @@ namespace nuc3d
         
         void initialBlock();
         
-        void initial();
+        void initialPDE();
         
-        void solve();
+        void solvePDE();
         
         void output();
         
-    private:
+	private:
+
+		void solveInvicidFluxL(EulerFlux &, std::vector<bufferData> &, int);
+
+		void solveInvicidFluxR(EulerFlux &, std::vector<bufferData> &, int);
+
         void solveRiemann();
         
         void solveBoundaryConditions();
         
         void solveInvicidFlux();
         
-        void solveViscousFLux();
+        void solveViscousFLux(EulerData3D &myEuler);
+        void solveViscousFLux(EulerReactiveData3D &myEuler);
+        void solveViscousFLux(NaiverStokesData3d &myEuler);
+        void solveViscousFLux(NaiverStokesReactiveData3d &myEule);
         
         void solveGetRHS();
         
-        void solveIntegral();
+        void solveIntegral(int step);
         
         void printRES();
     

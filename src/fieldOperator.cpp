@@ -295,14 +295,12 @@ void nuc3d::fieldOperator3d::differenceBoundary(
 }
 
 
-void nuc3d::fieldOperator3d::timeIntegral (const VectorField& u0, // u0
-                                           const VectorField& un, // un
+void nuc3d::fieldOperator3d::timeIntegral (VectorField& un, // un
                                            const VectorField& rhs, // rhs
                                            double dt,
-                                           VectorField &fieldOUT,
                                            int step)
 {
-    myIntegrators->integrationAll(rhs,u0,un,step,fieldOUT);
+    myIntegrators->integrationAll(rhs,un,dt,step);
 }
 
 int nuc3d::fieldOperator3d::getBufferSize()

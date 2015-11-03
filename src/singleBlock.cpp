@@ -116,12 +116,12 @@ void nuc3d::singleBlock::initialBlock()
     myFile.close();
 }
 
-void nuc3d::singleBlock::initial()
+void nuc3d::singleBlock::initialPDE()
 {
     myPhys.initial(myPDE,myFluxes);
 }
 
-void nuc3d::singleBlock::solve()
+void nuc3d::singleBlock::solvePDE()
 {
     while (myCtrler.ifsolve())
     {
@@ -131,9 +131,10 @@ void nuc3d::singleBlock::solve()
             solveRiemann();
             solveBoundaryConditions();
             solveInvicidFlux();
-            solveViscousFLux();
-            solveGetRHS();
-            solveIntegral();
+            solveViscousFLux(myFluxesMap[myFluxName]);
+            solveGetRHS(myPDE);
+            solveIntegral(nstep);
+            nstep++;
         }
         
         printRES();
@@ -143,8 +144,12 @@ void nuc3d::singleBlock::solve()
             output();
         }
 
-        myCtrler.increaseStep();
+        myCtrler.renew();
     }
+}
+
+void nuc3d::singleBlock::output()
+{
 }
 
 
@@ -160,46 +165,99 @@ void nuc3d::singleBlock::solveBoundaryConditions()
 
 void nuc3d::singleBlock::solveInvicidFlux()
 {
-    VectorField &pFlux =myFluxes->getFluxXi().FluxL;
-    VectorField &pReconFlux=myFluxes->getFluxXi().reconstFluxL;
+	solveInvicidFluxL(myFluxes->getFluxXi(), mybuffer, 0);
+	solveInvicidFluxL(myFluxes->getFluxEta(), mybuffer, 1);
+	solveInvicidFluxL(myFluxes->getFluxZeta(), mybuffer, 2);
+
+	solveInvicidFluxR(myFluxes->getFluxXi(), mybuffer, 0);
+	solveInvicidFluxR(myFluxes->getFluxEta(), mybuffer, 1);
+	solveInvicidFluxR(myFluxes->getFluxZeta(), mybuffer, 2);
     
-    for (auto iter=pFlux.begin(); iter!=pFlux.end(); iter++)
-    {
-        Field &rf = pReconFlux[iter-pFlux.begin()];
-        
-        bufferData &bf=mybuffer[iter-pFlux.begin()];
-        
-        bf.setBufferSend(*iter);
-        
-        myComm.bufferSendRecv(bf, 0);
-        
-        myOperator.reconstructionInner(iter, 0, 1, rf);
-        
-        myOperator.reconstructionBoundary(iter, bf.BufferRecv[0], bf.BufferRecv[1], 0, 1, rf);
-    }
-    
-    
+    myFluxes->setDerivativesInv();
+}
+
+void nuc3d::singleBlock::solveInvicidFluxL(EulerFlux &myFlux,std::vector<bufferData> &myBuff, int dir)
+{
+	VectorField &pFlux = myFlux.FluxL;
+	VectorField &pReconFlux = myFlux.reconstFluxL;
+
+	for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
+	{
+		Field &rf = pReconFlux[iter - pFlux.begin()];
+		bufferData &bf = myBuff[iter - pFlux.begin()];
+
+		bf.setBufferSend(*iter);
+
+		myComm.bufferSendRecv(bf, 0);
+
+		myOperator.reconstructionInner(*iter, 0, 1, rf);
+
+		myComm.waitAllSendRecv(bf);
+
+		myOperator.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir+1], dir, 1, rf);
+	
+		MPI_Barrier();
+	}
     
 }
 
-void nuc3d::singleBlock::solveInvicidFluxL(EulerFlux &myFlux)
+void nuc3d::singleBlock::solveInvicidFluxR(EulerFlux &myFlux, std::vector<bufferData> &myBuff, int dir)
+{
+	VectorField &pFlux = myFlux.FluxR;
+	VectorField &pReconFlux = myFlux.reconstFluxR;
+
+	for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
+	{
+		Field &rf = pReconFlux[iter - pFlux.begin()];
+		bufferData &bf = myBuff[iter - pFlux.begin()];
+
+		bf.setBufferSend(*iter);
+
+		myComm.bufferSendRecv(bf, 0);
+
+		myOperator.reconstructionInner(*iter, 0, 1, rf);
+
+		myComm.waitAllSendRecv(bf);
+
+		myOperator.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir + 1], dir, -1, rf);
+
+		MPI_Barrier();
+	}
+
+}
+
+void nuc3d::singleBlock::solveViscousFLux(EulerData3D &myEuler  )
 {
     
 }
 
-void nuc3d::singleBlock::solveViscousFLux()
+void nuc3d::singleBlock::solveViscousFLux(EulerReactiveData3D &myEuler  )
 {
     
+}
+
+
+void nuc3d::singleBlock::solveViscousFLux(NaiverStokesData3d &myEuler  )
+{
+    myEuler.du
+}
+
+
+void nuc3d::singleBlock::solveViscousFLux(NaiverStokesReactiveData3d &myEuler  )
+{
 }
 
 void nuc3d::singleBlock::solveGetRHS()
 {
-    
+    myPDE.getRHS(*myFluxes);
 }
 
-void nuc3d::singleBlock::solveIntegral()
+void nuc3d::singleBlock::solveIntegral(int step)
 {
-    
+	myOperator.timeIntegral(myPDE.getRHS(*myFluxes),
+                            myPDE.getQ(),
+                            myCtrler.getValue("dt"),
+                            step);
 }
 
 void nuc3d::singleBlock::readData(std::ifstream &myFile, VectorField &dataVec)

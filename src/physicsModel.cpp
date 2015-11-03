@@ -30,15 +30,28 @@ myRiemannMap(
              ),
 myModelMap(
 {
-    {"Euler","Euler3d"},
-    {"Euler-Reactive","EulerReactive3d"},
-    {"NS","NaiverStokes3d"},
-    {"NS-Reactive","NaiverStokesReactive3d"},
+    {"Euler",EulerData3D*},
+    {"Euler-Reactive",EulerReactiveData3D*},
+    {"NS",NaiverStokesData3d*},
+    {"NS-Reactive",NaiverStokesReactiveData3d*},
 }
            ),
+myVisModelMap(
+{
+    {"Sutherland",&nuc3d::physicsModel::sutherland},
+    {"constant",&nuc3d::physicsModel::constant}
+}
+              ),
 myModelParameters(
-{ {"Reynolds",1000},{"Mach",0.5},{"Pt",0.72},{"Gamma",1.4} }
-)
+{
+    {"Reynolds",1000},
+    {"Mach",0.5},
+    {"Pt",0.72},
+    {"Gamma",1.4},
+    {"T_ref",110.4},
+    {"T_inf",288.0}
+}
+                  )
 {
     std::string str;
     std::ifstream file("PhysModel.in");
@@ -49,6 +62,7 @@ myModelParameters(
         file >> str >> myEoSName;
         file >> str >> myRiemannName;
         file >> str >> myModelName;
+        file >> str >> myVisModelName;
         
         if(neqs<5)
         {
@@ -77,6 +91,14 @@ myModelParameters(
             std::cout<<"Model name "<<myEoSName<<" does not exist ,using default!"
             << std::endl;
             myEoSName="Euler3d";
+            
+        }
+        
+        if(myVisModelMap.find(myVisModelName)==myVisModelMap.end())
+        {
+            std::cout<<"Model name "<<myVisModelName<<" does not exist ,using default!"
+            << std::endl;
+            myVisModelName="Sutherland";
             
         }
         
@@ -154,9 +176,9 @@ void  nuc3d::physicsModel::solve(PDEData3d &myPDE,std::shared_ptr<EulerData3D> m
 void nuc3d::physicsModel::initial(PDEData3d &myPDE,std::shared_ptr<EulerData3D> myEuler)
 {
     prim2con(myEoSName,
-              myEuler->jacobian,
-              myEuler->W_Euler,
-              myPDE.getQ());
+             myEuler->jacobian,
+             myEuler->W_Euler,
+             myPDE.getQ());
 }
 
 
