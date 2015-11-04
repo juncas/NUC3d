@@ -48,9 +48,10 @@ namespace nuc3d
     private:
         
         virtual void integrationAll(const VectorField &, // Right-hand-side: l*dt
-                            VectorField &, // u_n
-                            double,
-                            int); // step n
+                                    const VectorField &, // u_n
+                                    VectorField &, // u_i
+                                    double,
+                                    int); // step n
     public:
         virtual void initial(const VectorField &);
         integration();
@@ -124,8 +125,9 @@ namespace nuc3d
                                 Field &);
         
         
-        void timeIntegral (      VectorField&, // un
-                           const VectorField&, // rhs
+        void timeIntegral (const VectorField&, // rhs
+                           const VectorField&, // u_n
+                           VectorField &, //u_i
                            double,
                            int);
     private:

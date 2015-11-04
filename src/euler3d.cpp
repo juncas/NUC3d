@@ -1,7 +1,9 @@
 #ifndef euler3d_cpp
 #define euler3d_cpp
+#include <cmath>
 #include "euler3d.h"
 #include "physicsModel.h"
+#include "PDEData3d.hpp"
 
 /**************************************************************************************
  Member functions of class: EulerFlux
@@ -13,7 +15,7 @@ FluxR(neqs,Field(nx0,ny0,nz0)),
 reconstFluxL(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
 reconstFluxR(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
 reconstFlux(neqs,Field(nx0,ny0,nz0)),
-maxEigen(0.0)
+maxEigen(1.0)
 {
     
 }
@@ -230,7 +232,7 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         myMPI.bufferSendRecv(bf, 0);
         
-        myOP.reconstructionInner(*iter, 0, 1, rf);
+        myOP.reconstructionInner(*iter, dir, 1, rf);
         
         myMPI.waitAllSendRecv(bf);
         
@@ -260,7 +262,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         
         myMPI.bufferSendRecv(bf, 0);
         
-        myOP.reconstructionInner(*iter, 0, 1, rf);
+        myOP.reconstructionInner(*iter, dir, -1, rf);
         
         myMPI.waitAllSendRecv(bf);
         
@@ -302,6 +304,18 @@ void nuc3d::EulerData3D::solveRHS(PDEData3d &myPDE)
             }
         }
     }
+    
+    getDt();
+    myPDE.setDt(dt);
+}
+
+void nuc3d::EulerData3D::getDt()
+{
+    double dt_xi=1.0/Flux_xi.maxEigen;
+    double dt_eta=1.0/Flux_eta.maxEigen;
+    double dt_zeta=1.0/Flux_zeta.maxEigen;
+    
+    dt=std::min(std::min(dt_xi, dt_eta),dt_zeta);
 }
 
 #endif

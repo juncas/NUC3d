@@ -78,7 +78,6 @@
 		E38692CF1BE8FA1E001FB4EA /* NaiverStokes3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NaiverStokes3d.h; path = src/NaiverStokes3d.h; sourceTree = SOURCE_ROOT; };
 		E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NaiverStokesReactive3d.cpp; path = src/NaiverStokesReactive3d.cpp; sourceTree = SOURCE_ROOT; };
 		E38692D21BE8FAF5001FB4EA /* NaiverStokesReactive3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NaiverStokesReactive3d.h; path = src/NaiverStokesReactive3d.h; sourceTree = SOURCE_ROOT; };
-		E3A7AF441BEA035F00385249 /* PhysModel.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PhysModel.H; path = src/PhysModel.H; sourceTree = SOURCE_ROOT; };
 		E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PDEData3d.cpp; path = src/PDEData3d.cpp; sourceTree = SOURCE_ROOT; };
 		E3A7AF461BEA1C2300385249 /* PDEData3d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PDEData3d.hpp; path = src/PDEData3d.hpp; sourceTree = SOURCE_ROOT; };
 		E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
@@ -173,7 +172,6 @@
 				E38692CF1BE8FA1E001FB4EA /* NaiverStokes3d.h */,
 				E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp */,
 				E38692D21BE8FAF5001FB4EA /* NaiverStokesReactive3d.h */,
-				E3A7AF441BEA035F00385249 /* PhysModel.H */,
 				E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */,
 				E3A7AF461BEA1C2300385249 /* PDEData3d.hpp */,
 			);

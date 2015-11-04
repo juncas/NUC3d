@@ -2,6 +2,7 @@
 #define physicsModel_cpp
 #include "physicsModel.h"
 #include "euler3d.h"
+#include "PDEData3d.hpp"
 
 /**************************************************************************************
  Definition of class communicator: base class for communicators

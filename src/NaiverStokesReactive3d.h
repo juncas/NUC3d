@@ -13,23 +13,23 @@
 
 namespace nuc3d
 {
-class NaiverStokesReactiveData3d : public EulerReactiveData3D, public NaiverStokesData3d
-{
-public:
-    NaiverStokesReactiveData3d(int,int,int,int);
-    ~NaiverStokesReactiveData3d();
-    
-    virtual VectorField& getDrivativeXi();
-    virtual VectorField& getDrivativeEta();
-    virtual VectorField& getDrivativeZeta();
-    
-    virtual void solve(PDEData3d &,
-                       fieldOperator3d &,
-                       bufferData &,
-                       physicsModel &,
-                       MPIComunicator3d_nonblocking &);
-private:
-    virtual void solveRHS(PDEData3d &);
-};
+    class NaiverStokesReactiveData3d : public EulerReactiveData3D, public NaiverStokesData3d
+    {
+    public:
+        NaiverStokesReactiveData3d(int,int,int,int);
+        ~NaiverStokesReactiveData3d();
+        
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        
+        virtual void solve(PDEData3d &,
+                           fieldOperator3d &,
+                           bufferData &,
+                           physicsModel &,
+                           MPIComunicator3d_nonblocking &);
+    private:
+        virtual void solveRHS(PDEData3d &);
+    };
 }
 #endif /* NaiverStokesReactive3d_hpp */

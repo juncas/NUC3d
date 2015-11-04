@@ -9,8 +9,8 @@
 #ifndef PDEData3d_hpp
 #define PDEData3d_hpp
 #include <stdio.h>
-
 #include "fieldOperator.h"
+
 namespace nuc3d
 {
     class EulerData3D;
@@ -42,6 +42,11 @@ namespace nuc3d
         
         VectorField RHS;
         
+        double dt_local;
+        double dt_global;
+        double res_local;
+        double res_global;
+        
     public:
         PDEData3d();
         PDEData3d(int,int,int,int);
@@ -52,12 +57,12 @@ namespace nuc3d
         
         VectorField& getRHS();
         VectorField& getQ();
+        void setDt(double);
         
         void solve(fieldOperator3d &,
                    int);
         
-        void printRES();
-        
+        void setRES();
     };
 }
 

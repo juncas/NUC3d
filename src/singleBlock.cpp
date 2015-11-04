@@ -6,7 +6,6 @@
 //  Copyright © 2015年 Jun Peng. All rights reserved.
 //
 #include "singleBlock.h"
-#include "mpi.h"
 
 nuc3d::singleBlock::singleBlock():
 myBlock(),
@@ -190,87 +189,6 @@ void nuc3d::singleBlock::solveRiemann()
 void nuc3d::singleBlock::solveBoundaryConditions()
 {
     
-}
-
-void nuc3d::singleBlock::solveInvicidFlux()
-{
-	solveInvicidFluxL(myBlock.myFluxes->getFluxXi(), myBlock.mybuffer, 0);
-	solveInvicidFluxL(myBlock.myFluxes->getFluxEta(), myBlock.mybuffer, 1);
-	solveInvicidFluxL(myBlock.myFluxes->getFluxZeta(), myBlock.mybuffer, 2);
-
-	solveInvicidFluxR(myBlock.myFluxes->getFluxXi(), myBlock.mybuffer, 0);
-	solveInvicidFluxR(myBlock.myFluxes->getFluxEta(), myBlock.mybuffer, 1);
-	solveInvicidFluxR(myBlock.myFluxes->getFluxZeta(), myBlock.mybuffer, 2);
-    
-    myBlock.myFluxes->setDerivativesInv();
-}
-
-void nuc3d::singleBlock::solveInvicidFluxL(EulerFlux &myFlux,std::vector<bufferData> &myBuff, int dir)
-{
-	VectorField &pFlux = myFlux.FluxL;
-	VectorField &pReconFlux = myFlux.reconstFluxL;
-
-	for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
-	{
-		Field &rf = pReconFlux[iter - pFlux.begin()];
-		bufferData &bf = myBuff[iter - pFlux.begin()];
-
-		bf.setBufferSend(*iter);
-
-		myComm.bufferSendRecv(bf, 0);
-
-		myOperator.reconstructionInner(*iter, 0, 1, rf);
-
-		myComm.waitAllSendRecv(bf);
-
-		myOperator.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir+1], dir, 1, rf);
-	
-		MPI_Barrier();
-	}
-    
-}
-
-void nuc3d::singleBlock::solveInvicidFluxR(EulerFlux &myFlux, std::vector<bufferData> &myBuff, int dir)
-{
-	VectorField &pFlux = myFlux.FluxR;
-	VectorField &pReconFlux = myFlux.reconstFluxR;
-
-	for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
-	{
-		Field &rf = pReconFlux[iter - pFlux.begin()];
-		bufferData &bf = myBuff[iter - pFlux.begin()];
-
-		bf.setBufferSend(*iter);
-
-		myComm.bufferSendRecv(bf, 0);
-
-		myOperator.reconstructionInner(*iter, 0, 1, rf);
-
-		myComm.waitAllSendRecv(bf);
-
-		myOperator.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir + 1], dir, -1, rf);
-
-		MPI_Barrier();
-	}
-
-}
-
-void nuc3d::singleBlock::solveViscousFLux()
-{
-    myBlock.myFluxes->solveVis(myOperator);
-}
-
-void nuc3d::singleBlock::solveGetRHS()
-{
-    myBlock.myPDE.getRHS(*myBlock.myFluxes);
-}
-
-void nuc3d::singleBlock::solveIntegral(int step)
-{
-	myOperator.timeIntegral(myBlock.myPDE.getRHS(*myBlock.myFluxes),
-                            myBlock.myPDE.getQ(),
-                            myCtrler.getValue("dt"),
-                            step);
 }
 
 void nuc3d::singleBlock::output()

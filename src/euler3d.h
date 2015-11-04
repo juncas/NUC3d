@@ -109,7 +109,9 @@ namespace nuc3d
         void setDerivativesXiInv();
         void setDerivativesEtaInv();
         void setDerivativesZetaInv();
+        
+        void getDt();
     };
-    }
+}
 
 #endif

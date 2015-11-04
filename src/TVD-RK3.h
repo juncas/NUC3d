@@ -11,28 +11,27 @@ namespace nuc3d
             {1.0/3.0,2.0/3.0}
         };
         
-        VectorField u0;
-        std::vector<VectorField> ui;
     public:
         tvdrk3rd();
         ~tvdrk3rd();
         //TVD-RK 3rd order scheme functions
-        
-        void initial(const VectorField &);
-        
         void integrationAll(const VectorField &, // Right-hand-side: l*dt
-                            VectorField &, // u_n
+                            const VectorField &, // u_n
+                            VectorField &, //u_i
                             double,
                             int); // step n
     private:
         
         void rk1st(const VectorField &,
+                   const VectorField &, // u_n
                    VectorField &,
                    double );
         void rk2nd(const VectorField &,
+                   const VectorField &, // u_n
                    VectorField &,
                    double );
         void rk3rd(const VectorField &,
+                   const VectorField &, // u_n
                    VectorField &,
                    double );
     };

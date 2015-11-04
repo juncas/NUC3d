@@ -7,11 +7,19 @@
 //
 #ifndef singleBlock_hpp
 #define singleBlock_hpp
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <fstream>
 #include "block.h"
+#include "physicsModel.h"
+#include "IOcontroller.h"
+#include "fieldOperator.h"
+#include "MPICommunicator.h"
 
 namespace nuc3d
 {
-    
     class singleBlock
     {
         MPIComunicator3d_nonblocking myComm;

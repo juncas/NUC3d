@@ -7,6 +7,7 @@
 //
 
 #include "PDEData3d.hpp"
+#include "mpi.h"
 /**************************************************************************************
  Member functions of class: PDEData3d
  **************************************************************************************/
@@ -40,7 +41,50 @@ nuc3d::VectorField& nuc3d::PDEData3d::getRHS()
 
 nuc3d::VectorField& nuc3d::PDEData3d::getQ()
 {
-    return Q_Euler;
+    return Q_work;
+}
+
+void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,
+                             int step)
+{
+    if(step==1)
+    {
+        Q_Euler=Q_work;
+        
+        MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+    }
+    myOP.timeIntegral(RHS, Q_Euler,Q_work, dt_global, step);
+}
+
+void  nuc3d::PDEData3d::setRES()
+{
+    auto beg=Q_Euler.begin();
+    auto end=Q_Euler.end();
+    
+    int nx=beg->getSizeX();
+    int ny=beg->getSizeY();
+    int nz=beg->getSizeZ();
+    
+    res_local=0.0;
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        for(int k=0;k<nz;++k)
+        {
+            for(int j=0;j<ny;++j)
+            {
+                for(int i=0;i<nx;++i)
+                {
+                    double u=Q_work[iter-beg].getValue(i, j, k);
+                    double u0=iter->getValue(i, j, k);
+                    res_local+=std::pow(u-u0,2);
+                }
+            }
+        }
+    }
+    
+    res_local=std::sqrt(res_local/(nx*ny*nz*Q_work.size()));
+    
+    MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 }
 
 nuc3d::PDEData3d::~PDEData3d()
