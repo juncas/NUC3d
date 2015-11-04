@@ -1,6 +1,7 @@
 #ifndef physicsModel_cpp
 #define physicsModel_cpp
 #include "physicsModel.h"
+#include "euler3d.h"
 
 /**************************************************************************************
  Definition of class communicator: base class for communicators
@@ -125,7 +126,7 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
     
 }
 
-void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D  *myEuler)
+void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
 {
     con2prim(myEoSName,
              myEuler->jacobian,

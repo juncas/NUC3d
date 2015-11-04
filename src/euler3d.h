@@ -1,9 +1,6 @@
 #ifndef Euler3d_h
 #define Euler3d_h
-
 #include <cstdlib>
-#include <iostream>
-#include "physicsModel.h"
 #include "fieldOperator.h"
 #include "MPICommunicator.h"
 
@@ -12,6 +9,7 @@ namespace nuc3d
     class EulerData3D;
     class EulerFlux;
     class PDEData3d;
+    class physicsModel;
     
     class EulerFlux
     {
@@ -73,72 +71,45 @@ namespace nuc3d
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
         
-        void setDerivativesInv();
-        
-        void setDerivativesXiInv();
-        void setDerivativesEtaInv();
-        void setDerivativesZetaInv();
-        
         //used by Riemann solvers
         VectorField& getPrimatives();
         VectorField& getAcoustics();
         
+        
+        
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
-                           bufferData &,
-                           physicsModel &);
+                           std::vector<bufferData> &,
+                           physicsModel &,
+                           MPIComunicator3d_nonblocking &);
     protected:
         void solveRiemann(PDEData3d &,
                           physicsModel &);
         
         void solveInv(fieldOperator3d &,
-                      bufferData &);
-        
-        virtual void solveVis(fieldOperator3d &,
-                              physicsModel &,
-                              bufferData &);
+                      std::vector<bufferData> &,
+                      MPIComunicator3d_nonblocking &);
     private:
-        virtual void solveLocal();
+        virtual void solveRHS(PDEData3d &);
+        
+        void solveInvicidFluxL(EulerFlux &,
+                               fieldOperator3d &myOP,
+                               std::vector<bufferData> &,
+                               MPIComunicator3d_nonblocking &,
+                               int );
+        
+        void solveInvicidFluxR(EulerFlux &,
+                               fieldOperator3d &myOP,
+                               std::vector<bufferData> &,
+                               MPIComunicator3d_nonblocking &,
+                               int );
+        
+        void setDerivativesInv();
+        
+        void setDerivativesXiInv();
+        void setDerivativesEtaInv();
+        void setDerivativesZetaInv();
     };
-    
-    class PDEData3d
-    {
-        int nEquations;
-        
-        //a PDE is consist of such four vectors
-        // other vectors are intermediate data
-        /*
-         dQ   df     dg     dh
-         -- + ---- + ---- + ----- = source
-         dt   dxi    deta   dzeta
-         */
-        
-        //current vector
-        VectorField Q_Euler;
-        
-        VectorField dfdxi;
-        VectorField dgdeta;
-        VectorField dhdzeta;
-        
-        VectorField RHS;
-        
-    public:
-        PDEData3d();
-        PDEData3d(int,int,int,int);
-        ~PDEData3d();
-        
-        
-        void initPDEData3d(int,int,int,int);
-        
-        VectorField& getRHS(EulerData3D &);
-        VectorField& getQ();
-        virtual void solveInv(fieldOperator3d &op);
-        
-    protected:
-        void setDrivatives(EulerData3D &);
-        void setRHS(EulerData3D &);
-    };
-    
-}
+    }
 
 #endif

@@ -13,44 +13,55 @@
 
 namespace nuc3d
 {
-class NaiverStokesData3d : virtual public EulerData3D
-{
-    friend class physicsModel;
-public:
-    VectorField du;
-    VectorField dv;
-    VectorField dw;
-    VectorField dT;
-    Field miu;
-    Field coeff;
-    
-    //viscous stresses
-    VectorField tau;
-    
-    //viscous fluxes
-    VectorField Flux_xi_vis;
-    VectorField Flux_eta_vis;
-    VectorField Flux_zeta_vis;
-    
-    //viscous derivatives
-    VectorField dfvdxi;
-    VectorField dgvdeta;
-    VectorField dhvdzeta;
-public:
-    NaiverStokesData3d(int,int,int,int);
-    ~NaiverStokesData3d();
-    
-public:
-    virtual VectorField& getDrivativeXi();
-    virtual VectorField& getDrivativeEta();
-    virtual VectorField& getDrivativeZeta();
-    virtual void solveLocal();
-    virtual void solve(fieldOperator3d &,bufferData &);
-    virtual void solveInv(fieldOperator3d &,bufferData &);
-    virtual void solveVis(fieldOperator3d &,bufferData &);
-    
-protected:
-    void setViscousFluxes();
-};
+    class NaiverStokesData3d : virtual public EulerData3D
+    {
+        friend class physicsModel;
+    public:
+        VectorField du;
+        VectorField dv;
+        VectorField dw;
+        VectorField dT;
+        Field miu;
+        Field coeff;
+        
+        //viscous stresses
+        VectorField tau;
+        
+        //viscous fluxes
+        VectorField Flux_xi_vis;
+        VectorField Flux_eta_vis;
+        VectorField Flux_zeta_vis;
+        
+        //viscous derivatives
+        VectorField dfvdxi;
+        VectorField dgvdeta;
+        VectorField dhvdzeta;
+    public:
+        NaiverStokesData3d(int,int,int,int);
+        ~NaiverStokesData3d();
+        
+    public:
+        virtual VectorField& getDrivativeXi();
+        virtual VectorField& getDrivativeEta();
+        virtual VectorField& getDrivativeZeta();
+        virtual void solveLocal();
+        
+        virtual void solve(PDEData3d &,
+                           fieldOperator3d &,
+                           bufferData &,
+                           physicsModel &,
+                           MPIComunicator3d_nonblocking &);
+        
+    protected:
+        
+        void solveVis(fieldOperator3d &,
+                      physicsModel &,
+                      bufferData &,
+                      MPIComunicator3d_nonblocking &);
+        void setViscousFluxes();
+    private:
+        virtual void solveRHS(PDEData3d &);
+        
+    };
 }
 #endif /* NaiverStokesData3d_hpp */

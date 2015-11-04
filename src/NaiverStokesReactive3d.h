@@ -22,11 +22,14 @@ public:
     virtual VectorField& getDrivativeXi();
     virtual VectorField& getDrivativeEta();
     virtual VectorField& getDrivativeZeta();
-    virtual void solveLocal();
-    virtual void solve(fieldOperator3d &,bufferData &);
-    virtual void solveInv(fieldOperator3d &,bufferData &);
-    virtual void solveVis(fieldOperator3d &,bufferData &);
-    virtual void solveSource();
+    
+    virtual void solve(PDEData3d &,
+                       fieldOperator3d &,
+                       bufferData &,
+                       physicsModel &,
+                       MPIComunicator3d_nonblocking &);
+private:
+    virtual void solveRHS(PDEData3d &);
 };
 }
 #endif /* NaiverStokesReactive3d_hpp */

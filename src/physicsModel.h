@@ -8,13 +8,12 @@
 #include <map>
 #include <cmath>
 #include "field.h"
-#include "euler3d.h"
 
 namespace nuc3d
 {
-    class PDEData3d;
-    class EulerFlux;
     class EulerData3D;
+    class EulerFlux;
+    class PDEData3d;
     
     class physicsModel
     {

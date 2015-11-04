@@ -28,14 +28,19 @@ namespace nuc3d
         virtual VectorField& getDrivativeXi();
         virtual VectorField& getDrivativeEta();
         virtual VectorField& getDrivativeZeta();
-        virtual void solve(fieldOperator3d &,bufferData &);
-        virtual void solveInv(fieldOperator3d &,bufferData &);
-        virtual void solveSource();
         
-        virtual void solveLocal();
+        virtual void solve(PDEData3d &,
+                           fieldOperator3d &,
+                           bufferData &,
+                           physicsModel &,
+                           MPIComunicator3d_nonblocking &);
         
     protected:
+        void solveSource(physicsModel &);
         void setSource();
+    private:
+        virtual void solveRHS(PDEData3d &);
+
     };
 }
 
