@@ -15,7 +15,6 @@ namespace nuc3d
 {
     class EulerData3D;
     class EulerFlux;
-    class PDEData3d;
     class physicsModel;
     
     class PDEData3d
@@ -57,11 +56,17 @@ namespace nuc3d
         
         VectorField& getRHS();
         VectorField& getQ();
+        
+        double getDt(){return dt_global;};
+        
+        double getRes(){return res_global;};
+        
         void setDt(double);
         
         void solve(fieldOperator3d &,
                    int);
         
+    private:
         void setRES();
     };
 }

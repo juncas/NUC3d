@@ -9,8 +9,8 @@
 
 nuc3d::singleBlock::singleBlock():
 myBlock(),
-myComm(),
-myCtrler(),
+myMPI(),
+myIO(),
 myPhys(),
 myOperator()
 {
@@ -31,7 +31,7 @@ nuc3d::singleBlock::~singleBlock()
 void nuc3d::singleBlock::initialBlock()
 {
     std::stringstream ss;
-    int ProcId = myComm.getMyId();
+    int ProcId = myMPI.getMyId();
     int nx0, ny0, nz0;
     std::string forename_mesh = ("mesh_");
     std::string forename_flow = ("flow_");

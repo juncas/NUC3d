@@ -22,8 +22,8 @@ namespace nuc3d
 {
     class singleBlock
     {
-        MPIComunicator3d_nonblocking myComm;
-        IOController myCtrler;
+        MPIComunicator3d_nonblocking myMPI;
+        IOController myIO;
         physicsModel myPhys;
         fieldOperator3d myOperator;
         block myBlock;

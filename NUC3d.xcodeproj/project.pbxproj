@@ -25,6 +25,8 @@
 		E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692CE1BE8FA1E001FB4EA /* NaiverStokes3d.cpp */; };
 		E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692D11BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp */; };
 		E3A7AF471BEA1C2300385249 /* PDEData3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */; };
+		E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4EF1BEB18F300F84DBF /* bufferData.cpp */; };
+		E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */; };
 		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; };
 /* End PBXBuildFile section */
 
@@ -61,7 +63,6 @@
 		E34642921BD1329B007BB96D /* fieldOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fieldOperator.h; path = src/fieldOperator.h; sourceTree = SOURCE_ROOT; };
 		E34642931BD1329B007BB96D /* MPICommunicatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPICommunicatorBase.h; path = src/MPICommunicatorBase.h; sourceTree = SOURCE_ROOT; };
 		E34642941BD1329B007BB96D /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = field.h; path = src/field.h; sourceTree = SOURCE_ROOT; };
-		E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BoundaryConditionsTopo.h; path = src/BoundaryConditionsTopo.h; sourceTree = SOURCE_ROOT; };
 		E34642961BD1329B007BB96D /* centraldifference6th.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = centraldifference6th.h; path = src/centraldifference6th.h; sourceTree = SOURCE_ROOT; };
 		E34642971BD1329B007BB96D /* TVD-RK3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TVD-RK3.h"; path = "src/TVD-RK3.h"; sourceTree = SOURCE_ROOT; };
 		E34642981BD1329B007BB96D /* NUC3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NUC3d.cpp; path = src/NUC3d.cpp; sourceTree = SOURCE_ROOT; };
@@ -80,6 +81,10 @@
 		E38692D21BE8FAF5001FB4EA /* NaiverStokesReactive3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NaiverStokesReactive3d.h; path = src/NaiverStokesReactive3d.h; sourceTree = SOURCE_ROOT; };
 		E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PDEData3d.cpp; path = src/PDEData3d.cpp; sourceTree = SOURCE_ROOT; };
 		E3A7AF461BEA1C2300385249 /* PDEData3d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PDEData3d.hpp; path = src/PDEData3d.hpp; sourceTree = SOURCE_ROOT; };
+		E3A7C4EF1BEB18F300F84DBF /* bufferData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bufferData.cpp; path = src/bufferData.cpp; sourceTree = SOURCE_ROOT; };
+		E3A7C4F01BEB18F300F84DBF /* bufferData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bufferData.hpp; path = src/bufferData.hpp; sourceTree = SOURCE_ROOT; };
+		E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = boundaryConditions.cpp; path = src/boundaryConditions.cpp; sourceTree = SOURCE_ROOT; };
+		E3A7C4F31BEB1F7E00F84DBF /* boundaryConditions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = boundaryConditions.hpp; path = src/boundaryConditions.hpp; sourceTree = SOURCE_ROOT; };
 		E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -207,7 +212,10 @@
 		E34642B41BD13418007BB96D /* BoundaryConditions */ = {
 			isa = PBXGroup;
 			children = (
-				E34642951BD1329B007BB96D /* BoundaryConditionsTopo.h */,
+				E3A7C4EF1BEB18F300F84DBF /* bufferData.cpp */,
+				E3A7C4F01BEB18F300F84DBF /* bufferData.hpp */,
+				E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */,
+				E3A7C4F31BEB1F7E00F84DBF /* boundaryConditions.hpp */,
 			);
 			name = BoundaryConditions;
 			sourceTree = "<group>";
@@ -270,6 +278,7 @@
 			files = (
 				E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */,
 				E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */,
+				E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */,
 				E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */,
 				E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */,
 				E34642A51BD1329B007BB96D /* multiBlock.cpp in Sources */,
@@ -279,6 +288,7 @@
 				E34642A11BD1329B007BB96D /* meshgrid.cpp in Sources */,
 				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */,
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
+				E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */,
 				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
 				E38692CD1BE8F945001FB4EA /* eulerReactive3d.cpp in Sources */,
 				E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */,

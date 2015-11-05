@@ -5,32 +5,9 @@
 
 namespace nuc3d
 {
-	class bufferData// resposible for transportation only
-	{
-	public:
-		int bufferWidth;
-		int bufferSize[6];
-
-		int nx;
-		int ny;
-		int nz;
-		VectorField BufferSend;
-		VectorField BufferRecv;
-		MPI_Request myRequestSend[6];
-		MPI_Status myStatusSend[6];
-		MPI_Request myRequestRecv[6];
-		MPI_Status myStatusRecv[6];
-	public:
-		bufferData(int il, int jl, int kl, int bfwidth);
-		~bufferData();
-
-	public:
-		void setBufferSend(Field &);
-		void deallocatebuffer();
-	};
-
-
-	class MPIComunicator3d_nonblocking : public MPICommunicator
+    class bufferData;
+    
+    class MPIComunicator3d_nonblocking : public MPICommunicator
 	{
 		int* NeighBours;
 		int* NeighBourFaces;

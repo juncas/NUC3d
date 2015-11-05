@@ -18,7 +18,12 @@ nuc3d::PDEData3d::PDEData3d()
 
 nuc3d::PDEData3d::PDEData3d(int nx0,int ny0,int nz0,int neqs):
 nEquations(neqs),
-Q_Euler(neqs,Field(nx0,ny0,nz0))
+Q_Euler(neqs,Field(nx0,ny0,nz0)),
+Q_work(neqs,Field(nx0,ny0,nz0)),
+dt_local(0.0),
+dt_global(0.0),
+res_global(0.0),
+res_local(0.0)
 {
     
 }
@@ -29,7 +34,14 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
     for(int i=0;i<neqs;i++)
     {
         Q_Euler.push_back(Field(nx0,ny0,nz0));
+        Q_work.push_back(Field(nx0,ny0,nz0));
     }
+    
+    dt_local=0.0;
+    dt_global=0.0;
+    res_global=0.0;
+    res_local=0.0;
+
     
 }
 
@@ -54,6 +66,11 @@ void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,
         MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
     }
     myOP.timeIntegral(RHS, Q_Euler,Q_work, dt_global, step);
+    
+    if(step==3)
+    {
+        setRES();
+    }
 }
 
 void  nuc3d::PDEData3d::setRES()

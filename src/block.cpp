@@ -7,8 +7,18 @@
 //
 
 #include "block.h"
+#include "euler3d.h"
+#include "eulerReactive3d.h"
+#include "NaiverStokes3d.h"
+#include "NaiverStokesReactive3d.h"
+#include "physicsModel.h"
+#include "MPICommunicator.h"
+#include "IOcontroller.h"
 
  nuc3d::block::block()
+{}
+
+nuc3d::block::~block()
 {}
 
 void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
@@ -51,5 +61,11 @@ void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
     
 }
 
-nuc3d::block::~block()
-{}
+void nuc3d::block::solve(fieldOperator3d &myOP,
+                         physicsModel &myPhyMod,
+                         MPIComunicator3d_nonblocking &myMPI,
+                         int step)
+{
+    myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI);
+    myPDE.solve(myOP, step);
+}

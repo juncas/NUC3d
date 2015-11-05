@@ -10,18 +10,19 @@
 #include <cstdlib>
 #include <memory>
 #include "field.h"
-#include "physicsModel.h"
-#include "MPICommunicator.h"
-#include "IOcontroller.h"
-#include "fieldOperator.h"
+#include "PDEData3d.hpp"
+#include "bufferData.hpp"
 
 namespace nuc3d
 {
+    class PDEData3d;
+    class EulerData3D;
+    class bufferData;
+    class physicsModel;
+    class MPIComunicator3d_nonblocking;
     
     class block
     {
-        friend class physicsModel;
-        friend class singleBlock;
     protected:
         int nx;
         int ny;
@@ -41,12 +42,17 @@ namespace nuc3d
          */
         std::shared_ptr<EulerData3D> myFluxes;
         
-        std::vector<bufferData> mybuffer;
+        VectorBuffer mybuffer;
 
     public:
         block();
-        void initial(int,int,int,physicsModel &);
         ~block();
+        void initial(int,int,int,physicsModel &);
+        
+        void solve(fieldOperator3d &,
+                   physicsModel &,
+                   MPIComunicator3d_nonblocking &,
+                   int);
     };
     
 }

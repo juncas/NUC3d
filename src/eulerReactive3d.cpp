@@ -45,11 +45,6 @@ nuc3d::VectorField& nuc3d::EulerReactiveData3D::getDrivativeZeta()
     return this->dhdzeta;
 }
 
-void nuc3d::EulerReactiveData3D::solveLocal()
-{
-    setSource();
-}
-
 void nuc3d::EulerReactiveData3D::setSource()
 {
     
