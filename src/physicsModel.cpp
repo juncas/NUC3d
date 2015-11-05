@@ -39,12 +39,12 @@ myModelParameters(
     {"T_ref",110.4},
     {"T_inf",288.0}
 }
-                ),
+                  ),
 myVisModelMap(
 {
-    {"Sutherland",&nuc3d::physicsModel::sutherland},
+{"Sutherland",&nuc3d::physicsModel::sutherland},
     {"Constant",&nuc3d::physicsModel::constant}
-}
+        }
               )
 {
     std::string str;
@@ -127,7 +127,7 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
     
 }
 
-void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
+void nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
 {
     con2prim(myEoSName,
              myEuler->jacobian,
@@ -135,6 +135,10 @@ void  nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
              myEuler->W_Euler,
              myEuler->W0_Euler);
     
+}
+
+void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)
+{
     RiemannSolver(myEoSName,
                   myEuler->jacobian,
                   myEuler->xi_xyz,
@@ -573,6 +577,46 @@ void nuc3d::physicsModel::EoSJWLBWD(
                                     double & _E)
 {
 };
+
+void nuc3d::physicsModel::prim2conPoint(const double &rho,
+                                        const double &u,
+                                        const double &v,
+                                        const double &w,
+                                        const double &p,
+                                        double &T,
+                                        double &e,
+                                        double &alpha)
+{
+    double _rho;
+    double _rhou;
+    double _rhov;
+    double _rhow;
+    double _E;
+    
+    double temp;
+    (this->*myEosBWDMap[myEoSName])(rho,
+                                    u,
+                                    v,
+                                    w,
+                                    p,
+                                    _rho,
+                                    _rhou,
+                                    _rhov,
+                                    _rhow,
+                                    _E);
+    
+    (this->*myEosFWDMap[myEoSName])(rho,
+                                  u,
+                                  v,
+                                  w,
+                                  _E,
+                                  temp,
+                                  T,
+                                  e,
+                                  alpha);
+    
+    
+}
 /**************************************************************************************
  End of definition
  

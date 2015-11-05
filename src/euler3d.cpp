@@ -4,6 +4,7 @@
 #include "euler3d.h"
 #include "physicsModel.h"
 #include "PDEData3d.hpp"
+#include "bufferData.hpp"
 
 /**************************************************************************************
  Member functions of class: EulerFlux
@@ -185,8 +186,12 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
                                fieldOperator3d &myOP,
                                std::vector<bufferData> &myBf,
                                physicsModel &myModel,
-                               MPIComunicator3d_nonblocking &myMPI)
+                               MPIComunicator3d_nonblocking &myMPI,
+                               boundaryCondition &myBC)
 {
+    
+    nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
+    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myBf,myBC);
     nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
     nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI);
     nuc3d::EulerData3D::solveRHS(myPDE);
@@ -195,8 +200,22 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
                                       physicsModel &myModel)
 {
+    myModel.solveRiemann(myPDE, this);
+}
+
+void nuc3d::EulerData3D::solveCon2Prim(PDEData3d &myPDE,
+                                      physicsModel &myModel)
+{
     myModel.solve(myPDE, this);
 }
+
+void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
+                                              std::vector<bufferData> &myBf,
+                                              boundaryCondition &myBC)
+{
+    
+}
+
 
 void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
                                   std::vector<bufferData> &myBf,

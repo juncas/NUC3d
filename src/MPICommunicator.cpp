@@ -12,25 +12,24 @@
 nuc3d::MPIComunicator3d_nonblocking::MPIComunicator3d_nonblocking() :
 	MPICommunicator()
 {
-	NeighBours = new int[6];
 	NeighBourFaces = new int[6];
-	NeighBourBlocks = new int[6];
+	NeighBours = new int[6];
 };
 
 nuc3d::MPIComunicator3d_nonblocking::~MPIComunicator3d_nonblocking()
 {
-	delete[] NeighBours;
+    delete [] NeighBours;
 	delete[] NeighBourFaces;
 };
 /**************************************************************************************
 						Definition of member functions
 **************************************************************************************/
-void nuc3d::MPIComunicator3d_nonblocking::setTopo(int *myNeibours, int *myNeighbourFaces, int *myNeighBlocks)
+void nuc3d::MPIComunicator3d_nonblocking::setTopo(std::vector<faceBC> &bcTopo)
 {
-	for (int i = 0; i < 6; i++)
+	for (auto iter = bcTopo.begin(); iter !=bcTopo.end(); iter++)
 	{
-		NeighBours[i] = ((myNeibours[i] != BoundaryFace) ? myNeibours[i] : MPI_PROC_NULL);
-		NeighBourFaces[i] = myNeighbourFaces[i];
+		NeighBours[iter-bcTopo.begin()] = ((iter->Type != BoundaryFace) ? iter->Type : MPI_PROC_NULL);
+		NeighBourFaces[iter-bcTopo.begin()] = iter->id;
 	}
 };
 
@@ -38,8 +37,8 @@ void nuc3d::MPIComunicator3d_nonblocking::bufferSendRecv(bufferData& buffer, int
 {
 	for (int i = 0; i < 6; i++)
 	{
-		int sendTag = setMPISendTag(this->getMyId(), blockId, i);
-		int RecvTag = setMPISendTag(NeighBours[i], NeighBourBlocks[i],NeighBourFaces[i]);
+		int sendTag = setMPISendTag(this->getMyId(), i);
+		int RecvTag = setMPISendTag(NeighBours[i], NeighBourFaces[i]);
 
 		MPI_Irecv(buffer.BufferRecv[i].getDataPtr(),
 			buffer.bufferSize[i],

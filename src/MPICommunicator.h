@@ -2,6 +2,7 @@
 #define MPICommunicator3d_h
 # include "field.h"
 #include "MPICommunicatorBase.h"
+#include "boundaryConditions.hpp"
 
 namespace nuc3d
 {
@@ -9,9 +10,8 @@ namespace nuc3d
     
     class MPIComunicator3d_nonblocking : public MPICommunicator
 	{
-		int* NeighBours;
 		int* NeighBourFaces;
-		int* NeighBourBlocks;
+		int* NeighBours;
 		int* sendTags;
 		int* recvTags;
 
@@ -20,26 +20,24 @@ namespace nuc3d
 		~MPIComunicator3d_nonblocking();
 
 	public:
-		void setTopo(int *, int *,int *);
+		void setTopo(std::vector<faceBC> &);
 		void bufferSendRecv(bufferData &,int);
 		void waitAllSendRecv(bufferData& buffer);
 		void ReduceData(double );
 	private:
 		int setMPISendTag(
 			int ProcId,
-			int BlockId,
 			int FaceId
 			)
 		{
-			return 1 + FaceId * 10 + BlockId * 100 + ProcId * 10000;
+			return 1 + FaceId * 10 + ProcId * 10000;
 		};
 		int setMPIRecvTag(
 			int ProcId,
-			int BlockId,
 			int FaceId
 			)
 		{
-			return  FaceId * 10 + BlockId * 100 + ProcId * 10000;
+			return  FaceId * 10 + ProcId * 10000;
 		};
 
 	};

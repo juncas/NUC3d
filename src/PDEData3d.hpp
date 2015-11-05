@@ -36,7 +36,8 @@ namespace nuc3d
          */
         
         //current vector
-        VectorField Q_Euler;
+        VectorField Q;
+        VectorField Q_Euler;//Q/jac
         VectorField Q_work;
         
         VectorField RHS;

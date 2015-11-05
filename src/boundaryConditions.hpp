@@ -9,7 +9,11 @@
 #ifndef boundaryConditions_hpp
 #define boundaryConditions_hpp
 #include <memory>
-#include <stdio.h>
+#include <map>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 #include "field.h"
 #include "mpi.h"
 #include "bufferData.hpp"
@@ -17,39 +21,52 @@
 namespace nuc3d
 {
     class EulerData3D;
-    
-    class BufferMetric
-    {
-        Field jacobian;
+    class MPIComunicator3d_nonblocking;
+    class PDEData3d;
+    class physicsModel;
         
-        VectorField xi_xyz;
-        VectorField eta_xyz;
-        VectorField zeta_xyz;
-    
+    class faceBC
+    {
     public:
-        BufferMetric(int,int,int);
-        ~BufferMetric();
+        int Type; // -1:= bc  n:= neighbour block id
+        int id; // bc id or neighbour face id
+        
+        faceBC(int myType,int myID):Type(myType),id(myID){};
+        ~faceBC();
     };
-    
 
     class boundaryCondition
     {
-        int myBC[6];
-        int myNeibBlk[6];
-        int myNeiBlkFace[6];
+        std::vector<faceBC> BCTopo;
         
-        std::vector<double> BCvalue;
+        std::map<int,std::vector<double>> BCvalue;//(rho,rhou,rhow,rhoe)
         
-        std::vector<std::shared_ptr<BufferMetric>> myBufferGeo;
     public:
         boundaryCondition();
         ~boundaryCondition();
     
     public:
-        void setBC(VectorBuffer &,EulerData3D &);
-        void applyBC(VectorBuffer &,EulerData3D &);
+        void setBC(PDEData3d &,
+                   physicsModel &,
+                   EulerData3D &);
+        
         void updateBC(VectorBuffer &,EulerData3D &);
-        void initialBC(VectorBuffer &);
+        
+        void initialBC(VectorBuffer &,
+                       MPIComunicator3d_nonblocking &);
+    private:
+        std::istream& readBCTopo(std::istream&);
+        std::istream& readBCValue(std::istream&,int);
+        
+        void setBC_Inlet(PDEData3d &,
+                         EulerData3D &,
+                         physicsModel &myMod,
+                         int);
+        void setBC_Outlet();
+        void setBC_Wall();
+        void setBC_Periodic();
+        void setBC_Symmetric();
     };
 }
+
 #endif /* boundaryConditions_hpp */

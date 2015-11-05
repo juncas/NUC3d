@@ -10,6 +10,7 @@ namespace nuc3d
     class EulerFlux;
     class PDEData3d;
     class physicsModel;
+    class boundaryCondition;
     
     class EulerFlux
     {
@@ -79,16 +80,25 @@ namespace nuc3d
         
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
-                           std::vector<bufferData> &,
+                           VectorBuffer &,
                            physicsModel &,
-                           MPIComunicator3d_nonblocking &);
+                           MPIComunicator3d_nonblocking &,
+                           boundaryCondition &);
     protected:
         void solveRiemann(PDEData3d &,
                           physicsModel &);
         
+        void solveCon2Prim(PDEData3d &myPDE,
+                           physicsModel &myModel);
+        
         void solveInv(fieldOperator3d &,
                       std::vector<bufferData> &,
                       MPIComunicator3d_nonblocking &);
+        
+        void setBoundaryCondition(PDEData3d &,
+                                  VectorBuffer &,
+                                  boundaryCondition &);
+
     private:
         virtual void solveRHS(PDEData3d &);
         
