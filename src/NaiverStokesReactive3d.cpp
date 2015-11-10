@@ -51,12 +51,6 @@ nuc3d::VectorField& nuc3d::NaiverStokesReactiveData3d::getDrivativeZeta()
     return this->dhdzeta;
 }
 
-void nuc3d::NaiverStokesReactiveData3d::solveLocal()
-{
-    EulerReactiveData3D::solveLocal();
-    NaiverStokesReactiveData3d::solveLocal();
-}
-
 nuc3d::NaiverStokesReactiveData3d::~NaiverStokesReactiveData3d()
 {}
 

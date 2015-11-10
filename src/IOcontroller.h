@@ -22,16 +22,11 @@ namespace nuc3d
 		~IOController();
         bool ifsolve();
         bool ifsave();
-        void renew();
         
 	public:
 		int getStep(std::string);
 		double getValue(std::string);
 		std::istream& readIOFile(std::istream&,std::map<std::string,int> &,std::map<std::string,double> &);
-    private:
-        void renewStep();
-        void renewTime();
-        
 	};
 }
 #endif

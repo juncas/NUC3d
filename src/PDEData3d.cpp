@@ -42,7 +42,7 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
     dt_global=0.0;
     res_global=0.0;
     res_local=0.0;
-
+    
     
 }
 
@@ -55,6 +55,15 @@ nuc3d::VectorField& nuc3d::PDEData3d::getRHS()
 nuc3d::VectorField& nuc3d::PDEData3d::getQ()
 {
     return Q_work;
+}
+nuc3d::VectorField& nuc3d::PDEData3d::getQ_clean()
+{
+    return Q;
+}
+
+nuc3d::VectorField& nuc3d::PDEData3d::getQcurrent()
+{
+    return Q_Euler;
 }
 
 void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,
@@ -103,6 +112,61 @@ void  nuc3d::PDEData3d::setRES()
     res_local=std::sqrt(res_local/(nx*ny*nz*Q_work.size()));
     
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+}
+
+void nuc3d::PDEData3d::initialQ_work(Field &jac)
+{
+    int nx=jac.getSizeX();
+    int ny=jac.getSizeY();
+    int nz=jac.getSizeZ();
+    auto beg=Q.begin();
+    auto end=Q.end();
+    
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        for (int k=0;k<nz;k++)
+        {
+            for (int j=0;j<ny ;j++ )
+            {
+                for (int i=0;i<nx ;i++ )
+                {
+                    double q0=iter->getValue(i, j, k);
+                    double jacob=jac.getValue(i, j, k);
+                    double qj=q0/jacob;
+                    
+                    Q_work[iter-beg].setValue(i, j, k, qj);
+                }
+            }
+        }
+    }
+    
+}
+
+void nuc3d::PDEData3d::setQ_clean(Field &jac)
+{
+    int nx=jac.getSizeX();
+    int ny=jac.getSizeY();
+    int nz=jac.getSizeZ();
+    auto beg=Q_work.begin();
+    auto end=Q_work.end();
+    
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        for (int k=0;k<nz;k++)
+        {
+            for (int j=0;j<ny ;j++ )
+            {
+                for (int i=0;i<nx ;i++ )
+                {
+                    double q0=iter->getValue(i, j, k);
+                    double jacob=jac.getValue(i, j, k);
+                    double qj=q0*jacob;
+                    
+                    Q[iter-beg].setValue(i, j, k, qj);
+                }
+            }
+        }
+    }
 }
 
 nuc3d::PDEData3d::~PDEData3d()

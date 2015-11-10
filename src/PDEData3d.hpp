@@ -55,8 +55,14 @@ namespace nuc3d
         
         void initPDEData3d(int,int,int,int);
         
+        void initialQ_work(Field &);
+        void setQ_clean(Field &);
+        
         VectorField& getRHS();
-        VectorField& getQ();
+        
+        VectorField& getQ_clean(); //Q
+        VectorField& getQcurrent();//Q_Euler
+        VectorField& getQ();//Q_work
         
         double getDt(){return dt_global;};
         

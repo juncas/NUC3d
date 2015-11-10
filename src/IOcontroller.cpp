@@ -144,26 +144,6 @@ bool nuc3d::IOController::ifsave()
     else
         return false;
 }
-
-void nuc3d::IOController::renewStep()
-{
-    int istep=myIOController["currentStep"];
-    myIOController["currentStep"]=++istep;
-}
-
-void nuc3d::IOController::renewTime()
-{
-    double currentTime=myIOController["currentTime"];
-    double dt=myIOController["dt"];
-    currentTime+=dt;
-    myIOController["currentStep"]=currentTime;
-}
-
-void nuc3d::IOController::renew()
-{
-    renewStep();
-    renewTime();
-}
 /**************************************************************************************
 								End of definition
 **************************************************************************************/

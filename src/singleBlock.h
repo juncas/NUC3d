@@ -12,15 +12,21 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include "field.h"
+#include "MPICommunicator.h"
 #include "block.h"
 #include "physicsModel.h"
 #include "IOcontroller.h"
 #include "fieldOperator.h"
-#include "MPICommunicator.h"
 
 namespace nuc3d
 {
+    class MPIComunicator3d_nonblocking;
+    class IOController;
+    class physicsModel;
+    class fieldOperator3d;
     class boundaryCondition;
+    class block;
     
     class singleBlock
     {
@@ -37,6 +43,10 @@ namespace nuc3d
         
         ~singleBlock();
         
+        void loop();
+        
+    private:
+        
         void initialBlock();
         
         void solvePDE();
@@ -44,33 +54,11 @@ namespace nuc3d
         void postprocess();
         
         void output();
-        
-	private:
-        void solveRiemann();
-        
-        void solveBoundaryConditions();
-        
-        void solveInvicidFlux();
-        
-        void solveInvicidFluxL(EulerFlux &, std::vector<bufferData> &, int);
-        
-        void solveInvicidFluxR(EulerFlux &, std::vector<bufferData> &, int);
-        
-        void solveViscousFLux();
-        
-        void solveGetRHS();
-        
-        void solveIntegral(int step);
-        
-        void printRES();
-    
+                    
     private:
         void readData(std::ifstream &, VectorField &);
         void writeData(std::ofstream &, VectorField &);
-        
-        void initialXYZ();
-        void initialPDE();
-                
+                        
     };
 }
 #endif /* singleBlock_hpp */

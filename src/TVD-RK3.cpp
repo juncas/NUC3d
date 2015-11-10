@@ -2,7 +2,8 @@
 #define tvdrk3_cpp
 #include "TVD-RK3.h"
 
-nuc3d::tvdrk3rd::tvdrk3rd()
+nuc3d::tvdrk3rd::tvdrk3rd():
+integration(3)
 {
 }
 

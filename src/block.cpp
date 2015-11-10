@@ -16,13 +16,50 @@
 #include "IOcontroller.h"
 #include "boundaryConditions.hpp"
 
- nuc3d::block::block()
+nuc3d::block::block()
 {}
 
 nuc3d::block::~block()
 {}
 
-void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
+void nuc3d::block::initial(fieldOperator3d &myOP,
+                           physicsModel &myPhyMod,
+                           MPIComunicator3d_nonblocking &myMPI,
+                           boundaryCondition &myBC,
+                           IOController &myIO)
+
+{
+    std::stringstream ss;
+    int ProcId = myMPI.getMyId();
+    int nx0, ny0, nz0;
+    
+    std::string forename_mesh = ("mesh_");
+    std::string forename_flow = ("flow_");
+    std::string midname;
+    std::string tailname = (".dat");
+    
+    ss << ProcId;
+    ss >> midname;
+    
+    std::string filename_mesh = forename_mesh + midname + tailname;
+    std::string filename_flow = forename_flow + midname + tailname;
+    
+    std::ifstream myFile;
+    
+    myFile.open(filename_mesh);
+    if (myFile)
+    {
+        myFile >> nx0 >> ny0 >> nz0;
+        initialData(nx0, ny0, nz0, myPhyMod);
+        ReadXYZ();
+        ReadPDE();
+    }
+    myFile.close();
+
+    
+}
+
+void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
 {
     nx=nx0;
     ny=ny0;
@@ -66,8 +103,42 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
                          physicsModel &myPhyMod,
                          MPIComunicator3d_nonblocking &myMPI,
                          boundaryCondition &myBC,
-                         int step)
+                         IOController &myIO)
 {
-    myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI,myBC);
-    myPDE.solve(myOP, step);
+    int step=0;
+    
+    while (myOP.getSteps()!=step)
+    {
+        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
+        myPDE.solve(myOP, step++);
+    }
+    
+    istep++;
+    myIO.myIOController["currentStep"]=istep;
+    
+    dt=myPDE.getDt();
+    time+=dt;
+    
+    myIO.myTimeController["dt"]=dt;
+    myIO.myTimeController["currentTime"]=time;
+
+    
+    RES=myPDE.getRes();
 }
+
+void nuc3d::block::printStatus()
+{
+    std::cout<<"step "<<istep<< ", time = "<<time<<", residual = "<<RES<<std::endl;
+}
+
+void nuc3d::block::ReadXYZ()
+{
+ 
+    myFluxes->initialxyz(xyz);
+}
+
+void nuc3d::block::ReadPDE()
+{
+    
+}
+

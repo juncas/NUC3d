@@ -21,6 +21,7 @@ namespace nuc3d
     class physicsModel;
     class MPIComunicator3d_nonblocking;
     class boundaryCondition;
+    class IOController;
     
     class block
     {
@@ -44,17 +45,31 @@ namespace nuc3d
         std::shared_ptr<EulerData3D> myFluxes;
         
         VectorBuffer mybuffer;
+        
+        double time;
+        double dt;
+        int istep;
+        double RES;
 
     public:
         block();
         ~block();
-        void initial(int,int,int,physicsModel &);
-        
+        void initial(fieldOperator3d &,
+                     physicsModel &,
+                     MPIComunicator3d_nonblocking &,
+                     boundaryCondition &,
+                     IOController &);
         void solve(fieldOperator3d &,
                    physicsModel &,
                    MPIComunicator3d_nonblocking &,
                    boundaryCondition &,
-                   int);
+                   IOController &);
+        void printStatus();
+    private:
+        void initialData(int,int,int,physicsModel &);
+        void ReadXYZ();
+        void ReadPDE();
+
     };
     
 }

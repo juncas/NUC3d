@@ -54,7 +54,7 @@ namespace nuc3d
                                     int); // step n
     public:
         virtual void initial(const VectorField &);
-        integration();
+        integration(int);
         ~integration()=default;
     };
     

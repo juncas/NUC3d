@@ -78,6 +78,8 @@ namespace nuc3d
         VectorField& getPrimatives();
         VectorField& getAcoustics();
         
+        void initialxyz(VectorField &);
+        Field& getJac(){return jacobian;};
         
         
         virtual void solve(PDEData3d &,

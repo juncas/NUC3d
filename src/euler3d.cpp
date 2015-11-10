@@ -54,6 +54,10 @@ dt(0.0)
 {
 }
 
+void nuc3d::EulerData3D::initialxyz(VectorField &XYZ_c)
+{
+    
+}
 
 nuc3d::VectorField& nuc3d::EulerData3D::getDrivativeXi()
 {
