@@ -18,6 +18,7 @@ nuc3d::PDEData3d::PDEData3d()
 
 nuc3d::PDEData3d::PDEData3d(int nx0,int ny0,int nz0,int neqs):
 nEquations(neqs),
+Q(neqs,Field(nx0,ny0,nz0)),
 Q_Euler(neqs,Field(nx0,ny0,nz0)),
 Q_work(neqs,Field(nx0,ny0,nz0)),
 dt_local(0.0),

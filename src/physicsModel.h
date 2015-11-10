@@ -79,6 +79,7 @@ namespace nuc3d
         std::string getMyModelName(){return myModelName;};
         
         void solve(PDEData3d &, EulerData3D *);
+        void solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler);
         
         void getMiu(Field &,
                     Field &,
@@ -87,6 +88,15 @@ namespace nuc3d
         int getEqNum(){return neqs;};
         
         void initial(PDEData3d &,std::shared_ptr<EulerData3D> );
+        
+        void prim2conPoint(const double &rho,
+                           const double &u,
+                           const double &v,
+                           const double &w,
+                           const double &p,
+                           double &T,
+                           double &e,
+                           double &alpha);
     private:
         void RiemannSolver(const std::string &,
                            const Field &,
@@ -95,6 +105,8 @@ namespace nuc3d
                            const VectorField &,
                            const VectorField &,
                            EulerFlux&);
+        void RiemannSolverBuffer(
+            );
         
         void con2prim(const std::string &,
                       const Field &,

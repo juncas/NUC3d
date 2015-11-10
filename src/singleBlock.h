@@ -20,12 +20,16 @@
 
 namespace nuc3d
 {
+    class boundaryCondition;
+    
     class singleBlock
     {
         MPIComunicator3d_nonblocking myMPI;
         IOController myIO;
         physicsModel myPhys;
         fieldOperator3d myOperator;
+        boundaryCondition myBC;
+        
         block myBlock;
                 
     public:

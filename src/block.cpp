@@ -14,6 +14,7 @@
 #include "physicsModel.h"
 #include "MPICommunicator.h"
 #include "IOcontroller.h"
+#include "boundaryConditions.hpp"
 
  nuc3d::block::block()
 {}
@@ -64,8 +65,9 @@ void nuc3d::block::initial(int nx0,int ny0,int nz0,physicsModel &myPhy)
 void nuc3d::block::solve(fieldOperator3d &myOP,
                          physicsModel &myPhyMod,
                          MPIComunicator3d_nonblocking &myMPI,
+                         boundaryCondition &myBC,
                          int step)
 {
-    myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI);
+    myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI,myBC);
     myPDE.solve(myOP, step);
 }

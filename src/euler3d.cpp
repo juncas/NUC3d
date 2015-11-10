@@ -35,6 +35,9 @@ nuc3d::EulerFlux::~EulerFlux()
  Member functions of class: EulerData3D
  **************************************************************************************/
 nuc3d::EulerData3D::EulerData3D( int nx0, int ny0, int nz0, int neqs):
+nx(nx0),
+ny(ny0),
+nz(nz0),
 jacobian(Field(nx0,ny0,nz0)),
 xi_xyz(3,Field(nx0,ny0,nz0)),
 eta_xyz(3,Field(nx0,ny0,nz0)),
@@ -191,9 +194,9 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 {
     
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myBf,myBC);
+    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
     nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
-    nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI);
+    nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     nuc3d::EulerData3D::solveRHS(myPDE);
 }
 
@@ -210,24 +213,40 @@ void nuc3d::EulerData3D::solveCon2Prim(PDEData3d &myPDE,
 }
 
 void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
-                                              std::vector<bufferData> &myBf,
+                                              physicsModel &myModel,
                                               boundaryCondition &myBC)
 {
-    
+    myBC.setBC(myPDE, myModel, *this);
+}
+
+void nuc3d::EulerData3D::setBuffer(VectorBuffer &myBf,
+                                   boundaryCondition &myBC)
+{
 }
 
 
 void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
                                   std::vector<bufferData> &myBf,
-                                  MPIComunicator3d_nonblocking &myMPI)
+                                  MPIComunicator3d_nonblocking &myMPI,
+                                  boundaryCondition &myBC)
 {
-    solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI, 0);
-    solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI, 1);
-    solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI, 2);
+    myBC.updateBuffer_xi(myBf, Flux_xi.FluxL);
+    solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     
-    solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI, 0);
-    solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI, 1);
-    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI, 2);
+    myBC.updateBuffer_eta(myBf, Flux_eta.FluxL);
+    solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
+    
+    myBC.updateBuffer_zeta(myBf, Flux_zeta.FluxL);
+    solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
+    
+    myBC.updateBuffer_xi(myBf, Flux_xi.FluxR);
+    solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
+    
+    myBC.updateBuffer_eta(myBf, Flux_eta.FluxR);
+    solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
+    
+    myBC.updateBuffer_zeta(myBf, Flux_zeta.FluxR);
+    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
     
     this->setDerivativesInv();
 }
@@ -237,6 +256,7 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
                                            fieldOperator3d &myOP,
                                            std::vector<bufferData> &myBuff,
                                            MPIComunicator3d_nonblocking &myMPI,
+                                           boundaryCondition &myBC,
                                            int dir)
 {
     VectorField &pFlux = myFlux.FluxL;
@@ -266,6 +286,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
                                            fieldOperator3d &myOP,
                                            std::vector<bufferData> &myBuff,
                                            MPIComunicator3d_nonblocking &myMPI,
+                                           boundaryCondition &myBC,
                                            int dir)
 
 {

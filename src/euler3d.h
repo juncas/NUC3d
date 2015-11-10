@@ -15,7 +15,6 @@ namespace nuc3d
     class EulerFlux
     {
         friend class physicsModel;
-        friend class singleBlock;
         friend class EulerData3D;
         
         VectorField FluxL;
@@ -59,7 +58,10 @@ namespace nuc3d
         
         double dt;
     public:
-        EulerData3D( int nx, int ny, int nz, int addEq);
+        int nx;
+        int ny;
+        int nz;
+        EulerData3D( int, int , int , int );
         ~EulerData3D();
         
         //used by field operators and Riemann solvers
@@ -92,26 +94,32 @@ namespace nuc3d
                            physicsModel &myModel);
         
         void solveInv(fieldOperator3d &,
-                      std::vector<bufferData> &,
-                      MPIComunicator3d_nonblocking &);
+                      VectorBuffer &,
+                      MPIComunicator3d_nonblocking &,
+                      boundaryCondition &myBC);
         
         void setBoundaryCondition(PDEData3d &,
-                                  VectorBuffer &,
+                                  physicsModel &myModel,
                                   boundaryCondition &);
+        
+        void setBuffer(VectorBuffer &myBf,
+                       boundaryCondition &myBC);
 
     private:
         virtual void solveRHS(PDEData3d &);
         
         void solveInvicidFluxL(EulerFlux &,
                                fieldOperator3d &myOP,
-                               std::vector<bufferData> &,
+                               VectorBuffer &,
                                MPIComunicator3d_nonblocking &,
+                               boundaryCondition &myBC,
                                int );
         
         void solveInvicidFluxR(EulerFlux &,
                                fieldOperator3d &myOP,
-                               std::vector<bufferData> &,
+                               VectorBuffer &,
                                MPIComunicator3d_nonblocking &,
+                               boundaryCondition &myBC,
                                int );
         
         void setDerivativesInv();

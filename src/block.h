@@ -20,6 +20,7 @@ namespace nuc3d
     class bufferData;
     class physicsModel;
     class MPIComunicator3d_nonblocking;
+    class boundaryCondition;
     
     class block
     {
@@ -52,6 +53,7 @@ namespace nuc3d
         void solve(fieldOperator3d &,
                    physicsModel &,
                    MPIComunicator3d_nonblocking &,
+                   boundaryCondition &,
                    int);
     };
     
