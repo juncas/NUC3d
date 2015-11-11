@@ -33,7 +33,7 @@ namespace nuc3d
         int id; // bc id or neighbour face id
         
         faceBC(int myType,int myID):Type(myType),id(myID){};
-        ~faceBC();
+        ~faceBC(){};
     };
     
     class boundaryCondition

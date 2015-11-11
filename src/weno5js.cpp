@@ -1,7 +1,6 @@
 #ifndef weno5js_cpp
 #define weno5js_cpp
 #include "weno5js.h"
-
 nuc3d::weno5js::weno5js():
 ss(1e-6),
 p(2)

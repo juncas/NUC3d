@@ -16,8 +16,8 @@ namespace nuc3d
     {
         friend class fieldOperator3d;
     public:
-        interoplation();
-        ~interoplation()=default;
+        interoplation(){};
+        ~interoplation(){};
         
     private:
         virtual void interpolationInner(
@@ -26,7 +26,7 @@ namespace nuc3d
                                         const int,
                                         const int,
                                         const int,
-                                        Field &) = 0;
+                                        Field &)=0;
         virtual void interpolationBoundary(
                                            const Field &,
                                            const Field &,
@@ -35,7 +35,7 @@ namespace nuc3d
                                            const int,
                                            const int,
                                            const int,
-                                           Field &) = 0;
+                                           Field &)=0;
     };
     
     class integration
@@ -51,10 +51,9 @@ namespace nuc3d
                                     const VectorField &, // u_n
                                     VectorField &, // u_i
                                     double,
-                                    int); // step n
+                                    int)=0; // step n
     public:
-        virtual void initial(const VectorField &);
-        integration(int);
+        integration(int i){nstep=i;};
         ~integration()=default;
     };
     
@@ -62,8 +61,8 @@ namespace nuc3d
     {
         friend class fieldOperator3d;
     public:
-        differential();
-        ~differential()=default;
+        inline differential(){};
+        inline ~differential(){};
         
     private:
         virtual void differentialInner(
@@ -71,7 +70,7 @@ namespace nuc3d
                                        const int,
                                        const int,
                                        const int,
-                                       Field &) = 0;
+                                       Field &)=0;
         
         virtual void differentialBoundary(
                                           const Field &,
@@ -80,7 +79,7 @@ namespace nuc3d
                                           const int,
                                           const int,
                                           const int,
-                                          Field &) = 0;
+                                          Field &)=0;
     };
     
     class fieldOperator3d//should only operate on fields

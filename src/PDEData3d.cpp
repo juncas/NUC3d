@@ -169,5 +169,9 @@ void nuc3d::PDEData3d::setQ_clean(Field &jac)
     }
 }
 
+void nuc3d::PDEData3d::setDt(double dt)
+{
+	dt_local=dt;
+}
 nuc3d::PDEData3d::~PDEData3d()
 {}

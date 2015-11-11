@@ -1,6 +1,6 @@
 #ifndef IOController_cpp
 #define IOController_cpp
-#include "IOController.h"
+#include "IOcontroller.h"
 
 /**************************************************************************************
 Definition of class IOController: 
@@ -32,6 +32,7 @@ nuc3d::IOController::IOController():
 {
 	std::ifstream file("IOController.in");
 
+	std::cout<<"Starting reading IOController.in..."<<std::endl;
 	auto count=myTimeController.size()+myIOController.size();	if(file)
 	{
 		while(readIOFile(file,myIOController,myTimeController))
@@ -42,6 +43,7 @@ nuc3d::IOController::IOController():
 			std::cout<<"Using Default value!"<<std::endl;
 		}
 
+		std::cout<<"IOController.in has been read!"<<std::endl;
 	}
 	else
 	{
@@ -71,6 +73,7 @@ std::istream& nuc3d::IOController::readIOFile(std::istream& ios, std::map<std::s
 		int value;
 		value0>>value;
 		Methods[word0]=value;
+		std::cout<<word0<<" = "<<value<<std::endl;
 	}
 	else if(Time.find(word0)!=Time.end())
 	{
@@ -78,6 +81,7 @@ std::istream& nuc3d::IOController::readIOFile(std::istream& ios, std::map<std::s
 		double value;
 		value0>>value;
 		Time[word0]=value;
+		std::cout<<word0<<" = "<<value<<std::endl;
 	}
 	else if(word0.size())
 	{

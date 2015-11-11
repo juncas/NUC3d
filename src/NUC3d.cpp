@@ -1,4 +1,4 @@
-# include "nuc3d.h"
+# include "NUC3d.h"
 
 int main ( int argc, char *argv[] )
 {
@@ -8,13 +8,6 @@ int main ( int argc, char *argv[] )
         MPI_Abort ( MPI_COMM_WORLD,99 );
     }
     
-    nuc3d::singleBlock myBlock;
-    
-    myBlock.initialBlock();
-    myBlock.solvePDE();
-    myBlock.postprocess();
-    myBlock.output();
-    
-    MPI_Finalize();
+    nuc3d::singleBlock myBlock;    
     return 0;
 }

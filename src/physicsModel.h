@@ -7,6 +7,7 @@
 #include <fstream>
 #include <map>
 #include <cmath>
+#include <memory>
 #include "field.h"
 
 namespace nuc3d
