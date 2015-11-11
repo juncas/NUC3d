@@ -92,6 +92,7 @@ std::istream& nuc3d::fieldOperator3d::readIOFile(
 	std::string word0;
 	std::string word1;
 	ios>>word0>>word1;
+    
 
 	if(Methods.find(word0)!=Methods.end())
 	{
