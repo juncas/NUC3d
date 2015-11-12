@@ -45,31 +45,84 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
 	std::string filename_flow = forename_flow + midname + tailname;
 
 	std::ifstream myFile;
-
+	std::ofstream myFile_o("IOtest.dat");
 	myFile.open(filename_mesh);
 	if (myFile)
 	{
 		myFile >> nx0 >> ny0 >> nz0>> bfsize;
-		initialData(nx0, ny0, nz0, myPhyMod);
-		myBC.initialBC(mybuffer,myMPI);
+		nx=nx0-1;
+		ny=ny0-1;
+		nz=nz0-1;
+		for(int i=0;i<3;i++)
+		{
+			xyz.push_back(Field(nx0,ny0,nz0));
+			xyz_center.push_back(Field(nx,ny,nz));
+		}
+		std::cout<<"Start reading mesh data..."<<std::endl;
+		for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+			readField(myFile,*iter);
+		std::cout<<"Mesh data has been read!"<<std::endl;
+	//	for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+	//		writeField(myFile_o,*iter);
+	}
+	else
+	{
+		std::cout<<"File \'"<<filename_mesh<<"\' does not exist!"<<std::endl;
+		exit(-1);
 	}
 	myFile.close();
 
+	initialData(nx, ny, nz, myPhyMod);
+	myBC.initialBC(mybuffer,myMPI);
 
 }
-
-void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
+void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
 {
-	nx=nx0;
-	ny=ny0;
-	nz=nz0;
-
-	for(int i=0;i<3;i++)
+	int nx0=myField.getSizeX();
+	int ny0=myField.getSizeY();
+	int nz0=myField.getSizeZ();
+	for(int k=0;k<nz0;k++)
 	{
-		xyz.push_back(Field(nx0+1,ny0+1,nz0+1));
-		xyz_center.push_back(Field(nx0,ny0,nz0));
+		for(int j=0;j<ny0;j++)
+		{
+			for(int i=0;i<nx0;i++)
+			{
+				double value=myField.getValue(i,j,k);
+				myFile<<value<<" ";
+			}
+		}
+	}
+	myFile<<"\n";
+}
+
+
+void nuc3d::block::readField(std::ifstream &myFile, nuc3d::Field &myField)
+{
+	int nx0=myField.getSizeX();
+	int ny0=myField.getSizeY();
+	int nz0=myField.getSizeZ();
+	for(int k=0;k<nz0;k++)
+	{
+		for(int j=0;j<ny0;j++)
+		{
+			for(int i=0;i<nx0;i++)
+			{
+				double value;
+				if(!(myFile>>value))
+				{
+					std::cout<<"Error:End of File at "
+						<<"i= "<<i<<", j="<<j<<", k= "<<k
+						<<std::endl;
+					exit(-1);
+				}
+				myField.setValue(i,j,k,value);
+			}
+		}
 	}
 
+}
+void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
+{
 	myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
 
 	if("Euler3d"==myPhy.getMyModelName())
@@ -95,7 +148,7 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
 			<<std::endl;
 		exit(-1);
 	}
-	
+
 	for(int n=0;n<myPhy.getEqNum();n++)
 		mybuffer.push_back(bufferData(nx,ny,nz,bfsize));
 

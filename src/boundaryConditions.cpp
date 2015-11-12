@@ -81,7 +81,7 @@ void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
 
 	myFile.close();
 	std::cout<<"BC Topo has been read!"<<std::endl;
-	//myMPI.setTopo(BCTopo);
+	myMPI.setTopo(BCTopo);
 
 
 }

@@ -15,62 +15,63 @@
 
 namespace nuc3d
 {
-    class PDEData3d;
-    class EulerData3D;
-    class bufferData;
-    class physicsModel;
-    class MPIComunicator3d_nonblocking;
-    class boundaryCondition;
-    class IOController;
-    
-    class block
-    {
-    protected:
-        int nx;
-        int ny;
-        int nz;
-	int bfsize;                
-        VectorField xyz;
-        VectorField xyz_center;
-        
-        PDEData3d myPDE;
-        
-        /*
-         this shared point could be:
-         - EulerData3D;
-         - EulerReactiveData3D;
-         - NaiverStokesData3d;
-         - NaiverStokesReactiveData3d;
-         */
-        std::shared_ptr<EulerData3D> myFluxes;
-        
-        VectorBuffer mybuffer;
-        
-        double time;
-        double dt;
-        int istep;
-        double RES;
+	class PDEData3d;
+	class EulerData3D;
+	class bufferData;
+	class physicsModel;
+	class MPIComunicator3d_nonblocking;
+	class boundaryCondition;
+	class IOController;
 
-    public:
-        block();
-        ~block();
-        void initial(fieldOperator3d &,
-                     physicsModel &,
-                     MPIComunicator3d_nonblocking &,
-                     boundaryCondition &,
-                     IOController &);
-        void solve(fieldOperator3d &,
-                   physicsModel &,
-                   MPIComunicator3d_nonblocking &,
-                   boundaryCondition &,
-                   IOController &);
-        void printStatus();
-    private:
-        void initialData(int,int,int,physicsModel &);
-        void ReadXYZ();
-        void ReadPDE();
+	class block
+	{
+		protected:
+			int nx;
+			int ny;
+			int nz;
+			int bfsize;                
+			VectorField xyz;
+			VectorField xyz_center;
 
-    };
-    
+			PDEData3d myPDE;
+
+			/*
+			   this shared point could be:
+			   - EulerData3D;
+			   - EulerReactiveData3D;
+			   - NaiverStokesData3d;
+			   - NaiverStokesReactiveData3d;
+			   */
+			std::shared_ptr<EulerData3D> myFluxes;
+
+			VectorBuffer mybuffer;
+
+			double time;
+			double dt;
+			int istep;
+			double RES;
+
+		public:
+			block();
+			~block();
+			void initial(fieldOperator3d &,
+					physicsModel &,
+					MPIComunicator3d_nonblocking &,
+					boundaryCondition &,
+					IOController &);
+			void solve(fieldOperator3d &,
+					physicsModel &,
+					MPIComunicator3d_nonblocking &,
+					boundaryCondition &,
+					IOController &);
+			void printStatus();
+		private:
+			void initialData(int,int,int,physicsModel &);
+			void ReadXYZ();
+			void ReadPDE();
+			void readField(std::ifstream &, Field &);
+void writeField(std::ofstream &myFile, nuc3d::Field &myField);
+	};
+
 }
 #endif /* block_hpp */
