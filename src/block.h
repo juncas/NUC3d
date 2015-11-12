@@ -29,7 +29,7 @@ namespace nuc3d
         int nx;
         int ny;
         int nz;
-                
+	int bfsize;                
         VectorField xyz;
         VectorField xyz_center;
         

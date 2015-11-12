@@ -9,5 +9,7 @@ int main ( int argc, char *argv[] )
     }
     
     nuc3d::singleBlock myBlock;    
+	myBlock.loop();
+	std::cout<<"Finished "<<std::endl;
     return 0;
 }
