@@ -25,6 +25,14 @@ namespace nuc3d
 	class PDEData3d;
 	class physicsModel;
 	class EulerFlux;
+    
+    static std::string BCTypes[2]={"Exterior","Interior"};
+    
+    static std::string BCnames[5]={"Inlet condition",
+        "Outlet condition",
+        "Wall condition",
+        "Symmetric condition",
+        "Periodic condition"};
 
 	class faceBC
 	{

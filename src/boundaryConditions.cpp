@@ -21,12 +21,6 @@ nuc3d::boundaryCondition::~boundaryCondition()
 
 }
 
-const static std::string BCTypes[2]={"Exterior","Interior"};
-const static std::string BCnames[5]={"Inlet condition",
-	"Outlet condition",
-	"Wall condition",
-	"Symmetric condition",
-	"Periodic condition"};
 void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
 		MPIComunicator3d_nonblocking &myMPI)
 {

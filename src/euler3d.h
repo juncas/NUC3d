@@ -80,8 +80,11 @@ namespace nuc3d
         
         void initialxyz(VectorField &);
         Field& getJac(){return jacobian;};
+        VectorField& getXi_xyz(){return xi_xyz;};
+        VectorField& getEta_xyz(){return eta_xyz;};
+        VectorField& getZeta_xyz(){return zeta_xyz;};
         
-        
+        void setJacobians(VectorField &);
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
                            VectorBuffer &,
@@ -106,7 +109,7 @@ namespace nuc3d
         
         void setBuffer(VectorBuffer &myBf,
                        boundaryCondition &myBC);
-
+        
     private:
         virtual void solveRHS(PDEData3d &);
         

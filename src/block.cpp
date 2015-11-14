@@ -16,185 +16,500 @@
 #include "IOcontroller.h"
 #include "boundaryConditions.hpp"
 
-nuc3d::block::block()
+#define TILE_SIZE 4;
+
+nuc3d::block::block():
+time(0.0),
+dt(0.025),
+istep(0),
+RES(1.0)
 {}
 
 nuc3d::block::~block()
 {}
 
 void nuc3d::block::initial(fieldOperator3d &myOP,
-		physicsModel &myPhyMod,
-		MPIComunicator3d_nonblocking &myMPI,
-		boundaryCondition &myBC,
-		IOController &myIO)
+                           physicsModel &myPhyMod,
+                           MPIComunicator3d_nonblocking &myMPI,
+                           boundaryCondition &myBC,
+                           IOController &myIO)
 
 {
-	std::stringstream ss;
-	int ProcId = myMPI.getMyId();
-	int nx0, ny0, nz0;
-
-	std::string forename_mesh = ("mesh_");
-	std::string forename_flow = ("flow_");
-	std::string midname;
-	std::string tailname = (".dat");
-
-	ss << ProcId;
-	ss >> midname;
-
-	std::string filename_mesh = forename_mesh + midname + tailname;
-	std::string filename_flow = forename_flow + midname + tailname;
-
-	std::ifstream myFile;
-	std::ofstream myFile_o("IOtest.dat");
-	myFile.open(filename_mesh);
-	if (myFile)
-	{
-		myFile >> nx0 >> ny0 >> nz0>> bfsize;
-		nx=nx0-1;
-		ny=ny0-1;
-		nz=nz0-1;
-		for(int i=0;i<3;i++)
-		{
-			xyz.push_back(Field(nx0,ny0,nz0));
-			xyz_center.push_back(Field(nx,ny,nz));
-		}
-		std::cout<<"Start reading mesh data..."<<std::endl;
-		for(auto iter=xyz.begin();iter!=xyz.end();iter++)
-			readField(myFile,*iter);
-		std::cout<<"Mesh data has been read!"<<std::endl;
-	//	for(auto iter=xyz.begin();iter!=xyz.end();iter++)
-	//		writeField(myFile_o,*iter);
-	}
-	else
-	{
-		std::cout<<"File \'"<<filename_mesh<<"\' does not exist!"<<std::endl;
-		exit(-1);
-	}
-	myFile.close();
-
-	initialData(nx, ny, nz, myPhyMod);
-	myBC.initialBC(mybuffer,myMPI);
-
+    std::stringstream ss;
+    int ProcId = myMPI.getMyId();
+    int nx0, ny0, nz0;
+    
+    std::string forename_mesh = ("mesh_");
+    std::string forename_flow = ("flow_");
+    std::string midname;
+    std::string tailname = (".dat");
+    
+    ss << ProcId;
+    ss >> midname;
+    
+    std::string filename_mesh = forename_mesh + midname + tailname;
+    std::string filename_flow = forename_flow + midname + tailname;
+    
+    std::ifstream myFile;
+    std::ofstream myFile_o("IOtest.dat");
+    myFile.open(filename_mesh);
+    if (myFile)
+    {
+        myFile >> nx0 >> ny0 >> nz0>> bfsize;
+        nx=nx0-1;
+        ny=ny0-1;
+        nz=nz0-1;
+        for(int i=0;i<3;i++)
+        {
+            xyz.push_back(Field(nx0,ny0,nz0));
+            xyz_center.push_back(Field(nx,ny,nz));
+        }
+        std::cout<<"Start reading mesh data..."<<std::endl;
+        for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+            readField(myFile,*iter);
+        std::cout<<"Mesh data has been read!"<<std::endl;
+        
+        std::cout<<"Start calculating mesh data..."<<std::endl;
+        getXYZ_center();
+        std::cout<<"Mesh data has been recalculated!"<<std::endl;
+        
+        for(auto iter=xyz_center.begin();iter!=xyz_center.end();iter++)
+            writeField(myFile_o,*iter);
+    }
+    else
+    {
+        std::cout<<"File \'"<<filename_mesh<<"\' does not exist!"<<std::endl;
+        exit(-1);
+    }
+    myFile.close();
+    
+    initialData(nx, ny, nz, myPhyMod);
+    myBC.initialBC(mybuffer,myMPI);
+    
 }
 void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
 {
-	int nx0=myField.getSizeX();
-	int ny0=myField.getSizeY();
-	int nz0=myField.getSizeZ();
-	for(int k=0;k<nz0;k++)
-	{
-		for(int j=0;j<ny0;j++)
-		{
-			for(int i=0;i<nx0;i++)
-			{
-				double value=myField.getValue(i,j,k);
-				myFile<<value<<" ";
-			}
-		}
-	}
-	myFile<<"\n";
+    int nx0=myField.getSizeX();
+    int ny0=myField.getSizeY();
+    int nz0=myField.getSizeZ();
+    myFile<<nx0<<" "<<ny0<<" "<<nz0<<"\n";
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                double value=myField.getValue(i,j,k);
+                myFile<<value<<" ";
+            }
+        }
+    }
+    myFile<<"\n";
 }
 
 
 void nuc3d::block::readField(std::ifstream &myFile, nuc3d::Field &myField)
 {
-	int nx0=myField.getSizeX();
-	int ny0=myField.getSizeY();
-	int nz0=myField.getSizeZ();
-	for(int k=0;k<nz0;k++)
-	{
-		for(int j=0;j<ny0;j++)
-		{
-			for(int i=0;i<nx0;i++)
-			{
-				double value;
-				if(!(myFile>>value))
-				{
-					std::cout<<"Error:End of File at "
-						<<"i= "<<i<<", j="<<j<<", k= "<<k
-						<<std::endl;
-					exit(-1);
-				}
-				myField.setValue(i,j,k,value);
-			}
-		}
-	}
-
+    int nx0=myField.getSizeX();
+    int ny0=myField.getSizeY();
+    int nz0=myField.getSizeZ();
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                double value;
+                if(!(myFile>>value))
+                {
+                    std::cout<<"Error:End of File at "
+                    <<"i= "<<i<<", j="<<j<<", k= "<<k
+                    <<std::endl;
+                    exit(-1);
+                }
+                myField.setValue(i,j,k,value);
+            }
+        }
+    }
+    
 }
+
+void nuc3d::block::getXYZ_center()
+{
+    auto beg=xyz.begin();
+    auto end=xyz.end();
+    
+    for(auto iter=beg;iter!=end;iter++)
+        interpolation_lag(*iter, xyz_center[iter-beg]);
+    
+}
+
+void nuc3d::block::interpolation_lag(const nuc3d::Field &input,nuc3d::Field &output)
+{
+    int Dim_node_xi=input.getSizeX();
+    int Dim_node_eta=input.getSizeY();
+    int Dim_node_zeta=input.getSizeZ();
+    
+    int tileDim_xi=(Dim_node_xi-1)/TILE_SIZE;
+    int tileDim_eta=(Dim_node_eta-1)/TILE_SIZE;
+    int tileDim_zeta=(Dim_node_zeta-1)/TILE_SIZE;
+    
+    for(int k_tile=0;k_tile!=tileDim_zeta;k_tile++)
+    {
+        for(int j_tile=0;j_tile!=tileDim_eta;j_tile++)
+        {
+            for(int i_tile=0;i_tile!=tileDim_xi;i_tile++)
+            {
+                double value=0.0;
+                int ibeg_center=i_tile*TILE_SIZE;
+                int jbeg_center=j_tile*TILE_SIZE;
+                int kbeg_center=k_tile*TILE_SIZE;
+                
+                int iend_center=(i_tile+1)*TILE_SIZE;
+                int jend_center=(j_tile+1)*TILE_SIZE;
+                int kend_center=(k_tile+1)*TILE_SIZE;
+                
+                int ibeg_node=i_tile*TILE_SIZE;
+                int jbeg_node=j_tile*TILE_SIZE;
+                int kbeg_node=k_tile*TILE_SIZE;
+                
+                int iend_node=(i_tile+1)*TILE_SIZE;
+                int jend_node=(j_tile+1)*TILE_SIZE;
+                int kend_node=(k_tile+1)*TILE_SIZE;
+                
+                for(int k=kbeg_center;k<kend_center;k++)
+                {
+                    for(int j=jbeg_center;j<jend_center;j++)
+                    {
+                        for(int i=ibeg_center;i<iend_center;i++)
+                        {
+                            value=interpolation_lag_center(ibeg_node, iend_node,
+                                                           jbeg_node, jend_node,
+                                                           kbeg_node, kend_node,
+                                                           input,
+                                                           i-ibeg_center,j-jbeg_center, k-kbeg_center);
+                            output.setValue(i, j, k, value);
+                            
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}
+
+double nuc3d::block::interpolation_lag_center(const int ibeg,const int iend,
+                                              const int jbeg,const int jend,
+                                              const int kbeg,const int kend,
+                                              const Field &myfield,
+                                              int idx_xi,int idx_eta,int idx_zeta)
+{
+    double value_zeta=0.0;
+    for(int k=kbeg;k<=kend;k++)
+    {
+        double value_eta=0.0;
+        for(int j=jbeg;j<=jend;j++)
+        {
+            double value_xi=0.0;
+            for(int i=ibeg;i<=iend;i++)
+            {
+                value_xi+=lag_coeff[idx_xi][i-ibeg]*myfield.getValue(i, j, k);
+            }
+            value_eta+=lag_coeff[idx_eta][j-jbeg]*value_xi;
+        }
+        value_zeta+=lag_coeff[idx_zeta][k-kbeg]*value_eta;
+    }
+    
+    return value_zeta;
+}
+
+void nuc3d::block::getJacobians()
+{
+    VectorField &xi_xyz=myFluxes->getXi_xyz(); // xyz_Xi
+    VectorField &eta_xyz=myFluxes->getEta_xyz();// xyz_Eta
+    VectorField &zeta_xyz=myFluxes->getZeta_xyz();// xyz_Zeta
+    
+    Field jac=myFluxes->getJac();
+    
+    auto beg=xyz.begin();
+    auto end=xyz.end();
+    
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        interpolation_derlag(*iter, xi_xyz[iter-beg],0);
+        interpolation_derlag(*iter, eta_xyz[iter-beg],1);
+        interpolation_derlag(*iter, zeta_xyz[iter-beg],2);
+    }
+    
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                double x_xi=xi_xyz[0].getValue(i, j, k);
+                double y_xi=xi_xyz[1].getValue(i, j, k);
+                double z_xi=xi_xyz[2].getValue(i, j, k);
+                
+                double x_eta=eta_xyz[0].getValue(i, j, k);
+                double y_eta=eta_xyz[1].getValue(i, j, k);
+                double z_eta=eta_xyz[2].getValue(i, j, k);
+                
+                double x_zeta=zeta_xyz[0].getValue(i, j, k);
+                double y_zeta=zeta_xyz[1].getValue(i, j, k);
+                double z_zeta=zeta_xyz[2].getValue(i, j, k);
+                
+                double jacob=1.0/(x_xi*(y_eta*z_zeta-y_zeta*z_eta)
+                                  +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
+                                  +x_zeta*(y_xi*z_eta-y_eta*z_xi));
+                
+                double xi_x=(y_eta*z_zeta-y_zeta*z_eta)*jacob;
+                double xi_y=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
+                double xi_z=(y_xi*z_eta-y_eta*z_xi)*jacob;
+                
+                double eta_x=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
+                double eta_y=(x_xi*z_zeta-x_zeta*z_xi)*jacob;
+                double eta_z=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
+                
+                double zeta_x=(y_xi*z_eta-y_eta*z_xi)*jacob;
+                double zeta_y=(x_eta*z_xi-x_xi*z_eta)*jacob;
+                double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
+                
+                xi_xyz[0].setValue(i, j, k, xi_x);
+                xi_xyz[1].setValue(i, j, k, xi_y);
+                xi_xyz[2].setValue(i, j, k, xi_z);
+                
+                eta_xyz[0].setValue(i, j, k, eta_x);
+                eta_xyz[1].setValue(i, j, k, eta_y);
+                eta_xyz[2].setValue(i, j, k, eta_z);
+                
+                zeta_xyz[0].setValue(i, j, k, zeta_x);
+                zeta_xyz[1].setValue(i, j, k, zeta_y);
+                zeta_xyz[2].setValue(i, j, k, zeta_z);
+                
+            }
+        }
+    }
+    
+}
+
+void nuc3d::block::interpolation_derlag(const nuc3d::Field &input,nuc3d::Field &output,int dir)
+{
+    int Dim_node_xi=input.getSizeX();
+    int Dim_node_eta=input.getSizeY();
+    int Dim_node_zeta=input.getSizeZ();
+    
+    int tileDim_xi=(Dim_node_xi-1)/TILE_SIZE;
+    int tileDim_eta=(Dim_node_eta-1)/TILE_SIZE;
+    int tileDim_zeta=(Dim_node_zeta-1)/TILE_SIZE;
+    
+    for(int k_tile=0;k_tile!=tileDim_zeta;k_tile++)
+    {
+        for(int j_tile=0;j_tile!=tileDim_eta;j_tile++)
+        {
+            for(int i_tile=0;i_tile!=tileDim_xi;i_tile++)
+            {
+                double value=0.0;
+                int ibeg_center=i_tile*TILE_SIZE;
+                int jbeg_center=j_tile*TILE_SIZE;
+                int kbeg_center=k_tile*TILE_SIZE;
+                
+                int iend_center=(i_tile+1)*TILE_SIZE;
+                int jend_center=(j_tile+1)*TILE_SIZE;
+                int kend_center=(k_tile+1)*TILE_SIZE;
+                
+                int ibeg_node=i_tile*TILE_SIZE;
+                int jbeg_node=j_tile*TILE_SIZE;
+                int kbeg_node=k_tile*TILE_SIZE;
+                
+                int iend_node=(i_tile+1)*TILE_SIZE;
+                int jend_node=(j_tile+1)*TILE_SIZE;
+                int kend_node=(k_tile+1)*TILE_SIZE;
+                
+                for(int k=kbeg_center;k<kend_center;k++)
+                {
+                    for(int j=jbeg_center;j<jend_center;j++)
+                    {
+                        for(int i=ibeg_center;i<iend_center;i++)
+                        {
+                            value=(this->*der_lag[dir])(ibeg_node,
+                                                        iend_node,
+                                                        jbeg_node,
+                                                        jend_node,
+                                                        kbeg_node,
+                                                        kend_node,
+                                                        input,
+                                                        i-ibeg_center,
+                                                        j-jbeg_center,
+                                                        k-kbeg_center);
+                            output.setValue(i, j, k, value);
+                            
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}
+
+double nuc3d::block::interpolation_derlag_center_xi(const int ibeg,
+                                                    const int iend,
+                                                    const int jbeg,
+                                                    const int jend,
+                                                    const int kbeg,
+                                                    const int kend,
+                                                    const Field &myfield,
+                                                    int idx_xi,
+                                                    int idx_eta,
+                                                    int idx_zeta)
+{
+    double value_zeta=0.0;
+    for(int k=kbeg;k<=kend;k++)
+    {
+        double value_eta=0.0;
+        for(int j=jbeg;j<=jend;j++)
+        {
+            double value_xi=0.0;
+            for(int i=ibeg;i<=iend;i++)
+            {
+                value_xi+=derlag_coeff[idx_xi][i-ibeg]*myfield.getValue(i, j, k);
+            }
+            value_eta+=lag_coeff[idx_eta][j-jbeg]*value_xi;
+        }
+        value_zeta+=lag_coeff[idx_zeta][k-kbeg]*value_eta;
+    }
+    
+    return value_zeta;
+}
+
+double nuc3d::block::interpolation_derlag_center_eta(const int ibeg,
+                                                     const int iend,
+                                                     const int jbeg,
+                                                     const int jend,
+                                                     const int kbeg,
+                                                     const int kend,
+                                                     const Field &myfield,
+                                                     int idx_xi,
+                                                     int idx_eta,
+                                                     int idx_zeta)
+{
+    double value_zeta=0.0;
+    for(int k=kbeg;k<=kend;k++)
+    {
+        double value_eta=0.0;
+        for(int j=jbeg;j<=jend;j++)
+        {
+            double value_xi=0.0;
+            for(int i=ibeg;i<=iend;i++)
+            {
+                value_xi+=lag_coeff[idx_xi][i-ibeg]*myfield.getValue(i, j, k);
+            }
+            value_eta+=derlag_coeff[idx_eta][j-jbeg]*value_xi;
+        }
+        value_zeta+=lag_coeff[idx_zeta][k-kbeg]*value_eta;
+    }
+    
+    return value_zeta;
+}
+
+double nuc3d::block::interpolation_derlag_center_zeta(const int ibeg,
+                                                      const int iend,
+                                                      const int jbeg,
+                                                      const int jend,
+                                                      const int kbeg,
+                                                      const int kend,
+                                                      const Field &myfield,
+                                                      int idx_xi,
+                                                      int idx_eta,
+                                                      int idx_zeta)
+{
+    double value_zeta=0.0;
+    for(int k=kbeg;k<=kend;k++)
+    {
+        double value_eta=0.0;
+        for(int j=jbeg;j<=jend;j++)
+        {
+            double value_xi=0.0;
+            for(int i=ibeg;i<=iend;i++)
+            {
+                value_xi+=lag_coeff[idx_xi][i-ibeg]*myfield.getValue(i, j, k);
+            }
+            value_eta+=lag_coeff[idx_eta][j-jbeg]*value_xi;
+        }
+        value_zeta+=derlag_coeff[idx_zeta][k-kbeg]*value_eta;
+    }
+    
+    return value_zeta;
+}
+
 void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
 {
-	myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
-
-	if("Euler3d"==myPhy.getMyModelName())
-	{
-		myFluxes=std::make_shared<EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
-	}
-	else if ("EulerReactive3d"==myPhy.getMyModelName())
-	{
-		//        myFluxes=std::make_shared<EulerReactiveData3D>(nx0,ny0,nz0,myPhy.getEqNum());
-	}
-	else if ("NaiverStokes3d"==myPhy.getMyModelName())
-	{
-		//        myFluxes=std::make_shared<NaiverStokesData3d>(nx0,ny0,nz0,myPhy.getEqNum());
-	}
-	else if ("NaiverStokesReactive3d"==myPhy.getMyModelName())
-	{
-		//        myFluxes=std::make_shared<NaiverStokesReactiveData3d>(nx0,ny0,nz0,myPhy.getEqNum());
-	}
-	else
-	{
-		std::cout <<"Model Name:"<<myPhy.getMyModelName()
-			<<"does not exist!"
-			<<std::endl;
-		exit(-1);
-	}
-
-	for(int n=0;n<myPhy.getEqNum();n++)
-		mybuffer.push_back(bufferData(nx,ny,nz,bfsize));
-
-	std::cout<<"Field data has been allocated!"<<std::endl;
+    myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
+    
+    if("Euler3d"==myPhy.getMyModelName())
+    {
+        myFluxes=std::make_shared<EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
+    }
+    else if ("EulerReactive3d"==myPhy.getMyModelName())
+    {
+        //        myFluxes=std::make_shared<EulerReactiveData3D>(nx0,ny0,nz0,myPhy.getEqNum());
+    }
+    else if ("NaiverStokes3d"==myPhy.getMyModelName())
+    {
+        //        myFluxes=std::make_shared<NaiverStokesData3d>(nx0,ny0,nz0,myPhy.getEqNum());
+    }
+    else if ("NaiverStokesReactive3d"==myPhy.getMyModelName())
+    {
+        //        myFluxes=std::make_shared<NaiverStokesReactiveData3d>(nx0,ny0,nz0,myPhy.getEqNum());
+    }
+    else
+    {
+        std::cout <<"Model Name:"<<myPhy.getMyModelName()
+        <<"does not exist!"
+        <<std::endl;
+        exit(-1);
+    }
+    
+    for(int n=0;n<myPhy.getEqNum();n++)
+        mybuffer.push_back(bufferData(nx,ny,nz,bfsize));
+    
+    std::cout<<"Field data has been allocated!"<<std::endl;
 }
 
 void nuc3d::block::solve(fieldOperator3d &myOP,
-		physicsModel &myPhyMod,
-		MPIComunicator3d_nonblocking &myMPI,
-		boundaryCondition &myBC,
-		IOController &myIO)
+                         physicsModel &myPhyMod,
+                         MPIComunicator3d_nonblocking &myMPI,
+                         boundaryCondition &myBC,
+                         IOController &myIO)
 {
-	int step=0;
-
-	while (myOP.getSteps()!=step)
-	{
-		myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
-		myPDE.solve(myOP, step++);
-	}
-
-	istep++;
-	myIO.myIOController["currentStep"]=istep;
-
-	dt=myPDE.getDt();
-	time+=dt;
-
-	myIO.myTimeController["dt"]=dt;
-	myIO.myTimeController["currentTime"]=time;
-
-
-	RES=myPDE.getRes();
+    int step=0;
+    
+    while (myOP.getSteps()!=step)
+    {
+        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
+        myPDE.solve(myOP, step++);
+    }
+    
+    istep++;
+    myIO.myIOController["currentStep"]=istep;
+    
+    dt=myPDE.getDt();
+    time+=dt;
+    
+    myIO.myTimeController["dt"]=dt;
+    myIO.myTimeController["currentTime"]=time;
+    
+    
+    RES=myPDE.getRes();
 }
 
 void nuc3d::block::printStatus()
 {
-	std::cout<<"step "<<istep<< ", time = "<<time<<", residual = "<<RES<<std::endl;
-}
-
-void nuc3d::block::ReadXYZ()
-{
-
-	myFluxes->initialxyz(xyz);
-}
-
-void nuc3d::block::ReadPDE()
-{
-
+    std::cout<<"step "<<istep<< ", time = "<<time<<", residual = "<<RES<<std::endl;
 }
 
