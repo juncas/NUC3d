@@ -108,6 +108,10 @@ namespace nuc3d
         
         void getJacobians();
         
+        void initialQ();
+        
+        void outputQ();
+        
         void interpolation_lag(const Field &,Field &);
         
         double interpolation_lag_center(const int ,

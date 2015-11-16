@@ -42,7 +42,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     std::string forename_mesh = ("mesh_");
     std::string forename_flow = ("flow_");
     std::string midname;
-    std::string tailname = (".dat");
+    std::string tailname = (".x");
     
     ss << ProcId;
     ss >> midname;
@@ -74,9 +74,6 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
         std::cout<<"Center data has been calculated..."<<std::endl;
         std::cout<<"Mesh data has been recalculated!"<<std::endl;
         //writeField(myFile_o,*iter);
-        
-        
-        
     }
     else
     {
@@ -88,14 +85,19 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
-    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
-        writeField(myFile_o, *iter);
-    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
-            writeField(myFile_o, *iter);
-    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
-        writeField(myFile_o, *iter);
+//    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
+//        writeField(myFile_o, *iter);
+//    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
+//            writeField(myFile_o, *iter);
+//    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+//        writeField(myFile_o, *iter);
     
     std::cout<<"Jacobians has been calculated..."<<std::endl;
+    initialQ();
+    
+    //for(auto iter=myPDE.getQ().begin();iter!=myPDE.getQ().end();iter++)
+    //    writeField(myFile_o, *iter);
+    outputQ();
     myBC.initialBC(mybuffer,myMPI);
     
 }
@@ -112,7 +114,7 @@ void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
             for(int i=0;i<nx0;i++)
             {
                 double value=myField.getValue(i,j,k);
-                myFile<<value<<" ";
+                myFile<<std::setprecision(12)<<value<<" ";
             }
         }
     }
@@ -257,7 +259,10 @@ void nuc3d::block::getJacobians()
         interpolation_derlag(*iter, zeta_xyz[iter-beg],2);
     }
     
+    std::cout<<std::endl;
+    
     std::cout<<"xx_xyz has been calculated ..."<<std::endl;
+    std::cout<<"Calculating Jacobians calculated ..."<<std::endl;
     
     
     int nx0=jac.getSizeX();
@@ -297,10 +302,6 @@ void nuc3d::block::getJacobians()
                 double zeta_y=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
                 double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
                 
-               // xi_xyz[0].setValue(i, j, k, xi_x);
-                //xi_xyz[1].setValue(i, j, k, xi_y);
-               // xi_xyz[2].setValue(i, j, k, xi_z);
-                
                 xi_xyz[0].setValue(i, j, k, xi_x);
                 xi_xyz[1].setValue(i, j, k, xi_y);
                 xi_xyz[2].setValue(i, j, k, xi_z);
@@ -331,7 +332,7 @@ void nuc3d::block::interpolation_derlag(const nuc3d::Field &input,nuc3d::Field &
     int tileDim_eta=(Dim_node_eta-1)/TILE_SIZE;
     int tileDim_zeta=(Dim_node_zeta-1)/TILE_SIZE;
     
-    std::cout<<"Interpolating ..."<<std::endl;
+    std::cout<<"...";
     for(int k_tile=0;k_tile!=tileDim_zeta;k_tile++)
     {
         for(int j_tile=0;j_tile!=tileDim_eta;j_tile++)
@@ -506,6 +507,7 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
     
     std::cout<<"Field data has been allocated!"<<std::endl;
 }
+std::string TECplotHeader("title=NUC3d\nvariables=\"x\",\"y\",\"z\",\"rho\",\"u\",\"v\",\"w\",\"p\"\n");
 
 void nuc3d::block::solve(fieldOperator3d &myOP,
                          physicsModel &myPhyMod,
@@ -515,27 +517,164 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
 {
     int step=0;
     
-    while (myOP.getSteps()!=step)
-    {
-        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
-        myPDE.solve(myOP, step++);
+   // while (myOP.getSteps()!=step)
+    {        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
+    //    myPDE.solve(myOP, step++);
     }
+    Field &jac=myFluxes->getJac();
+    VectorField &W=myFluxes->getPrimatives();
     
-    istep++;
-    myIO.myIOController["currentStep"]=istep;
+    double rho,u,v,w,p;
+    double x,y,z;
     
-    dt=myPDE.getDt();
-    time+=dt;
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
     
-    myIO.myTimeController["dt"]=dt;
-    myIO.myTimeController["currentTime"]=time;
+    std::ofstream myIOfile("output_W.dat");
     
+    myIOfile<<TECplotHeader;
+    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
     
-    RES=myPDE.getRes();
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                x=xyz_center[0].getValue(i, j, k);
+                y=xyz_center[1].getValue(i, j, k);
+                z=xyz_center[2].getValue(i, j, k);
+                
+                rho=W[0].getValue(i, j, k);
+                u=W[1].getValue(i, j, k);
+                v=W[2].getValue(i, j, k);
+                w=W[3].getValue(i, j, k);
+                p=W[4].getValue(i, j, k);
+                
+                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
+                
+            }
+        }
+    }
+
+//    istep++;
+//    myIO.myIOController["currentStep"]=istep;
+//    
+//    dt=myPDE.getDt();
+//    time+=dt;
+//    
+//    myIO.myTimeController["dt"]=dt;
+//    myIO.myTimeController["currentTime"]=time;
+//    
+//    
+//    RES=myPDE.getRes();
 }
 
 void nuc3d::block::printStatus()
 {
     std::cout<<"step "<<istep<< ", time = "<<time<<", residual = "<<RES<<std::endl;
+}
+
+void nuc3d::block::initialQ()
+{
+    Field &jac=myFluxes->getJac();
+    VectorField &Q=myPDE.getQ();
+    
+    double rho,u,v,w,p;
+    double rhou,rhov,rhow,rhoe;
+    double x,y,z;
+    double jacobian;
+    
+    double x_c=5.0;
+    double y_c=5.0;
+    double gamma=1.4;
+    double b=0.5;
+    double pie=4.0*atan(1.0);
+    
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
+    
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                x=xyz_center[0].getValue(i, j, k);
+                y=xyz_center[1].getValue(i, j, k);
+                z=xyz_center[2].getValue(i, j, k);
+                jacobian=jac.getValue(i, j, k);
+                
+                double r_sq=std::pow((x-x_c),2)+std::pow((y-y_c), 2);
+                
+                rho=pow(1.0-(gamma-1.0)*b*b/8.0/gamma/pie/pie*std::exp(1.0-r_sq),1/(gamma-1.0));
+                
+                u=0.5-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
+                v=b/2.0/pie*exp((1-r_sq)/2.0)*(x-x_c);
+                w=0.0;
+                
+                p=pow(rho,gamma);
+                
+                rhou=rho*u;
+                rhov=rho*v;
+                rhow=rho*w;
+                rhoe=(p/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
+                
+                Q[0].setValue(i, j, k, rho/jacobian);
+                Q[1].setValue(i, j, k, rhou/jacobian);
+                Q[2].setValue(i, j, k, rhov/jacobian);
+                Q[3].setValue(i, j, k, rhow/jacobian);
+                Q[4].setValue(i, j, k, rhoe/jacobian);
+            }
+        }
+    }
+    
+}
+
+
+void nuc3d::block::outputQ()
+{
+    Field &jac=myFluxes->getJac();
+    VectorField &Q=myPDE.getQ();
+    
+    double rho,u,v,w,p;
+    double x,y,z;
+    double jacobian;
+    double gamma=1.4;
+    
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
+    
+    std::ofstream myIOfile("output.dat");
+    
+    myIOfile<<TECplotHeader;
+    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
+    
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                x=xyz_center[0].getValue(i, j, k);
+                y=xyz_center[1].getValue(i, j, k);
+                z=xyz_center[2].getValue(i, j, k);
+                jacobian=jac.getValue(i, j, k);
+                
+                rho=Q[0].getValue(i, j, k)*jacobian;
+                u=Q[1].getValue(i, j, k)*jacobian;
+                v=Q[2].getValue(i, j, k)*jacobian;
+                w=Q[3].getValue(i, j, k)*jacobian;
+                p=(Q[4].getValue(i, j, k)*jacobian-0.5*rho*(u*u+v*v+w*w))*(gamma-1.0);
+                
+                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
+               
+            }
+        }
+    }
+    
 }
 

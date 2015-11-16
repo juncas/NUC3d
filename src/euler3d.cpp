@@ -198,28 +198,36 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 {
     
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
-    nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
-    nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
-    nuc3d::EulerData3D::solveRHS(myPDE);
+    //nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
+    //nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
+    //nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    //nuc3d::EulerData3D::solveRHS(myPDE);
 }
 
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
                                       physicsModel &myModel)
 {
+    std::cout<<"solving Riemann..."<<"\n";
+
     myModel.solveRiemann(myPDE, this);
 }
 
 void nuc3d::EulerData3D::solveCon2Prim(PDEData3d &myPDE,
                                       physicsModel &myModel)
 {
+    std::cout<<"solving con2prim..."<<"\n";
+
     myModel.solve(myPDE, this);
+    
+    
 }
 
 void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
                                               physicsModel &myModel,
                                               boundaryCondition &myBC)
 {
+    std::cout<<"solving BC..."<<"\n";
+
     myBC.setBC(myPDE, myModel, *this);
 }
 

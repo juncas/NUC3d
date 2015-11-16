@@ -32,7 +32,7 @@ nuc3d::singleBlock::~singleBlock()
 void nuc3d::singleBlock::loop()
 {
 	initialBlock();
-//	solvePDE();
+	solvePDE();
 }
 
 void nuc3d::singleBlock::initialBlock()
@@ -48,13 +48,13 @@ void nuc3d::singleBlock::initialBlock()
 
 void nuc3d::singleBlock::solvePDE()
 {
-	while (myIO.ifsolve())
+	//while (myIO.ifsolve())
 	{
 		myBlock.solve(myOperator, myPhys, myMPI, myBC, myIO);
 
-		if(0==myMPI.getMyId()) myBlock.printStatus();
+		//if(0==myMPI.getMyId()) myBlock.printStatus();
 
-		if (myIO.ifsave()) output();
+		//if (myIO.ifsave()) output();
 	}
 
 	if(0==myMPI.getMyId()) std::cout<<"Calculation finished!!"<<std::endl;

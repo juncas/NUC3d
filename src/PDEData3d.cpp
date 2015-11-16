@@ -34,6 +34,7 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
     nEquations=neqs;
     for(int i=0;i<neqs;i++)
     {
+        Q.push_back(Field(nx0,ny0,nz0));
         Q_Euler.push_back(Field(nx0,ny0,nz0));
         Q_work.push_back(Field(nx0,ny0,nz0));
     }
