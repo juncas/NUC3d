@@ -89,8 +89,8 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
 //        writeField(myFile_o, *iter);
 //    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
 //            writeField(myFile_o, *iter);
-//    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
-//        writeField(myFile_o, *iter);
+    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+        writeField(myFile_o, *iter);
     
     std::cout<<"Jacobians has been calculated..."<<std::endl;
     initialQ();
@@ -522,7 +522,9 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
     //    myPDE.solve(myOP, step++);
     }
     Field &jac=myFluxes->getJac();
-    VectorField &W=myFluxes->getPrimatives();
+    VectorField &fp_xi=myFluxes->getFluxXi().FluxR;
+    VectorField &fp_eta=myFluxes->getFluxEta().FluxR;
+    VectorField &fp_zeta=myFluxes->getFluxZeta().FluxR;
     
     double rho,u,v,w,p;
     double x,y,z;
@@ -531,8 +533,9 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
     int ny0=jac.getSizeY();
     int nz0=jac.getSizeZ();
     
-    std::ofstream myIOfile("output_W.dat");
+    std::ofstream myIOfile;
     
+    myIOfile.open("output_xi.dat");
     myIOfile<<TECplotHeader;
     myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
     
@@ -546,18 +549,75 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
                 y=xyz_center[1].getValue(i, j, k);
                 z=xyz_center[2].getValue(i, j, k);
                 
-                rho=W[0].getValue(i, j, k);
-                u=W[1].getValue(i, j, k);
-                v=W[2].getValue(i, j, k);
-                w=W[3].getValue(i, j, k);
-                p=W[4].getValue(i, j, k);
+                rho=fp_xi[0].getValue(i, j, k);
+                u=fp_xi[1].getValue(i, j, k);
+                v=fp_xi[2].getValue(i, j, k);
+                w=fp_xi[3].getValue(i, j, k);
+                p=fp_xi[4].getValue(i, j, k);
                 
                 myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
                 
             }
         }
     }
-
+    myIOfile.close();
+    
+    
+    myIOfile.open("output_eta.dat");
+    myIOfile<<TECplotHeader;
+    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
+    
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                x=xyz_center[0].getValue(i, j, k);
+                y=xyz_center[1].getValue(i, j, k);
+                z=xyz_center[2].getValue(i, j, k);
+                
+                rho=fp_eta[0].getValue(i, j, k);
+                u=fp_eta[1].getValue(i, j, k);
+                v=fp_eta[2].getValue(i, j, k);
+                w=fp_eta[3].getValue(i, j, k);
+                p=fp_eta[4].getValue(i, j, k);
+                
+                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
+                
+            }
+        }
+    }
+    myIOfile.close();
+    
+    
+    myIOfile.open("output_zeta.dat");
+    myIOfile<<TECplotHeader;
+    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
+    
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                x=xyz_center[0].getValue(i, j, k);
+                y=xyz_center[1].getValue(i, j, k);
+                z=xyz_center[2].getValue(i, j, k);
+                
+                rho=fp_zeta[0].getValue(i, j, k);
+                u=fp_zeta[1].getValue(i, j, k);
+                v=fp_zeta[2].getValue(i, j, k);
+                w=fp_zeta[3].getValue(i, j, k);
+                p=fp_zeta[4].getValue(i, j, k);
+                
+                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
+                
+            }
+        }
+    }
+    
+    myIOfile.close();
 //    istep++;
 //    myIO.myIOController["currentStep"]=istep;
 //    
@@ -611,7 +671,7 @@ void nuc3d::block::initialQ()
                 
                 rho=pow(1.0-(gamma-1.0)*b*b/8.0/gamma/pie/pie*std::exp(1.0-r_sq),1/(gamma-1.0));
                 
-                u=0.5-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
+                u=-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
                 v=b/2.0/pie*exp((1-r_sq)/2.0)*(x-x_c);
                 w=0.0;
                 

@@ -144,7 +144,7 @@ void nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
 
 void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)
 {
-	RiemannSolver(myEoSName,
+	RiemannSolver(myRiemannName,
 			myEuler->jacobian,
 			myEuler->xi_xyz,
 			myEuler->W_Euler,
@@ -152,7 +152,7 @@ void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)
 			myPDE.getQ(),
 			myEuler->Flux_xi);
 
-	RiemannSolver(myEoSName,
+	RiemannSolver(myRiemannName,
 			myEuler->jacobian,
 			myEuler->eta_xyz,
 			myEuler->W_Euler,
@@ -160,7 +160,7 @@ void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)
 			myPDE.getQ(),
 			myEuler->Flux_eta);
 
-	RiemannSolver(myEoSName,
+	RiemannSolver(myRiemannName,
 			myEuler->jacobian,
 			myEuler->zeta_xyz,
 			myEuler->W_Euler,
@@ -407,7 +407,7 @@ void nuc3d::physicsModel::RiemannAUSM(
 
 				alpha = W0_vec[2].getValue(i, j, k);
 
-				U0=xx_x*u + xx_y*v + xx_z*w;
+				U0=(xx_x*u + xx_y*v + xx_z*w);
 				theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
 				MaxEigenLocal=std::abs(U0)+alpha*theta;
 				mach = U0 / alpha;
@@ -428,27 +428,26 @@ void nuc3d::physicsModel::RiemannAUSM(
 				auto iterE = Q_vec.begin() + 4;
 
 				fluxp[0] = machp*alpha*iterRho->getValue(i, j, k);
-				fluxp[1] = machp*alpha*iterU->getValue(i, j, k) + xx_x*p_p;
-				fluxp[2] = machp*alpha*iterV->getValue(i, j, k) + xx_y*p_p;
-				fluxp[3] = machp*alpha*iterW->getValue(i, j, k) + xx_z*p_p;
-				fluxp[4] = machp*alpha*iterE->getValue(i, j, k) + machp*alpha*p;
+				fluxp[1] = machp*alpha*iterU->getValue(i, j, k) + xx_x*p_p/jac;
+				fluxp[2] = machp*alpha*iterV->getValue(i, j, k) + xx_y*p_p/jac;
+				fluxp[3] = machp*alpha*iterW->getValue(i, j, k) + xx_z*p_p/jac;
+				fluxp[4] = machp*alpha*iterE->getValue(i, j, k) + machp*alpha*p/jac;
 
 				fluxn[0] = machn*alpha*iterRho->getValue(i, j, k);
-				fluxn[1] = machn*alpha*iterU->getValue(i, j, k) + xx_x*p_n;
-				fluxn[2] = machn*alpha*iterV->getValue(i, j, k) + xx_y*p_n;
-				fluxn[3] = machn*alpha*iterW->getValue(i, j, k) + xx_z*p_n;
-				fluxn[4] = machn*alpha*iterE->getValue(i, j, k) + machp*alpha*p;
+				fluxn[1] = machn*alpha*iterU->getValue(i, j, k) + xx_x*p_n/jac;
+				fluxn[2] = machn*alpha*iterV->getValue(i, j, k) + xx_y*p_n/jac;
+				fluxn[3] = machn*alpha*iterW->getValue(i, j, k) + xx_z*p_n/jac;
+				fluxn[4] = machn*alpha*iterE->getValue(i, j, k) + machp*alpha*p/jac;
 
 				for (auto iter = FluxL.begin(); (iter - FluxL.begin()) != 5; iter++)
 					iter->setValue(i, j, k, fluxp[iter - FluxL.begin()]);
 				for (auto iter = FluxL.begin() + 5; iter != FluxL.end(); iter++)
-					iter->setValue(i, j, k, machp*alpha*W_vec[iter - FluxL.begin()].getValue(i, j, k));
+					iter->setValue(i, j, k, machp*alpha*Q_vec[iter - FluxL.begin()].getValue(i, j, k));
 
 				for (auto iter = FluxR.begin(); (iter - FluxR.begin()) != 5; iter++)
 					iter->setValue(i, j, k, fluxn[iter - FluxR.begin()]);
 				for (auto iter = FluxR.begin() + 5; iter != FluxR.end(); iter++)
-					iter->setValue(i, j, k, machn*alpha*W_vec[iter - FluxR.begin()].getValue(i, j, k));
-
+					iter->setValue(i, j, k, machn*alpha*Q_vec[iter - FluxR.begin()].getValue(i, j, k));
 
 			}
 

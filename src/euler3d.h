@@ -16,7 +16,7 @@ namespace nuc3d
     {
         friend class physicsModel;
         friend class EulerData3D;
-        
+    public:
         VectorField FluxL;
         VectorField FluxR;
         VectorField reconstFluxL;

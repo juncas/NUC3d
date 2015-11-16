@@ -30,14 +30,14 @@ namespace nuc3d
 			int FaceId
 			)
 		{
-			return 1 + FaceId * 10 + ProcId * 10000;
+			return 1 + FaceId * 10000 + ProcId * 100;
 		};
 		int setMPIRecvTag(
 			int ProcId,
 			int FaceId
 			)
 		{
-			return  FaceId * 10 + ProcId * 10000;
+			return  FaceId * 10000 + ProcId * 100;
 		};
 
 	};

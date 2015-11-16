@@ -15,7 +15,7 @@ FluxL(neqs,Field(nx0,ny0,nz0)),
 FluxR(neqs,Field(nx0,ny0,nz0)),
 reconstFluxL(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
 reconstFluxR(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
-reconstFlux(neqs,Field(nx0,ny0,nz0)),
+reconstFlux(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
 maxEigen(1.0)
 {
     
@@ -198,10 +198,10 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 {
     
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    //nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
-    //nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
-    //nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
-    //nuc3d::EulerData3D::solveRHS(myPDE);
+    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
+    nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
+    nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    nuc3d::EulerData3D::solveRHS(myPDE);
 }
 
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
@@ -368,6 +368,7 @@ void nuc3d::EulerData3D::getDt()
     double dt_zeta=1.0/Flux_zeta.maxEigen;
     
     dt=std::min(std::min(dt_xi, dt_eta),dt_zeta);
+    std::cout<<"dt_local = "<<dt<<std::endl;
 }
 
 #endif
