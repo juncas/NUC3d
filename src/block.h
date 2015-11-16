@@ -99,7 +99,8 @@ namespace nuc3d
         pDer_lag der_lag[3]={
         &nuc3d::block::interpolation_derlag_center_xi,
         &nuc3d::block::interpolation_derlag_center_eta,
-        &nuc3d::block::interpolation_derlag_center_zeta};
+        &nuc3d::block::interpolation_derlag_center_zeta
+        };
                            
         void initialData(int,int,int,physicsModel &);
         

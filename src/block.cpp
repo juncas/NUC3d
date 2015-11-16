@@ -71,10 +71,12 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
         
         std::cout<<"Start calculating mesh data..."<<std::endl;
         getXYZ_center();
+        std::cout<<"Center data has been calculated..."<<std::endl;
         std::cout<<"Mesh data has been recalculated!"<<std::endl;
+        //writeField(myFile_o,*iter);
         
-        for(auto iter=xyz_center.begin();iter!=xyz_center.end();iter++)
-            writeField(myFile_o,*iter);
+        
+        
     }
     else
     {
@@ -84,6 +86,16 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     myFile.close();
     
     initialData(nx, ny, nz, myPhyMod);
+    getJacobians();
+    
+    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
+        writeField(myFile_o, *iter);
+    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
+            writeField(myFile_o, *iter);
+    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+        writeField(myFile_o, *iter);
+    
+    std::cout<<"Jacobians has been calculated..."<<std::endl;
     myBC.initialBC(mybuffer,myMPI);
     
 }
@@ -230,7 +242,10 @@ void nuc3d::block::getJacobians()
     VectorField &eta_xyz=myFluxes->getEta_xyz();// xyz_Eta
     VectorField &zeta_xyz=myFluxes->getZeta_xyz();// xyz_Zeta
     
-    Field jac=myFluxes->getJac();
+    Field &jac=myFluxes->getJac();
+    
+    std::cout<<"Start calculate xyz_xi, xyz_eta, xyz_zta ..."<<std::endl;
+    
     
     auto beg=xyz.begin();
     auto end=xyz.end();
@@ -241,6 +256,9 @@ void nuc3d::block::getJacobians()
         interpolation_derlag(*iter, eta_xyz[iter-beg],1);
         interpolation_derlag(*iter, zeta_xyz[iter-beg],2);
     }
+    
+    std::cout<<"xx_xyz has been calculated ..."<<std::endl;
+    
     
     int nx0=jac.getSizeX();
     int ny0=jac.getSizeY();
@@ -271,13 +289,17 @@ void nuc3d::block::getJacobians()
                 double xi_y=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
                 double xi_z=(y_xi*z_eta-y_eta*z_xi)*jacob;
                 
-                double eta_x=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
+                double eta_x=(x_zeta*z_eta-x_eta*z_zeta)*jacob;
                 double eta_y=(x_xi*z_zeta-x_zeta*z_xi)*jacob;
-                double eta_z=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
+                double eta_z=(x_eta*z_xi-x_xi*z_eta)*jacob;
                 
-                double zeta_x=(y_xi*z_eta-y_eta*z_xi)*jacob;
-                double zeta_y=(x_eta*z_xi-x_xi*z_eta)*jacob;
+                double zeta_x=(x_eta*y_zeta-x_zeta*y_eta)*jacob;
+                double zeta_y=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
                 double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
+                
+               // xi_xyz[0].setValue(i, j, k, xi_x);
+                //xi_xyz[1].setValue(i, j, k, xi_y);
+               // xi_xyz[2].setValue(i, j, k, xi_z);
                 
                 xi_xyz[0].setValue(i, j, k, xi_x);
                 xi_xyz[1].setValue(i, j, k, xi_y);
@@ -290,6 +312,8 @@ void nuc3d::block::getJacobians()
                 zeta_xyz[0].setValue(i, j, k, zeta_x);
                 zeta_xyz[1].setValue(i, j, k, zeta_y);
                 zeta_xyz[2].setValue(i, j, k, zeta_z);
+                
+                jac.setValue(i, j, k, jacob);
                 
             }
         }
@@ -307,6 +331,7 @@ void nuc3d::block::interpolation_derlag(const nuc3d::Field &input,nuc3d::Field &
     int tileDim_eta=(Dim_node_eta-1)/TILE_SIZE;
     int tileDim_zeta=(Dim_node_zeta-1)/TILE_SIZE;
     
+    std::cout<<"Interpolating ..."<<std::endl;
     for(int k_tile=0;k_tile!=tileDim_zeta;k_tile++)
     {
         for(int j_tile=0;j_tile!=tileDim_eta;j_tile++)
@@ -428,6 +453,7 @@ double nuc3d::block::interpolation_derlag_center_zeta(const int ibeg,
                                                       int idx_eta,
                                                       int idx_zeta)
 {
+
     double value_zeta=0.0;
     for(int k=kbeg;k<=kend;k++)
     {
