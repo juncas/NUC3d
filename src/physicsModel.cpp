@@ -405,11 +405,11 @@ void nuc3d::physicsModel::RiemannAUSM(
 				w = W_vec[3].getValue(i, j, k);
 				p = W_vec[4].getValue(i, j, k);
 
-				alpha = W0_vec[2].getValue(i, j, k);
+				theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
+				alpha = W0_vec[2].getValue(i, j, k)*theta;
 
 				U0=(xx_x*u + xx_y*v + xx_z*w);
-				theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
-				MaxEigenLocal=std::abs(U0)+alpha*theta;
+				MaxEigenLocal=std::abs(U0)+alpha;
 				mach = U0 / alpha;
 
 				MaxEigen=(MaxEigen>=MaxEigenLocal)?MaxEigen:MaxEigenLocal;
@@ -426,7 +426,6 @@ void nuc3d::physicsModel::RiemannAUSM(
 				auto iterV = Q_vec.begin() + 2;
 				auto iterW = Q_vec.begin() + 3;
 				auto iterE = Q_vec.begin() + 4;
-
 				fluxp[0] = machp*alpha*iterRho->getValue(i, j, k);
 				fluxp[1] = machp*alpha*iterU->getValue(i, j, k) + xx_x*p_p/jac;
 				fluxp[2] = machp*alpha*iterV->getValue(i, j, k) + xx_y*p_p/jac;
@@ -450,7 +449,6 @@ void nuc3d::physicsModel::RiemannAUSM(
 					iter->setValue(i, j, k, machn*alpha*Q_vec[iter - FluxR.begin()].getValue(i, j, k));
 
 			}
-
 };
 
 double nuc3d::physicsModel::getMachL(const double &mach)
@@ -483,7 +481,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
 double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {    double pressureL;
 	if (std::abs(mach) < 1.0)
-		pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach) + 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2.0));
+		pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach) + 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2));
 	else
 		pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
 
@@ -494,7 +492,7 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 {
 	double pressureR;
 	if (std::abs(mach) < 1.0)
-		pressureR = p*(0.25*pow(mach - 1.0, 2.0)*(2.0 + mach) - 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2));
+		pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach) - 0.1875*mach*pow(pow(mach, 2.0) - 1.0, 2));
 	else
 		pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
 
@@ -530,7 +528,7 @@ void nuc3d::physicsModel::EoSIdealGasFWD(const double &rho,
 	p = (E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
 	T = gamma*Mach*Mach*p / rho;
 	e = p / rho / (gamma - 1.0);
-	alpha = sqrt(std::abs(T)) / Mach;
+	alpha =sqrt(gamma*p/rho) ;//sqrt(std::abs(T)) / Mach;
 };
 
 void nuc3d::physicsModel::EoSIdealGasBWD(

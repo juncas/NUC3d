@@ -353,7 +353,7 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         Field &rf = pReconFlux[iter - pFlux.begin()];
         bufferData &bf = myBuff[iter - pFlux.begin()];
         
-        bf.setBufferSend(*iter);
+        bf.setBufferSend(*iter,dir);
         
         myMPI.bufferSendRecv(bf, 0);
         
@@ -363,8 +363,11 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir*2], bf.BufferRecv[dir*2+1], dir, 1, rf);
         
+
+        
         MPI_Barrier(MPI_COMM_WORLD);
     }
+       
     
 }
 
@@ -384,7 +387,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         Field &rf = pReconFlux[iter - pFlux.begin()];
         bufferData &bf = myBuff[iter - pFlux.begin()];
         
-        bf.setBufferSend(*iter);
+        bf.setBufferSend(*iter,dir);
         
         myMPI.bufferSendRecv(bf, 0);
         

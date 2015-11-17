@@ -53,46 +53,58 @@ nuc3d::bufferData::~bufferData()
 /**************************************************************************************
  Definition of member functions
  **************************************************************************************/
-void nuc3d::bufferData::setBufferSend(Field& myField)
+void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
 {
-    for (int k = 0; k < nz; k++)
-    {
-        for (int j = 0; j < ny; j++)
-        {
-            for (int i = 0; i < bufferWidth; i++)
+    switch (dir) {
+        case 0:
+            for (int k = 0; k < nz; k++)
             {
-                BufferSend[0].setValue(i,j,k,myField.getValue(i, j, k));
-                BufferSend[1].setValue(i, j, k, myField.getValue(i + (nx - bufferWidth), j, k));
+                for (int j = 0; j < ny; j++)
+                {
+                    for (int i = 0; i < bufferWidth; i++)
+                    {
+                        BufferSend[0].setValue(i,j,k,myField.getValue(i, j, k));
+                        BufferSend[1].setValue(i, j, k, myField.getValue(i + (nx - bufferWidth), j, k));
+                    }
+                    
+                }
             }
             
-        }
+            break;
+            
+        case 1:
+            for (int k = 0; k < nz; k++)
+            {
+                for (int j = 0; j < bufferWidth; j++)
+                {
+                    for (int i = 0; i < nx; i++)
+                    {
+                        BufferSend[2].setValue(i,j,k, myField.getValue(i, j, k));
+                        BufferSend[3].setValue(i, j, k, myField.getValue(i, j + (ny - bufferWidth), k));
+                    }
+                    
+                }
+            }
+            
+            break;
+        case 2:
+            for (int k = 0; k < bufferWidth; k++)
+            {
+                for (int j = 0; j < ny; j++)
+                {
+                    for (int i = 0; i < nx; i++)
+                    {
+                        BufferSend[4].setValue(i, j, k, myField.getValue(i, j, k));
+                        BufferSend[5].setValue(i, j, k, myField.getValue(i, j, k + (nz - bufferWidth)));
+                    }
+                    
+                }
+            }
+            
+            break;
     }
     
-    for (int k = 0; k < nz; k++)
-    {
-        for (int j = 0; j < bufferWidth; j++)
-        {
-            for (int i = 0; i < nx; i++)
-            {
-                BufferSend[2].setValue(i,j,k, myField.getValue(i, j, k));
-                BufferSend[3].setValue(i, j, k, myField.getValue(i, j + (ny - bufferWidth), k));
-            }
-            
-        }
-    }
     
-    for (int k = 0; k < bufferWidth; k++)
-    {
-        for (int j = 0; j < ny; j++)
-        {
-            for (int i = 0; i < nx; i++)
-            {
-                BufferSend[4].setValue(i, j, k, myField.getValue(i, j, k));
-                BufferSend[5].setValue(i, j, k, myField.getValue(i, j, k + (nz - bufferWidth)));
-            }
-            
-        }
-    }
     
 };
 /**************************************************************************************

@@ -150,7 +150,7 @@ void nuc3d::weno5js::interpolationBoundary(
             { 
                 for(int i=0;i<nx;++i)
                 {
-                    if(!(((i-strideL*dim0)>=0)&&((j-strideL*dim1)>=0)&&((k-strideL*dim2)>=0)))
+                    if(!(((i-3*dim0)>=0)&&((j-3*dim1)>=0)&&((k-3*dim2)>=0)))
                     {
                         for(int z=-2;z<=2;z++)
                         {

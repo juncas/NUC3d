@@ -289,19 +289,20 @@ void nuc3d::block::getJacobians()
                 double jacob=1.0/(x_xi*(y_eta*z_zeta-y_zeta*z_eta)
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
                                   +x_zeta*(y_xi*z_eta-y_eta*z_xi));
-                
+               
+               
                 double xi_x=(y_eta*z_zeta-y_zeta*z_eta)*jacob;
-                double xi_y=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
-                double xi_z=(y_xi*z_eta-y_eta*z_xi)*jacob;
+                double xi_y=(x_zeta*z_eta-x_eta*z_zeta)*jacob;
+                double xi_z=(x_eta*y_zeta-x_zeta*y_eta)*jacob;
                 
-                double eta_x=(x_zeta*z_eta-x_eta*z_zeta)*jacob;
+                double eta_x=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
                 double eta_y=(x_xi*z_zeta-x_zeta*z_xi)*jacob;
-                double eta_z=(x_eta*z_xi-x_xi*z_eta)*jacob;
+                double eta_z=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
                 
-                double zeta_x=(x_eta*y_zeta-x_zeta*y_eta)*jacob;
-                double zeta_y=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
+                double zeta_x=(y_xi*z_eta-y_eta*z_xi)*jacob;
+                double zeta_y=(x_eta*z_xi-x_xi*z_eta)*jacob;
                 double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
-                
+ 
                 xi_xyz[0].setValue(i, j, k, xi_x);
                 xi_xyz[1].setValue(i, j, k, xi_y);
                 xi_xyz[2].setValue(i, j, k, xi_z);

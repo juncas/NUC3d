@@ -37,7 +37,7 @@ namespace nuc3d
         ~bufferData();
         
     public:
-        void setBufferSend(Field &);
+        void setBufferSend(Field &,int);
     };
     
     typedef std::vector<bufferData> VectorBuffer;
