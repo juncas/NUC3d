@@ -107,9 +107,91 @@ void nuc3d::EulerData3D::setDerivativesInv()
     Flux_eta.combineFluxLR();
     Flux_zeta.combineFluxLR();
     
-    setDerivativesXiInv();
-    setDerivativesEtaInv();
-    setDerivativesZetaInv();
+    EulerData3D::setDerivativesXiInv();
+    EulerData3D::setDerivativesEtaInv();
+    EulerData3D::setDerivativesZetaInv();
+    
+//    
+//    std::ofstream myFile;
+//    
+//    std::string TECplotHeader("title=NUC3d\nvariables=\"x\",\"y\",\"z\",\"rho\",\"u\",\"v\",\"w\",\"p\"\n");
+//    
+//    myFile.open("dervitives_xi.dat");
+//    
+//    auto beg=dfdxi.begin();
+//    auto end=dfdxi.end();
+//    myFile<<TECplotHeader;
+//    myFile<<"Zone I = "<<beg->getSizeX()<<", J= "<<beg->getSizeY()<<", K="<<beg->getSizeZ()<<"\n";
+//    
+//    for (int k=0; k<beg->getSizeZ(); k++)
+//    {
+//        for (int j=0; j<beg->getSizeY(); j++)
+//        {
+//            for (int i=0; i<beg->getSizeX(); i++)
+//            {
+//                myFile<<i*10.0/32<<" "<<j*10.0/32<<" "<<k*10.0/32<<" ";
+//                
+//                for(auto iter=beg;iter!=end;iter++)
+//                    myFile<<iter->getValue(i, j, k)<<" ";
+//                
+//                myFile<<"\n";
+//            }
+//        }
+//    }
+//    myFile.close();
+////==================
+//    myFile.open("dervitives_eta.dat");
+//    
+//    beg=dgdeta.begin();
+//    end=dgdeta.end();
+//    myFile<<TECplotHeader;
+//    myFile<<"Zone I = "<<beg->getSizeX()<<", J= "<<beg->getSizeY()<<", K="<<beg->getSizeZ()<<"\n";
+//    
+//    for (int k=0; k<beg->getSizeZ(); k++)
+//    {
+//        for (int j=0; j<beg->getSizeY(); j++)
+//        {
+//            for (int i=0; i<beg->getSizeX(); i++)
+//            {
+//                myFile<<i*10.0/32<<" "<<j*10.0/32<<" "<<k*10.0/32<<" ";
+//                
+//                for(auto iter=beg;iter!=end;iter++)
+//                    myFile<<iter->getValue(i, j, k)<<" ";
+//                
+//                myFile<<"\n";
+//            }
+//        }
+//    }
+//    myFile.close();
+//    //==================
+//    myFile.open("dervitives_zeta.dat");
+//    
+//    beg=dhdzeta.begin();
+//    end=dhdzeta.end();
+//    myFile<<TECplotHeader;
+//    myFile<<"Zone I = "<<beg->getSizeX()<<", J= "<<beg->getSizeY()<<", K="<<beg->getSizeZ()<<"\n";
+//    
+//    for (int k=0; k<beg->getSizeZ(); k++)
+//    {
+//        for (int j=0; j<beg->getSizeY(); j++)
+//        {
+//            for (int i=0; i<beg->getSizeX(); i++)
+//            {
+//                myFile<<i*10.0/32<<" "<<j*10.0/32<<" "<<k*10.0/32<<" ";
+//                
+//                for(auto iter=beg;iter!=end;iter++)
+//                    myFile<<iter->getValue(i, j, k)<<" ";
+//                
+//                myFile<<"\n";
+//            }
+//        }
+//    }
+//    myFile.close();
+//
+//    
+//    exit(0);
+    
+    
 }
 
 void nuc3d::EulerData3D::setDerivativesXiInv()
@@ -177,7 +259,7 @@ void nuc3d::EulerData3D::setDerivativesZetaInv()
                 {
                     double df=iter->getValue(i, j, k)-iter->getValue(i, j, k-1);
                     
-                    dfdxi[iter-flux.begin()].setValue(i, j, k-1, df);
+                    dhdzeta[iter-flux.begin()].setValue(i, j, k-1, df);
                 }
             }
         }
@@ -207,27 +289,19 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
                                       physicsModel &myModel)
 {
-    std::cout<<"solving Riemann..."<<"\n";
-
     myModel.solveRiemann(myPDE, this);
 }
 
 void nuc3d::EulerData3D::solveCon2Prim(PDEData3d &myPDE,
                                       physicsModel &myModel)
 {
-    std::cout<<"solving con2prim..."<<"\n";
-
     myModel.solve(myPDE, this);
-    
-    
 }
 
 void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
                                               physicsModel &myModel,
                                               boundaryCondition &myBC)
 {
-    std::cout<<"solving BC..."<<"\n";
-
     myBC.setBC(myPDE, myModel, *this);
 }
 
@@ -287,7 +361,7 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         myMPI.waitAllSendRecv(bf);
         
-        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir+1], dir, 1, rf);
+        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir*2], bf.BufferRecv[dir*2+1], dir, 1, rf);
         
         MPI_Barrier(MPI_COMM_WORLD);
     }
@@ -318,7 +392,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         
         myMPI.waitAllSendRecv(bf);
         
-        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir], bf.BufferRecv[dir + 1], dir, -1, rf);
+        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir*2], bf.BufferRecv[dir*2 + 1], dir, -1, rf);
         
         MPI_Barrier(MPI_COMM_WORLD);
     }
@@ -367,8 +441,6 @@ void nuc3d::EulerData3D::getDt()
     double dt_eta=1.0/Flux_eta.maxEigen;
     double dt_zeta=1.0/Flux_zeta.maxEigen;
     
-    dt=std::min(std::min(dt_xi, dt_eta),dt_zeta);
-    std::cout<<"dt_local = "<<dt<<std::endl;
-}
+    dt=std::min(std::min(dt_xi, dt_eta),dt_zeta);}
 
 #endif

@@ -95,7 +95,16 @@ nuc3d::field3d<T>::~field3d()
 template<typename T> 
 int nuc3d::field3d<T>::getIndex(int i,int j,int k) const
 {
-	return k*nx*ny+j*nx+i;
+    if ((i<nx)&&(j<ny)&&(k<nz)) {
+        return k*nx*ny+j*nx+i;
+    }
+    else
+    {
+        std::cout<<"INDEX do not match field size\n"
+        <<i<<" "<<j<<" "<<k<<"\n"
+        <<nx<<" "<<ny<<" "<<nz<<"\n";
+        exit(-1);
+    }
 };
 
 template<typename T> 

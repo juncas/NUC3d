@@ -66,6 +66,7 @@ namespace nuc3d
         double dt;
         int istep;
         double RES;
+        double wall_time;
         
     public:
         block();
@@ -83,6 +84,7 @@ namespace nuc3d
                    IOController &);
         
         void printStatus();
+        void outputQ();
     private:
         
        typedef double (block::*pDer_lag)(const int ,
@@ -110,7 +112,6 @@ namespace nuc3d
         
         void initialQ();
         
-        void outputQ();
         
         void interpolation_lag(const Field &,Field &);
         

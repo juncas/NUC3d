@@ -143,7 +143,7 @@ bool nuc3d::IOController::ifsave()
     int saveStep=myIOController["saveStep"];
     int currentStep=myIOController["currentStep"];
     
-    if(currentStep%saveStep)
+    if(currentStep%saveStep==0)
         return true;
     else
         return false;

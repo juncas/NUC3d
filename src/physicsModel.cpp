@@ -437,7 +437,7 @@ void nuc3d::physicsModel::RiemannAUSM(
 				fluxn[1] = machn*alpha*iterU->getValue(i, j, k) + xx_x*p_n/jac;
 				fluxn[2] = machn*alpha*iterV->getValue(i, j, k) + xx_y*p_n/jac;
 				fluxn[3] = machn*alpha*iterW->getValue(i, j, k) + xx_z*p_n/jac;
-				fluxn[4] = machn*alpha*iterE->getValue(i, j, k) + machp*alpha*p/jac;
+				fluxn[4] = machn*alpha*iterE->getValue(i, j, k) + machn*alpha*p/jac;
 
 				for (auto iter = FluxL.begin(); (iter - FluxL.begin()) != 5; iter++)
 					iter->setValue(i, j, k, fluxp[iter - FluxL.begin()]);

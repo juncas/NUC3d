@@ -21,13 +21,13 @@ void nuc3d::tvdrk3rd::integrationAll(const VectorField &RHS, // Right-hand-side:
 {
     switch(nstep)
     {
-        case 1:
+        case 0:
             rk1st(RHS,Q,Qi,dt);
             break;
-        case 2:
+        case 1:
             rk2nd(RHS,Q,Qi,dt);
             break;
-        case 3:
+        case 2:
             rk3rd(RHS,Q,Qi,dt);
             break;
     }
@@ -56,7 +56,6 @@ void nuc3d::tvdrk3rd::rk1st(const VectorField &RHS,
                 {
                     double rhs=-RHS[iter-beg].getValue(i,j,k);
                     double u=iter->getValue(i, j, k);
-                    
                     double u1 = coeff_tvdrk3_alpha0[0][0]*u
                     +coeff_tvdrk3_alpha0[0][1]*rhs*dt;
                     

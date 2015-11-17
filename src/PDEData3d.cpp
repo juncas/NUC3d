@@ -21,11 +21,13 @@ nEquations(neqs),
 Q(neqs,Field(nx0,ny0,nz0)),
 Q_Euler(neqs,Field(nx0,ny0,nz0)),
 Q_work(neqs,Field(nx0,ny0,nz0)),
+RHS(neqs,Field(nx0,ny0,nz0)),
 dt_local(0.0),
 dt_global(0.0),
 res_global(0.0),
 res_local(0.0)
 {
+    std::cout<<"RHS size = "<<RHS.size()<<std::endl;
     
 }
 
@@ -37,6 +39,7 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
         Q.push_back(Field(nx0,ny0,nz0));
         Q_Euler.push_back(Field(nx0,ny0,nz0));
         Q_work.push_back(Field(nx0,ny0,nz0));
+        RHS.push_back(Field(nx0,ny0,nz0));
     }
     
     dt_local=0.0;
@@ -70,18 +73,20 @@ nuc3d::VectorField& nuc3d::PDEData3d::getQcurrent()
 void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,
                              int step)
 {
-    if(step==1)
+
+    if(step==0)
     {
         Q_Euler=Q_work;
         
         MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
     }
-    myOP.timeIntegral(RHS, Q_Euler,Q_work, dt_global, step);
-    
-    if(step==3)
+    myOP.timeIntegral(RHS, Q_Euler,Q_work, 0.5*dt_global, step);
+    if(step==2)
     {
         setRES();
     }
+    MPI_Barrier(MPI_COMM_WORLD);
+    
 }
 
 void  nuc3d::PDEData3d::setRES()

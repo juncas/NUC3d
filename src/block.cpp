@@ -507,6 +507,7 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
     
     std::cout<<"Field data has been allocated!"<<std::endl;
 }
+
 std::string TECplotHeader("title=NUC3d\nvariables=\"x\",\"y\",\"z\",\"rho\",\"u\",\"v\",\"w\",\"p\"\n");
 
 void nuc3d::block::solve(fieldOperator3d &myOP,
@@ -516,124 +517,31 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
                          IOController &myIO)
 {
     int step=0;
-    
-   // while (myOP.getSteps()!=step)
-    {        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
-    //    myPDE.solve(myOP, step++);
-    }
-    Field &jac=myFluxes->getJac();
-    VectorField &fp_xi=myFluxes->getFluxXi().FluxR;
-    VectorField &fp_eta=myFluxes->getFluxEta().FluxR;
-    VectorField &fp_zeta=myFluxes->getFluxZeta().FluxR;
-    
-    double rho,u,v,w,p;
-    double x,y,z;
-    
-    int nx0=jac.getSizeX();
-    int ny0=jac.getSizeY();
-    int nz0=jac.getSizeZ();
-    
-    std::ofstream myIOfile;
-    
-    myIOfile.open("output_xi.dat");
-    myIOfile<<TECplotHeader;
-    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
-    
-    for(int k=0;k<nz0;k++)
+    double t0=MPI_Wtime();
+    while (myOP.getSteps()!=step)
     {
-        for(int j=0;j<ny0;j++)
-        {
-            for(int i=0;i<nx0;i++)
-            {
-                x=xyz_center[0].getValue(i, j, k);
-                y=xyz_center[1].getValue(i, j, k);
-                z=xyz_center[2].getValue(i, j, k);
-                
-                rho=fp_xi[0].getValue(i, j, k);
-                u=fp_xi[1].getValue(i, j, k);
-                v=fp_xi[2].getValue(i, j, k);
-                w=fp_xi[3].getValue(i, j, k);
-                p=fp_xi[4].getValue(i, j, k);
-                
-                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
-                
-            }
-        }
+        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
+        myPDE.solve(myOP, step++);
     }
-    myIOfile.close();
+    double t1=MPI_Wtime();
+    
+    wall_time=t1-t0;
+    istep++;
+    myIO.myIOController["currentStep"]=istep;
+    
+    dt=myPDE.getDt();
+    time+=dt;
+    
+    myIO.myTimeController["dt"]=dt;
+    myIO.myTimeController["currentTime"]=time;
     
     
-    myIOfile.open("output_eta.dat");
-    myIOfile<<TECplotHeader;
-    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
-    
-    for(int k=0;k<nz0;k++)
-    {
-        for(int j=0;j<ny0;j++)
-        {
-            for(int i=0;i<nx0;i++)
-            {
-                x=xyz_center[0].getValue(i, j, k);
-                y=xyz_center[1].getValue(i, j, k);
-                z=xyz_center[2].getValue(i, j, k);
-                
-                rho=fp_eta[0].getValue(i, j, k);
-                u=fp_eta[1].getValue(i, j, k);
-                v=fp_eta[2].getValue(i, j, k);
-                w=fp_eta[3].getValue(i, j, k);
-                p=fp_eta[4].getValue(i, j, k);
-                
-                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
-                
-            }
-        }
-    }
-    myIOfile.close();
-    
-    
-    myIOfile.open("output_zeta.dat");
-    myIOfile<<TECplotHeader;
-    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
-    
-    for(int k=0;k<nz0;k++)
-    {
-        for(int j=0;j<ny0;j++)
-        {
-            for(int i=0;i<nx0;i++)
-            {
-                x=xyz_center[0].getValue(i, j, k);
-                y=xyz_center[1].getValue(i, j, k);
-                z=xyz_center[2].getValue(i, j, k);
-                
-                rho=fp_zeta[0].getValue(i, j, k);
-                u=fp_zeta[1].getValue(i, j, k);
-                v=fp_zeta[2].getValue(i, j, k);
-                w=fp_zeta[3].getValue(i, j, k);
-                p=fp_zeta[4].getValue(i, j, k);
-                
-                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
-                
-            }
-        }
-    }
-    
-    myIOfile.close();
-//    istep++;
-//    myIO.myIOController["currentStep"]=istep;
-//    
-//    dt=myPDE.getDt();
-//    time+=dt;
-//    
-//    myIO.myTimeController["dt"]=dt;
-//    myIO.myTimeController["currentTime"]=time;
-//    
-//    
-//    RES=myPDE.getRes();
+    RES=myPDE.getRes();
 }
 
 void nuc3d::block::printStatus()
 {
-    std::cout<<"step "<<istep<< ", time = "<<time<<", residual = "<<RES<<std::endl;
+    std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
 }
 
 void nuc3d::block::initialQ()
@@ -671,7 +579,7 @@ void nuc3d::block::initialQ()
                 
                 rho=pow(1.0-(gamma-1.0)*b*b/8.0/gamma/pie/pie*std::exp(1.0-r_sq),1/(gamma-1.0));
                 
-                u=-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
+                u=0.5-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
                 v=b/2.0/pie*exp((1-r_sq)/2.0)*(x-x_c);
                 w=0.0;
                 
@@ -708,8 +616,20 @@ void nuc3d::block::outputQ()
     int ny0=jac.getSizeY();
     int nz0=jac.getSizeZ();
     
-    std::ofstream myIOfile("output.dat");
+    std::string forename_flow = ("flow_");
+    std::string midname;
+    std::string tailname = (".dat");
     
+    std::stringstream ss;
+    ss << istep;
+    ss >> midname;
+    
+    std::string filename_flow = forename_flow + midname + tailname;
+    
+
+    std::ofstream myIOfile;
+    
+    myIOfile.open(filename_flow);
     myIOfile<<TECplotHeader;
     myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
     
