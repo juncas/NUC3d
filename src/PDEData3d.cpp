@@ -70,7 +70,7 @@ nuc3d::VectorField& nuc3d::PDEData3d::getQcurrent()
     return Q_Euler;
 }
 
-void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,
+void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,double cfl,
                              int step)
 {
 

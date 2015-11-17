@@ -522,7 +522,7 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
     while (myOP.getSteps()!=step)
     {
         myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
-        myPDE.solve(myOP, step++);
+        myPDE.solve(myOP, myIO.myTimeController["cfl"],step++);
     }
     double t1=MPI_Wtime();
     

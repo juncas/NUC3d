@@ -70,7 +70,7 @@ namespace nuc3d
         
         void setDt(double);
         
-        void solve(fieldOperator3d &,
+        void solve(fieldOperator3d &,double,
                    int);
         
     private:
