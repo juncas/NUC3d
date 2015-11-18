@@ -49,6 +49,9 @@ namespace nuc3d
         VectorField xyz;
         VectorField xyz_center;
         
+        VectorField OutPutValue_prim;
+        VectorField OutPutValue_acoust;
+        
         PDEData3d myPDE;
         
         /*
@@ -84,7 +87,7 @@ namespace nuc3d
                    IOController &);
         
         void printStatus();
-        void outputQ();
+        void outputQ(int,physicsModel&);
     private:
         
        typedef double (block::*pDer_lag)(const int ,

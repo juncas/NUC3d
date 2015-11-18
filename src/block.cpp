@@ -85,19 +85,16 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
-//    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
-//        writeField(myFile_o, *iter);
-//    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
-//            writeField(myFile_o, *iter);
+    //    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
+    //        writeField(myFile_o, *iter);
+    //    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
+    //            writeField(myFile_o, *iter);
     for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
         writeField(myFile_o, *iter);
     
     std::cout<<"Jacobians has been calculated..."<<std::endl;
     initialQ();
     
-    //for(auto iter=myPDE.getQ().begin();iter!=myPDE.getQ().end();iter++)
-    //    writeField(myFile_o, *iter);
-    outputQ();
     myBC.initialBC(mybuffer,myMPI);
     
 }
@@ -106,7 +103,7 @@ void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
     int nx0=myField.getSizeX();
     int ny0=myField.getSizeY();
     int nz0=myField.getSizeZ();
-    myFile<<nx0<<" "<<ny0<<" "<<nz0<<"\n";
+    
     for(int k=0;k<nz0;k++)
     {
         for(int j=0;j<ny0;j++)
@@ -114,11 +111,11 @@ void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
             for(int i=0;i<nx0;i++)
             {
                 double value=myField.getValue(i,j,k);
-                myFile<<std::setprecision(12)<<value<<" ";
+                myFile<<std::setprecision(12)<<value<<"\n";
             }
         }
     }
-    myFile<<"\n";
+    //myFile<<"\n";
 }
 
 
@@ -289,8 +286,8 @@ void nuc3d::block::getJacobians()
                 double jacob=1.0/(x_xi*(y_eta*z_zeta-y_zeta*z_eta)
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
                                   +x_zeta*(y_xi*z_eta-y_eta*z_xi));
-               
-               
+                
+                
                 double xi_x=(y_eta*z_zeta-y_zeta*z_eta)*jacob;
                 double xi_y=(x_zeta*z_eta-x_eta*z_zeta)*jacob;
                 double xi_z=(x_eta*y_zeta-x_zeta*y_eta)*jacob;
@@ -302,7 +299,7 @@ void nuc3d::block::getJacobians()
                 double zeta_x=(y_xi*z_eta-y_eta*z_xi)*jacob;
                 double zeta_y=(x_eta*z_xi-x_xi*z_eta)*jacob;
                 double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
- 
+                
                 xi_xyz[0].setValue(i, j, k, xi_x);
                 xi_xyz[1].setValue(i, j, k, xi_y);
                 xi_xyz[2].setValue(i, j, k, xi_z);
@@ -455,7 +452,7 @@ double nuc3d::block::interpolation_derlag_center_zeta(const int ibeg,
                                                       int idx_eta,
                                                       int idx_zeta)
 {
-
+    
     double value_zeta=0.0;
     for(int k=kbeg;k<=kend;k++)
     {
@@ -504,12 +501,19 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
     }
     
     for(int n=0;n<myPhy.getEqNum();n++)
+    {
         mybuffer.push_back(bufferData(nx,ny,nz,bfsize));
+        OutPutValue_prim.push_back(Field(nx,ny,nz));
+    }
+    
+    for (int n=0; n<3; n++)
+    {
+        OutPutValue_acoust.push_back(Field(nx,ny,nz));
+    }
     
     std::cout<<"Field data has been allocated!"<<std::endl;
 }
 
-std::string TECplotHeader("title=NUC3d\nvariables=\"x\",\"y\",\"z\",\"rho\",\"u\",\"v\",\"w\",\"p\"\n");
 
 void nuc3d::block::solve(fieldOperator3d &myOP,
                          physicsModel &myPhyMod,
@@ -603,58 +607,69 @@ void nuc3d::block::initialQ()
 }
 
 
-void nuc3d::block::outputQ()
+void nuc3d::block::outputQ(int myID,physicsModel &myPhys)
 {
-    Field &jac=myFluxes->getJac();
-    VectorField &Q=myPDE.getQ();
-    
-    double rho,u,v,w,p;
-    double x,y,z;
-    double jacobian;
-    double gamma=1.4;
-    
-    int nx0=jac.getSizeX();
-    int ny0=jac.getSizeY();
-    int nz0=jac.getSizeZ();
-    
-    std::string forename_flow = ("flow_");
-    std::string midname;
+    std::string forename_flow = ("NUC3d_ID_");
+    std::string step;
+    std::string mid("_Step_");
+    std::string id;
     std::string tailname = (".dat");
     
-    std::stringstream ss;
-    ss << istep;
-    ss >> midname;
+    std::stringstream ss_step,ss_id;
+    ss_step << istep;
+    ss_step >> step;
     
-    std::string filename_flow = forename_flow + midname + tailname;
+    ss_id<<myID;
+    ss_id>>id;
     
-
+    std::string filename_flow = forename_flow + id + mid + step + tailname;
+    
     std::ofstream myIOfile;
     
     myIOfile.open(filename_flow);
-    myIOfile<<TECplotHeader;
-    myIOfile<<"Zone I = "<<nx0<<", J= "<<ny0<<", K="<<nz0<<"\n";
     
-    for(int k=0;k<nz0;k++)
+    Field &jac=myFluxes->getJac();
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
+    myPhys.getPrim(jac, myPDE.getQ(), OutPutValue_prim, OutPutValue_acoust);
+    
+    std::string TECplotHeader[2]={"title=NUC3d\n",
+        "variables=x,y,z"};
+    
+    myIOfile<<TECplotHeader[0]
+    <<TECplotHeader[1];
+    
+    for(int i=0;i<(OutPutValue_prim.size()+OutPutValue_acoust.size());i++)
     {
-        for(int j=0;j<ny0;j++)
-        {
-            for(int i=0;i<nx0;i++)
-            {
-                x=xyz_center[0].getValue(i, j, k);
-                y=xyz_center[1].getValue(i, j, k);
-                z=xyz_center[2].getValue(i, j, k);
-                jacobian=jac.getValue(i, j, k);
-                
-                rho=Q[0].getValue(i, j, k)*jacobian;
-                u=Q[1].getValue(i, j, k)*jacobian;
-                v=Q[2].getValue(i, j, k)*jacobian;
-                w=Q[3].getValue(i, j, k)*jacobian;
-                p=(Q[4].getValue(i, j, k)*jacobian-0.5*rho*(u*u+v*v+w*w))*(gamma-1.0);
-                
-                myIOfile<<x<<" "<<y<<" "<<z<<" "<<rho<<" "<<u<<" "<<v<<" "<<w<<" "<<p<<"\n";
-               
-            }
-        }
+        std::string head("Val_");
+        std::string temp;
+        std::stringstream sstemp;
+        
+        sstemp<<i;
+        sstemp>>temp;
+        myIOfile<<","<<head+temp;
+    }
+    
+    myIOfile<<"\n Zone I = "<<nx0+1<<", J= "<<ny0+1<<", K="<<nz0+1
+    <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
+    <<xyz.size()+OutPutValue_prim.size()+OutPutValue_acoust.size()
+    <<"]=CELLCENTERED)\n";
+    
+    for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    
+    for(auto iter=OutPutValue_prim.begin();iter!=OutPutValue_prim.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    for(auto iter=OutPutValue_acoust.begin();iter!=OutPutValue_acoust.end();iter++)
+    {
+        writeField(myIOfile, *iter);
     }
     
 }

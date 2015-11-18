@@ -63,7 +63,7 @@ void nuc3d::singleBlock::solvePDE()
 void nuc3d::singleBlock::output()
 {
     std::cout<<"Saving......"<<std::endl;
-    myBlock.outputQ();
+    myBlock.outputQ(myMPI.getMyId(),myPhys);
 }
 
 

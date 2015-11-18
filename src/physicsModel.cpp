@@ -134,12 +134,22 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
 
 void nuc3d::physicsModel::solve(PDEData3d &myPDE,EulerData3D *myEuler)
 {
-	con2prim(myEoSName,
-			myEuler->jacobian,
-			myPDE.getQ(),
-			myEuler->W_Euler,
-			myEuler->W0_Euler);
+    con2prim(myEoSName,
+             myEuler->jacobian,
+             myPDE.getQ(),
+             myEuler->W_Euler,
+             myEuler->W0_Euler);
+    
+}
 
+void nuc3d::physicsModel::getPrim(Field &jac,VectorField &Q,VectorField &Prim, VectorField &Acoust)
+{
+    con2prim(myEoSName,
+             jac,
+             Q,
+             Prim,
+             Acoust);
+    
 }
 
 void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)

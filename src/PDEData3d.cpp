@@ -153,6 +153,7 @@ void nuc3d::PDEData3d::setQ_clean(Field &jac)
     int nx=jac.getSizeX();
     int ny=jac.getSizeY();
     int nz=jac.getSizeZ();
+    
     auto beg=Q_work.begin();
     auto end=Q_work.end();
     

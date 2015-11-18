@@ -98,6 +98,7 @@ namespace nuc3d
                            double &T,
                            double &e,
                            double &alpha);
+        void getPrim(Field &jac,VectorField &Q,VectorField &Prim, VectorField &Acoust);
     private:
         void RiemannSolver(const std::string &,
                            const Field &,
