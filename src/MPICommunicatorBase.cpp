@@ -11,8 +11,6 @@ nuc3d::MPICommunicator::MPICommunicator()
 {
 	MPI_Comm_rank(MPI_COMM_WORLD, &myProc);
 	MPI_Comm_size(MPI_COMM_WORLD, &nProc);
-	std::cout<<"myId is "<<myProc<<std::endl;
-	std::cout<<"total Proc is "<<nProc<<std::endl;
 }
 
 nuc3d::MPICommunicator::~MPICommunicator()

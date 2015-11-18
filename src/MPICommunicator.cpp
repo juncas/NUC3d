@@ -31,7 +31,6 @@ void nuc3d::MPIComunicator3d_nonblocking::setTopo(std::vector<faceBC> &bcTopo)
 		NeighBours[iter-bcTopo.begin()] = ((iter->Type != BoundaryFace) ? iter->Type : MPI_PROC_NULL);
 		NeighBourFaces[iter-bcTopo.begin()] = iter->id;
 	}
-	std::cout<<"MPI Topo has been set!"<<std::endl;
 };
 
 void nuc3d::MPIComunicator3d_nonblocking::bufferSendRecv(bufferData& buffer, int blockId)

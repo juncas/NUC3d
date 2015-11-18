@@ -48,8 +48,8 @@ nuc3d::physicsModel::physicsModel() :
 		     )
 {
 	std::string str;
-	std::ifstream file("PhysModel.in");
-	std::cout<<"Start reading PhysModel.in ..."<<std::endl;
+	std::ifstream file("inp/PhysModel.in");
+	//std::cout<<"Start reading PhysModel.in ..."<<std::endl;
 	if (file)
 	{
 		// this order should not change
@@ -91,7 +91,7 @@ nuc3d::physicsModel::physicsModel() :
 		}
 
 		while (readPhysFile(file));
-		std::cout<<"PhysModel.in has been read!"<<std::endl;
+		//std::cout<<"PhysModel.in has been read!"<<std::endl;
 	}
 	else
 	{
@@ -120,7 +120,6 @@ std::istream& nuc3d::physicsModel::readPhysFile(std::istream& ios)
 	if (myModelParameters.find(word0) != myModelParameters.end())
 	{
 		myModelParameters[word0] = value;
-		std::cout<<word0<<" = "<<value<<std::endl;
 	}
 	else if(word0.size())
 	{

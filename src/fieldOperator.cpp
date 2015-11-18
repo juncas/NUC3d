@@ -19,9 +19,9 @@ nuc3d::fieldOperator3d::fieldOperator3d():
 			}
 		 )
 {
-	std::ifstream file("Method.in");
+	std::ifstream file("inp/Method.in");
 	auto count=MethodMap.size();
-	std::cout<<"Reading Method input file..."<<std::endl;
+	//std::cout<<"Reading Method input file..."<<std::endl;
 	if(file)
 	{
 		while(readIOFile(file,MethodMap))
@@ -100,7 +100,6 @@ std::istream& nuc3d::fieldOperator3d::readIOFile(
 		std::string value;
 		value0>>value;
 		Methods[word0]=value;
-		std::cout<<word0<<" = "<<value<<std::endl;
 	}
 	else if(word0.size())
 	{

@@ -39,7 +39,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     int ProcId = myMPI.getMyId();
     int nx0, ny0, nz0;
     
-    std::string forename_mesh = ("mesh_");
+    std::string forename_mesh = ("mesh/mesh_");
     std::string forename_flow = ("flow_");
     std::string midname;
     std::string tailname = (".x");
@@ -64,15 +64,14 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
             xyz.push_back(Field(nx0,ny0,nz0));
             xyz_center.push_back(Field(nx,ny,nz));
         }
-        std::cout<<"Start reading mesh data..."<<std::endl;
+        if(myMPI.getMyId()==0) std::cout<<"Start reading mesh data..."<<std::endl;
         for(auto iter=xyz.begin();iter!=xyz.end();iter++)
             readField(myFile,*iter);
-        std::cout<<"Mesh data has been read!"<<std::endl;
+         if(myMPI.getMyId()==0) std::cout<<"Mesh data has been read!"<<std::endl;
         
-        std::cout<<"Start calculating mesh data..."<<std::endl;
+         if(myMPI.getMyId()==0) std::cout<<"Start calculating mesh data..."<<std::endl;
         getXYZ_center();
-        std::cout<<"Center data has been calculated..."<<std::endl;
-        std::cout<<"Mesh data has been recalculated!"<<std::endl;
+         if(myMPI.getMyId()==0) std::cout<<"Center data has been calculated..."<<std::endl;
         //writeField(myFile_o,*iter);
     }
     else
@@ -85,14 +84,10 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
-    //    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
-    //        writeField(myFile_o, *iter);
-    //    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
-    //            writeField(myFile_o, *iter);
     for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
         writeField(myFile_o, *iter);
     
-    std::cout<<"Jacobians has been calculated..."<<std::endl;
+    if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     initialQ();
     
     myBC.initialBC(mybuffer,myMPI);
@@ -243,7 +238,7 @@ void nuc3d::block::getJacobians()
     
     Field &jac=myFluxes->getJac();
     
-    std::cout<<"Start calculate xyz_xi, xyz_eta, xyz_zta ..."<<std::endl;
+    //std::cout<<"Start calculate xyz_xi, xyz_eta, xyz_zta ..."<<std::endl;
     
     
     auto beg=xyz.begin();
@@ -256,10 +251,10 @@ void nuc3d::block::getJacobians()
         interpolation_derlag(*iter, zeta_xyz[iter-beg],2);
     }
     
-    std::cout<<std::endl;
+    //std::cout<<std::endl;
     
-    std::cout<<"xx_xyz has been calculated ..."<<std::endl;
-    std::cout<<"Calculating Jacobians calculated ..."<<std::endl;
+    //std::cout<<"xx_xyz has been calculated ..."<<std::endl;
+    //std::cout<<"Calculating Jacobians calculated ..."<<std::endl;
     
     
     int nx0=jac.getSizeX();
@@ -330,7 +325,7 @@ void nuc3d::block::interpolation_derlag(const nuc3d::Field &input,nuc3d::Field &
     int tileDim_eta=(Dim_node_eta-1)/TILE_SIZE;
     int tileDim_zeta=(Dim_node_zeta-1)/TILE_SIZE;
     
-    std::cout<<"...";
+    //std::cout<<"...";
     for(int k_tile=0;k_tile!=tileDim_zeta;k_tile++)
     {
         for(int j_tile=0;j_tile!=tileDim_eta;j_tile++)
@@ -511,7 +506,7 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
         OutPutValue_acoust.push_back(Field(nx,ny,nz));
     }
     
-    std::cout<<"Field data has been allocated!"<<std::endl;
+    //std::cout<<"Field data has been allocated!"<<std::endl;
 }
 
 
@@ -607,7 +602,7 @@ void nuc3d::block::initialQ()
 }
 
 
-void nuc3d::block::outputQ(int myID,physicsModel &myPhys)
+void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
 {
     std::string forename_flow = ("NUC3d_ID_");
     std::string step;

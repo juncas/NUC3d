@@ -26,7 +26,7 @@ void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
 {
 	std::stringstream ss;
 	int ProcId = myMPI.getMyId();
-	std::string forename_bc = ("BC_Topo_");
+	std::string forename_bc = ("bc_topo/BC_Topo_");
 	std::string midname;
 	std::string tailname = (".in");
 
@@ -41,24 +41,24 @@ void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
 	if (myFile)
 	{
 		int nline=0;
-		std::cout<<"Reading BC input file..."<<std::endl;
+		//std::cout<<"Reading BC input file..."<<std::endl;
 		while(readBCTopo(myFile,nline)&&(6!=nline))
 		{
-			int type=(BCTopo.rbegin())->Type;
+			/*int type=(BCTopo.rbegin())->Type;
 			int id=(BCTopo.rbegin())->id;
 			std::cout<<"Face "<<nline<<" type "<<BCTypes[type+1];
 			if(type!=0)	std::cout<<" "<<BCnames[id-1];
-			std::cout<<std::endl;
+			std::cout<<std::endl;*/
 			nline++;
 		};
 		
-		std::cout<<"Inlet conditions are given by:"<<std::endl;	
+		/*std::cout<<"Inlet conditions are given by:"<<std::endl;
 		for(auto iter=BCvalue.begin();iter!=BCvalue.end();iter++)
 		{
 			for(auto iter_value=iter->begin();iter_value!=iter->end();iter_value++)
 				std::cout<<*iter_value<<" ";
 			std::cout<<std::endl;		
-		}
+		}*/
 
 		if(6!=BCTopo.size())
 		{
@@ -74,7 +74,7 @@ void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
 	}
 
 	myFile.close();
-	std::cout<<"BC Topo has been read!"<<std::endl;
+	//std::cout<<"BC Topo has been read!"<<std::endl;
 	myMPI.setTopo(BCTopo);
 
 

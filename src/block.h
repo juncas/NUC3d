@@ -87,7 +87,7 @@ namespace nuc3d
                    IOController &);
         
         void printStatus();
-        void outputQ(int,physicsModel&);
+        void outputQ_tecplot(int,physicsModel&);
     private:
         
        typedef double (block::*pDer_lag)(const int ,

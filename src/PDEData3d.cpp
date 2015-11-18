@@ -27,7 +27,6 @@ dt_global(0.0),
 res_global(0.0),
 res_local(0.0)
 {
-    std::cout<<"RHS size = "<<RHS.size()<<std::endl;
     
 }
 
@@ -46,8 +45,6 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
     dt_global=0.0;
     res_global=0.0;
     res_local=0.0;
-    
-    
 }
 
 

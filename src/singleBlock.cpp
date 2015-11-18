@@ -32,12 +32,14 @@ nuc3d::singleBlock::~singleBlock()
 void nuc3d::singleBlock::loop()
 {
 	initialBlock();
+    MPI_Barrier(MPI_COMM_WORLD);
 	solvePDE();
 }
 
 void nuc3d::singleBlock::initialBlock()
 {
-	myBlock.initial(myOperator,myPhys,myMPI,myBC,myIO);
+    if(myMPI.getMyId()==0) std::cout<<"Initializing......\n";
+    myBlock.initial(myOperator,myPhys,myMPI,myBC,myIO);
 }
 
 /*==========================================================================
@@ -48,6 +50,7 @@ void nuc3d::singleBlock::initialBlock()
 
 void nuc3d::singleBlock::solvePDE()
 {
+    if(myMPI.getMyId()==0) std::cout<<"Start solving......\n";
 	while (myIO.ifsolve())
 	{
 		myBlock.solve(myOperator, myPhys, myMPI, myBC, myIO);
@@ -62,8 +65,8 @@ void nuc3d::singleBlock::solvePDE()
 
 void nuc3d::singleBlock::output()
 {
-    std::cout<<"Saving......"<<std::endl;
-    myBlock.outputQ(myMPI.getMyId(),myPhys);
+    if(myMPI.getMyId()==0) std::cout<<"Saving data......"<<std::endl;
+    myBlock.outputQ_tecplot(myMPI.getMyId(),myPhys);
 }
 
 
