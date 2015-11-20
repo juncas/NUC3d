@@ -30,7 +30,8 @@ nuc3d::IOController::IOController():
     )
 
 {
-	std::ifstream file("inp/IOController.in");
+    std::string filename("inp/IOController.in");
+	std::ifstream file(filename);
 
 	//std::cout<<"Starting reading IOController.in..."<<std::endl;
 	auto count=myTimeController.size()+myIOController.size();	if(file)
@@ -47,7 +48,7 @@ nuc3d::IOController::IOController():
 	}
 	else
 	{
-		std::cout<<"IO file \'IOController.in\' does not exist!"
+		std::cout<<"IO file \'"<<filename<<"\' does not exist!"
 		<<std::endl;
 		exit(0);
 	}

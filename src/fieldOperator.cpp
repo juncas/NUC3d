@@ -71,7 +71,7 @@ nuc3d::fieldOperator3d::fieldOperator3d():
 		std::cout<<"Initial time method failed!"
 			<<std::endl;
 	}
-	std::cout<<"Method.in has been read!"<<std::endl;
+	//std::cout<<"Method.in has been read!"<<std::endl;
 
 }
 
