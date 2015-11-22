@@ -604,7 +604,7 @@ void nuc3d::block::initialQ()
 
 void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
 {
-    std::string forename_flow = ("NUC3d_ID_");
+    std::string forename_flow = ("flowData/NUC3d_ID_");
     std::string step;
     std::string mid("_Step_");
     std::string id;
