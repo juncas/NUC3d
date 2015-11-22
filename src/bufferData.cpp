@@ -53,9 +53,9 @@ nuc3d::bufferData::~bufferData()
 /**************************************************************************************
  Definition of member functions
  **************************************************************************************/
-void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
+void nuc3d::bufferData::setBufferSend(Field& myField,int faceID)
 {
-    switch (dir) {
+    switch (faceID) {
         case 0:
             for (int k = 0; k < nz; k++)
             {
@@ -64,6 +64,19 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
                     for (int i = 0; i < bufferWidth; i++)
                     {
                         BufferSend[0].setValue(i,j,k,myField.getValue(i, j, k));
+                    }
+                    
+                }
+            }
+            
+            break;
+        case 1:
+            for (int k = 0; k < nz; k++)
+            {
+                for (int j = 0; j < ny; j++)
+                {
+                    for (int i = 0; i < bufferWidth; i++)
+                    {
                         BufferSend[1].setValue(i, j, k, myField.getValue(i + (nx - bufferWidth), j, k));
                     }
                     
@@ -71,8 +84,7 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
             }
             
             break;
-            
-        case 1:
+        case 2:
             for (int k = 0; k < nz; k++)
             {
                 for (int j = 0; j < bufferWidth; j++)
@@ -80,6 +92,20 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
                     for (int i = 0; i < nx; i++)
                     {
                         BufferSend[2].setValue(i,j,k, myField.getValue(i, j, k));
+                    }
+                    
+                }
+            }
+            
+            break;
+            
+        case 3:
+            for (int k = 0; k < nz; k++)
+            {
+                for (int j = 0; j < bufferWidth; j++)
+                {
+                    for (int i = 0; i < nx; i++)
+                    {
                         BufferSend[3].setValue(i, j, k, myField.getValue(i, j + (ny - bufferWidth), k));
                     }
                     
@@ -87,7 +113,7 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
             }
             
             break;
-        case 2:
+        case 4:
             for (int k = 0; k < bufferWidth; k++)
             {
                 for (int j = 0; j < ny; j++)
@@ -95,6 +121,19 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int dir)
                     for (int i = 0; i < nx; i++)
                     {
                         BufferSend[4].setValue(i, j, k, myField.getValue(i, j, k));
+                    }
+                    
+                }
+            }
+            
+            break;
+        case 5:
+            for (int k = 0; k < bufferWidth; k++)
+            {
+                for (int j = 0; j < ny; j++)
+                {
+                    for (int i = 0; i < nx; i++)
+                    {
                         BufferSend[5].setValue(i, j, k, myField.getValue(i, j, k + (nz - bufferWidth)));
                     }
                     

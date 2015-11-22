@@ -25,8 +25,8 @@ namespace nuc3d
         int ny;
         int nz;
         
-        VectorField BufferSend;
-        VectorField BufferRecv;
+        VectorField BufferSend;// send buffer or Flux_l buffer
+        VectorField BufferRecv;// recv buffer or Flux_r buffer
         
         MPI_Request myRequestSend[6];
         MPI_Status myStatusSend[6];

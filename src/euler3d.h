@@ -105,11 +105,9 @@ namespace nuc3d
         
         void setBoundaryCondition(PDEData3d &,
                                   physicsModel &myModel,
+                                  std::vector<bufferData> &,
                                   boundaryCondition &);
-        
-        void setBuffer(VectorBuffer &myBf,
-                       boundaryCondition &myBC);
-        
+                
     private:
         virtual void solveRHS(PDEData3d &);
         

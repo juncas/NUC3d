@@ -198,7 +198,7 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 {
     
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBC);
+    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
     nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     nuc3d::EulerData3D::solveRHS(myPDE);
@@ -211,45 +211,30 @@ void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
 }
 
 void nuc3d::EulerData3D::solveCon2Prim(PDEData3d &myPDE,
-                                      physicsModel &myModel)
+                                       physicsModel &myModel)
 {
     myModel.solve(myPDE, this);
 }
 
 void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
                                               physicsModel &myModel,
+                                              std::vector<bufferData> &myBf,
                                               boundaryCondition &myBC)
 {
-    myBC.setBC(myPDE, myModel, *this);
-}
+    myBC.setBC(myPDE,myModel,*this,myBf);
 
-void nuc3d::EulerData3D::setBuffer(VectorBuffer &myBf,
-                                   boundaryCondition &myBC)
-{
 }
-
 
 void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
                                   std::vector<bufferData> &myBf,
                                   MPIComunicator3d_nonblocking &myMPI,
                                   boundaryCondition &myBC)
 {
-    myBC.updateBuffer_xi(myBf, Flux_xi.FluxL);
     solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    
-    myBC.updateBuffer_eta(myBf, Flux_eta.FluxL);
     solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    
-    myBC.updateBuffer_zeta(myBf, Flux_zeta.FluxL);
     solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
-    
-    myBC.updateBuffer_xi(myBf, Flux_xi.FluxR);
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    
-    myBC.updateBuffer_eta(myBf, Flux_eta.FluxR);
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    
-    myBC.updateBuffer_zeta(myBf, Flux_zeta.FluxR);
     solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
     
     this->setDerivativesInv();
@@ -268,25 +253,21 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
-        Field &rf = pReconFlux[iter - pFlux.begin()];
         bufferData &bf = myBuff[iter - pFlux.begin()];
-        
-        bf.setBufferSend(*iter,dir);
-        
-        myMPI.bufferSendRecv(bf, 0);
-        
-        myOP.reconstructionInner(*iter, dir, 1, rf);
-        
-        myMPI.waitAllSendRecv(bf);
-        
-        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir*2], bf.BufferRecv[dir*2+1], dir, 1, rf);
-        
+        Field &rf = pReconFlux[iter - pFlux.begin()];
 
         
+        myMPI.bufferSendRecv(*iter,bf,dir,static_cast<int>(iter - pFlux.begin()));
+        myOP.reconstructionInner(*iter, dir, 1, rf);
+        
+        myMPI.waitSendRecv(bf,dir);
+        
+        Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferSend[dir*2]:bf.BufferRecv[dir*2];
+        Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferSend[dir*2+1]:bf.BufferRecv[dir*2+1];
+        
+        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf);
         MPI_Barrier(MPI_COMM_WORLD);
     }
-       
-    
 }
 
 void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
@@ -302,22 +283,21 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
-        Field &rf = pReconFlux[iter - pFlux.begin()];
         bufferData &bf = myBuff[iter - pFlux.begin()];
+        Field &rf = pReconFlux[iter - pFlux.begin()];
         
-        bf.setBufferSend(*iter,dir);
         
-        myMPI.bufferSendRecv(bf, 0);
-        
+        myMPI.bufferSendRecv(*iter,bf,dir,static_cast<int>(iter - pFlux.begin()));
         myOP.reconstructionInner(*iter, dir, -1, rf);
         
-        myMPI.waitAllSendRecv(bf);
+        myMPI.waitSendRecv(bf,dir);
         
-        myOP.reconstructionBoundary(*iter, bf.BufferRecv[dir*2], bf.BufferRecv[dir*2 + 1], dir, -1, rf);
+        Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferRecv[dir*2]:bf.BufferRecv[dir*2];
+        Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferRecv[dir*2+1]:bf.BufferRecv[dir*2+1];
         
+        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, -1, rf);
         MPI_Barrier(MPI_COMM_WORLD);
     }
-    
 }
 
 void nuc3d::EulerData3D::solveRHS(PDEData3d &myPDE)

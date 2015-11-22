@@ -80,7 +80,17 @@ namespace nuc3d
         std::string getMyModelName(){return myModelName;};
         
         void solve(PDEData3d &, EulerData3D *);
+        
         void solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler);
+        
+        void solveRiemannPoint(const std::vector<double> &prim,
+                               const double jac,
+                               const double xx_x,
+                               const double xx_y,
+                               const double xx_z,
+                               std::vector<double> &fluxl,
+                               std::vector<double> &fluxr);
+        
         
         void getMiu(Field &,
                     Field &,
@@ -98,6 +108,7 @@ namespace nuc3d
                            double &T,
                            double &e,
                            double &alpha);
+        
         void getPrim(Field &jac,VectorField &Q,VectorField &Prim, VectorField &Acoust);
     private:
         void RiemannSolver(const std::string &,
@@ -107,8 +118,6 @@ namespace nuc3d
                            const VectorField &,
                            const VectorField &,
                            EulerFlux&);
-        void RiemannSolverBuffer(
-            );
         
         void con2prim(const std::string &,
                       const Field &,
@@ -192,14 +201,14 @@ namespace nuc3d
                         double T_inf);
         
         void constant(const Field &T,
-                        Field &miu,
-                        Field &coeff,
-                        double Reynolds,
-                        double Mach,
-                        double pt,
-                        double gamma,
-                        double T_ref,
-                        double T_inf);
+                      Field &miu,
+                      Field &coeff,
+                      double Reynolds,
+                      double Mach,
+                      double pt,
+                      double gamma,
+                      double T_ref,
+                      double T_inf);
         
         std::istream& readPhysFile(std::istream& ios);
         
@@ -208,6 +217,42 @@ namespace nuc3d
         
         double getMachL(const double &);
         double getMachR(const double &);
+        
+        double EoSIdealGasgetPressure(const double &rho,
+                                      const double &u,
+                                      const double &v,
+                                      const double &w,
+                                      const double &E,
+                                      const double &mach,
+                                      const double &gamma);
+        
+        double EoSIdealGasgetTemp(const double &rho,
+                                  const double &u,
+                                  const double &v,
+                                  const double &w,
+                                  const double &E,
+                                  const double &p,
+                                  const double &mach,
+                                  const double &gamma);
+        
+        double EoSIdealGasgetE0(const double &rho,
+                                  const double &u,
+                                  const double &v,
+                                  const double &w,
+                                  const double &E,
+                                  const double &p,
+                                  const double &mach,
+                                  const double &gamma);
+        
+        double EoSIdealGasgetAlpha(const double &rho,
+                                  const double &u,
+                                  const double &v,
+                                  const double &w,
+                                  const double &E,
+                                  const double &p,
+                                  const double &mach,
+                                  const double &gamma);
+        
         
     };
 }
