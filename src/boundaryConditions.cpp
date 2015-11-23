@@ -301,6 +301,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
     VectorField &flux_xi_l=myFluxes.getFluxXi().FluxL;
     VectorField &flux_xi_r=myFluxes.getFluxXi().FluxR;
     
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;

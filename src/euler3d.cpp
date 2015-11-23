@@ -198,8 +198,8 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
 {
     
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
+    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     nuc3d::EulerData3D::solveRHS(myPDE);
 }

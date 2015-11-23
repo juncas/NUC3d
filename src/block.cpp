@@ -594,7 +594,7 @@ void nuc3d::block::initialQ()
                 u=1.0;
                 v=0.0;
                 w=0.0;
-                p=1.0;
+                p=0.11428571428571;
                 
                 rhou=rho*u;
                 rhov=rho*v;
