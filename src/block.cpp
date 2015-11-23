@@ -307,6 +307,11 @@ void nuc3d::block::getJacobians()
                 zeta_xyz[1].setValue(i, j, k, zeta_y);
                 zeta_xyz[2].setValue(i, j, k, zeta_z);
                 
+                if(jacob<0.0)
+                {
+                    std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k<<std::endl;
+                    exit(-1);
+                }
                 jac.setValue(i, j, k, jacob);
                 
             }
@@ -584,6 +589,12 @@ void nuc3d::block::initialQ()
                 w=0.0;
                 
                 p=pow(rho,gamma);
+                
+                rho=1.0;
+                u=1.0;
+                v=0.0;
+                w=0.0;
+                p=1.0;
                 
                 rhou=rho*u;
                 rhov=rho*v;
