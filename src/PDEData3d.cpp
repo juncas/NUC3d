@@ -95,7 +95,7 @@ void  nuc3d::PDEData3d::setRES()
     int ny=beg->getSizeY();
     int nz=beg->getSizeZ();
     
-    res_local;
+    res_local=0.0;
     for(auto iter=beg;iter!=end;iter++)
     {
         for(int k=0;k<nz;++k)
