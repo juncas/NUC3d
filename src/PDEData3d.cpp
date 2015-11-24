@@ -44,7 +44,7 @@ void nuc3d::PDEData3d::initPDEData3d(int nx0,int ny0,int nz0,int neqs)
     dt_local=0.0;
     dt_global=0.0;
     res_global=0.0;
-    res_local=0.0;
+    res_local=1.0;
 }
 
 
@@ -113,7 +113,7 @@ void  nuc3d::PDEData3d::setRES()
         }
     }
     
-    res_local=std::sqrt(res_temp/(nx*ny*nz*Q_work.size()))/res_local;
+    res_local=std::sqrt(res_temp/(nx*ny*nz*Q_work.size()));
     
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 }
