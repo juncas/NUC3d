@@ -25,7 +25,7 @@ RHS(neqs,Field(nx0,ny0,nz0)),
 dt_local(0.0),
 dt_global(0.0),
 res_global(0.0),
-res_local(0.0)
+res_local(1.0)
 {
     
 }
@@ -95,7 +95,8 @@ void  nuc3d::PDEData3d::setRES()
     int ny=beg->getSizeY();
     int nz=beg->getSizeZ();
     
-    res_local=0.0;
+    double res_temp=0.0;
+    
     for(auto iter=beg;iter!=end;iter++)
     {
         for(int k=0;k<nz;++k)
@@ -106,13 +107,13 @@ void  nuc3d::PDEData3d::setRES()
                 {
                     double u=Q_work[iter-beg].getValue(i, j, k);
                     double u0=iter->getValue(i, j, k);
-                    res_local+=std::pow((u-u0)/dt_global,2);
+                    res_temp+=std::pow((u-u0)/dt_global,2);
                 }
             }
         }
     }
     
-    res_local=std::sqrt(res_local/(nx*ny*nz*Q_work.size()));
+    res_local=std::sqrt(res_temp/(nx*ny*nz*Q_work.size()))/res_local;
     
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 }
