@@ -95,7 +95,7 @@ void  nuc3d::PDEData3d::setRES()
     int ny=beg->getSizeY();
     int nz=beg->getSizeZ();
     
-    res_local=0.0;
+    res_local;
     for(auto iter=beg;iter!=end;iter++)
     {
         for(int k=0;k<nz;++k)
@@ -106,7 +106,7 @@ void  nuc3d::PDEData3d::setRES()
                 {
                     double u=Q_work[iter-beg].getValue(i, j, k);
                     double u0=iter->getValue(i, j, k);
-                    res_local+=std::pow(u-u0,2);
+                    res_local+=std::pow((u-u0)/dt_global,2);
                 }
             }
         }

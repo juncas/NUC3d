@@ -435,6 +435,7 @@ void nuc3d::physicsModel::RiemannAUSM(
                 auto iterV = Q_vec.begin() + 2;
                 auto iterW = Q_vec.begin() + 3;
                 auto iterE = Q_vec.begin() + 4;
+                
                 fluxp[0] = machp*alpha*iterRho->getValue(i, j, k);
                 fluxp[1] = machp*alpha*iterU->getValue(i, j, k) + xx_x*p_p/jac;
                 fluxp[2] = machp*alpha*iterV->getValue(i, j, k) + xx_y*p_p/jac;
@@ -465,7 +466,7 @@ double nuc3d::physicsModel::getMachL(const double &mach)
     double MachL;
     
     if (std::abs(mach) < 1.0)
-        MachL = 0.25*pow((mach + 1.0), 2) + 0.125*pow(pow(mach, 2.0) - 1.0, 2);
+        MachL = 0.25*pow((mach + 1.0), 2) + 0.125*pow(pow(mach, 2) - 1.0, 2);
     else
         MachL = 0.50*(mach + std::abs(mach));
     
@@ -479,7 +480,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     double MachR;
     
     if (std::abs(mach) < 1.0)
-        MachR = -0.25*pow((mach - 1.0), 2) - 0.125*pow(pow(mach, 2.0) - 1.0, 2);
+        MachR = -0.25*pow((mach - 1.0), 2) - 0.125*pow(pow(mach, 2) - 1.0, 2);
     else
         MachR = 0.50*(mach - std::abs(mach));
     
