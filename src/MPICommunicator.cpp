@@ -103,7 +103,6 @@ void nuc3d::MPIComunicator3d_nonblocking::waitSendRecvFace(bufferData& buffer,in
 {
     if(NeighBours[bfID]!=MPI_PROC_NULL)
     {
-        std::cout<<"waiting MPI!!"<<std::endl;
         if((MPI_Wait(&buffer.myRequestSend[bfID], &buffer.myStatusSend[bfID])!= MPI_SUCCESS)
            ||(MPI_Wait(&buffer.myRequestRecv[bfID], &buffer.myStatusRecv[bfID])!= MPI_SUCCESS))
         {
