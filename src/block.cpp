@@ -88,7 +88,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
         writeField(myFile_o, *iter);
     
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
-    initialQ();
+    initialQ(myPhyMod.getMach());
     
     myBC.initialBC(mybuffer,myMPI);
     
@@ -549,7 +549,7 @@ void nuc3d::block::printStatus()
     std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
 }
 
-void nuc3d::block::initialQ()
+void nuc3d::block::initialQ(double mach)
 {
     Field &jac=myFluxes->getJac();
     VectorField &Q=myPDE.getQ();
@@ -579,22 +579,12 @@ void nuc3d::block::initialQ()
                 y=xyz_center[1].getValue(i, j, k);
                 z=xyz_center[2].getValue(i, j, k);
                 jacobian=jac.getValue(i, j, k);
-                
-                double r_sq=std::pow((x-x_c),2)+std::pow((y-y_c), 2);
-                
-                rho=pow(1.0-(gamma-1.0)*b*b/8.0/gamma/pie/pie*std::exp(1.0-r_sq),1/(gamma-1.0));
-                
-                u=0.5-b/2.0/pie*exp((1-r_sq)/2.0)*(y-y_c);
-                v=b/2.0/pie*exp((1-r_sq)/2.0)*(x-x_c);
-                w=0.0;
-                
-                p=pow(rho,gamma);
-                
+               
                 rho=1.0;
                 u=1.0;
                 v=0.0;
                 w=0.0;
-                p=0.11428571428571;
+                p=1.0/(gamma*mach*mach);
                 
                 rhou=rho*u;
                 rhov=rho*v;

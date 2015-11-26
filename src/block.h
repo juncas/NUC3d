@@ -113,7 +113,7 @@ namespace nuc3d
         
         void getJacobians();
         
-        void initialQ();
+        void initialQ(double mach);
         
         
         void interpolation_lag(const Field &,Field &);

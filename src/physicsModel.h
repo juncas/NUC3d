@@ -97,6 +97,7 @@ namespace nuc3d
                     Field &);
         
         int getEqNum(){return neqs;};
+        double getMach(){return myModelParameters["Mach"];};
         
         void initial(PDEData3d &,std::shared_ptr<EulerData3D> );
         
