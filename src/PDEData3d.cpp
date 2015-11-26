@@ -96,7 +96,8 @@ void  nuc3d::PDEData3d::setRES()
     int ny=beg->getSizeY();
     int nz=beg->getSizeZ();
     
-    double res_temp=0.0;
+    double res_this=0.0;
+    static double res_last=0.0;
     
     for(auto iter=beg;iter!=end;iter++)
     {
@@ -108,13 +109,14 @@ void  nuc3d::PDEData3d::setRES()
                 {
                     double u=Q_work[iter-beg].getValue(i, j, k);
                     double u0=iter->getValue(i, j, k);
-                    res_temp+=std::pow((u-u0),2);
+                    res_this+=std::pow((u-u0),2);
                 }
             }
         }
     }
     
-    res_local=std::abs(std::sqrt(res_temp/(nx*ny*nz*Q_work.size()))-res_local)/(dt_global/dt_global);//d2fdt2 -> 0.0?
+    res_local=std::abs(std::sqrt(res_this/(nx*ny*nz*Q_work.size()))-res_last)/(dt_global/dt_global);//d2fdt2 -> 0.0?
+    res_last=std::sqrt(res_this/(nx*ny*nz*Q_work.size()));
     
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 }
