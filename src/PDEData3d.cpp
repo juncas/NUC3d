@@ -76,8 +76,9 @@ void nuc3d::PDEData3d::solve(fieldOperator3d &myOP,double cfl,
         Q_Euler=Q_work;
         
         MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+        dt_global*=cfl;
     }
-    myOP.timeIntegral(RHS, Q_Euler,Q_work, 0.5*dt_global, step);
+    myOP.timeIntegral(RHS, Q_Euler,Q_work, dt_global, step);
     if(step==2)
     {
         setRES();
