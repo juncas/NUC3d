@@ -84,7 +84,6 @@ namespace nuc3d
         VectorField& getEta_xyz(){return eta_xyz;};
         VectorField& getZeta_xyz(){return zeta_xyz;};
         
-        void setJacobians(VectorField &);
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
                            VectorBuffer &,
@@ -107,9 +106,11 @@ namespace nuc3d
                                   physicsModel &myModel,
                                   std::vector<bufferData> &,
                                   boundaryCondition &);
-                
+        
+        void getDt();
+        
     private:
-        virtual void solveRHS(PDEData3d &);
+        void solveRHS(PDEData3d &);
         
         void solveInvicidFluxL(EulerFlux &,
                                fieldOperator3d &myOP,
@@ -130,8 +131,6 @@ namespace nuc3d
         void setDerivativesXiInv();
         void setDerivativesEtaInv();
         void setDerivativesZetaInv();
-        
-        void getDt();
     };
 }
 

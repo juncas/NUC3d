@@ -13,14 +13,30 @@
 
 namespace nuc3d
 {
+    class gradvector
+    {
+        friend class NaiverStokesData3d;
+        Field dxi;
+        Field deta;
+        Field dzeta;
+    public:
+        gradvector(int,int,int);
+        ~gradvector();
+    private:
+        Field& getdxi(){return dxi;};
+        Field& getdeta(){return deta;};
+        Field& getdzeta(){return dzeta;};
+    };
+    
     class NaiverStokesData3d : virtual public EulerData3D
     {
         friend class physicsModel;
     public:
-        VectorField du;
-        VectorField dv;
-        VectorField dw;
-        VectorField dT;
+        gradvector du;
+        gradvector dv;
+        gradvector dw;
+        gradvector dT;
+        
         Field miu;
         Field coeff;
         
@@ -48,19 +64,28 @@ namespace nuc3d
         
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
-                           bufferData &,
+                           VectorBuffer &,
                            physicsModel &,
-                           MPIComunicator3d_nonblocking &);
+                           MPIComunicator3d_nonblocking &,
+                           boundaryCondition &);
+        
         
     protected:
         
-        void solveVis(fieldOperator3d &,
+        void solveVis(PDEData3d &,
+                      fieldOperator3d &,
                       physicsModel &,
-                      bufferData &,
+                      std::vector<bufferData> &,
                       MPIComunicator3d_nonblocking &);
-        void setViscousFluxes();
+        
     private:
-        virtual void solveRHS(PDEData3d &);
+        void setBoundaryGrad();
+        void solveGrad();
+        void solveStress();
+        void setBoundaryViscousFlux();
+        void solveViscousFlux();
+        void setDerivativesVis();
+        void solveRHS(PDEData3d &);
         
     };
 }

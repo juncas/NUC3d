@@ -7,17 +7,26 @@
 //
 
 #include "NaiverStokes3d.h"
-/**************************************************************************************
+nuc3d::gradvector::gradvector(int nx0,int ny0,int nz0):
+dxi(nx0,ny0,nz0),
+deta(nx0,ny0,nz0),
+dzeta(nx0,ny0,nz0)
+{
+    
+}
+nuc3d::gradvector::~gradvector()
+{}
+/*************************************************************************************
  Member functions of class: NaiverStokesData3d
  **************************************************************************************/
 nuc3d::NaiverStokesData3d::NaiverStokesData3d(int nx0, int ny0, int nz0, int neqs):
+EulerData3D(nx0,ny0,nz0,neqs),
+du(nx0,ny0,nz0),
+dv(nx0,ny0,nz0),
+dw(nx0,ny0,nz0),
+dT(nx0,ny0,nz0),
 miu(nx0,ny0,nz0,1.0),
 coeff(nx0,ny0,nz0,1.0),
-EulerData3D(nx0,ny0,nz0,neqs),
-du(3,Field(nx0,ny0,nz0)),
-dv(3,Field(nx0,ny0,nz0)),
-dw(3,Field(nx0,ny0,nz0)),
-dT(3,Field(nx0,ny0,nz0)),
 tau(9,Field(nx0,ny0,nz0)),
 Flux_xi_vis(neqs,Field(nx0,ny0,nz0)),
 Flux_eta_vis(neqs,Field(nx0,ny0,nz0)),
@@ -29,9 +38,34 @@ dhvdzeta(neqs,Field(nx0,ny0,nz0))
     
 }
 
-void nuc3d::NaiverStokesData3d::solveLocal()
+void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
+                                      fieldOperator3d &myOP,
+                                      std::vector<bufferData> &myBf,
+                                      physicsModel &myModel,
+                                      MPIComunicator3d_nonblocking &myMPI,
+                                      boundaryCondition &myBC)
 {
-    setViscousFluxes();
+    this->nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
+    this->nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
+    this->nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
+    this->nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    this->solveVis(myPDE,myOP,myModel,myBf,myMPI);
+}
+
+void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
+                                         fieldOperator3d &myOP,
+                                         physicsModel &myModel,
+                                         std::vector<bufferData> &myBf,
+                                         MPIComunicator3d_nonblocking &myMPI)
+{
+    setBoundaryGrad();
+    solveGrad();
+    solveStress();
+    setBoundaryViscousFlux();
+    solveViscousFlux();
+    setDerivativesVis();
+    solveRHS(myPDE);
+
 }
 
 void nuc3d::NaiverStokesData3d::setViscousFluxes()

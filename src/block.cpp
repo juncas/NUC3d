@@ -51,7 +51,6 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     std::string filename_flow = forename_flow + midname + tailname;
     
     std::ifstream myFile;
-    std::ofstream myFile_o("IOtest.dat");
     myFile.open(filename_mesh);
     if (myFile)
     {
@@ -84,11 +83,13 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
-    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
-        writeField(myFile_o, *iter);
+//    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+//      writeField(myFile_o, *iter);
     
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
+    
     initialQ(myPhyMod.getMach());
+    if(myMPI.getMyId()==0) std::cout<<"Flow field has been initialized!"<<std::endl;
     
     myBC.initialBC(mybuffer,myMPI);
     
@@ -110,7 +111,6 @@ void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
             }
         }
     }
-    //myFile<<"\n";
 }
 
 
@@ -136,8 +136,7 @@ void nuc3d::block::readField(std::ifstream &myFile, nuc3d::Field &myField)
                 myField.setValue(i,j,k,value);
             }
         }
-    }
-    
+    }    
 }
 
 void nuc3d::block::getXYZ_center()
