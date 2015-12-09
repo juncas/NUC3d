@@ -651,8 +651,8 @@ void nuc3d::physicsModel::prim2conPoint(const double &rho,
     double _rhov;
     double _rhow;
     double _E;
+    double _P;
     
-    double temp;
     (this->*myEosBWDMap[myEoSName])(rho,
                                     u,
                                     v,
@@ -669,7 +669,7 @@ void nuc3d::physicsModel::prim2conPoint(const double &rho,
                                     v,
                                     w,
                                     _E,
-                                    temp,
+                                    _P,
                                     T,
                                     e,
                                     alpha);
@@ -727,8 +727,6 @@ void nuc3d::physicsModel::solveRiemannPoint(const std::vector<double> &prim,
     double p_p, p_n;
     double U0;
     double theta;
-    double MaxEigenLocal;
-    
     theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
     double alpha = _alpha*theta;
     

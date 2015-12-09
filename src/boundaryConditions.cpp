@@ -9,6 +9,7 @@
 #include "boundaryConditions.hpp"
 #include "MPICommunicator.h"
 #include "euler3d.h"
+#include "NaiverStokes3d.h"
 #include "PDEData3d.hpp"
 #include "physicsModel.h"
 
@@ -177,6 +178,7 @@ void nuc3d::boundaryCondition::BCsetter_inlet_xi(PDEData3d &myPDE,
     }
     
 }
+
 void nuc3d::boundaryCondition::BCsetter_inlet_eta(PDEData3d &myPDE,
                                                   physicsModel &myPhyMod,
                                                   EulerData3D &myFluxes,
@@ -822,3 +824,716 @@ void nuc3d::boundaryCondition::BCsetter_symm_zeta(PDEData3d &myPDE,
         }
     }
 }
+
+
+void nuc3d::boundaryCondition::setVisBC(PDEData3d &myPDE,
+                                        physicsModel &myPhyMod,
+                                        NaiverStokesData3d &myFluxes,
+                                        VectorBuffer &myBf)
+{
+    
+    for(auto iter=BCTopo.begin();iter!=BCTopo.end();iter++)
+    {
+        int iface=static_cast<int>(iter-BCTopo.begin());
+        if (((-1)==iter->Type))
+        {
+            (this->*myVisSetter[BCTopo[iface].id])(myPDE,myPhyMod,myFluxes,myBf,iface);
+        }
+    }
+    
+}
+
+void nuc3d::boundaryCondition::setVisBC_Inlet(PDEData3d &myPDE,
+                                              physicsModel &myPhyMod,
+                                              NaiverStokesData3d &myFluxes,
+                                              VectorBuffer &myBf,
+                                              int iface)
+{
+    switch (iface) {
+        case 0:
+            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 1:
+            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 2:
+            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 3:
+            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 4:
+            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 5:
+            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+    }
+    
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_inlet_xi(PDEData3d &myPDE,
+                                                    physicsModel &myPhyMod,
+                                                    NaiverStokesData3d &myFluxes,
+                                                    VectorBuffer &myBf,
+                                                    int lr)
+{
+    std::vector<double> &q0=BCvalue[lr];
+    
+    double rho=q0[0];
+    double u=q0[1];
+    double v=q0[2];
+    double w=q0[3];
+    double p=q0[4];
+    double T;
+    double e;
+    double alpha;
+    
+    myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
+    
+    std::vector<double> value={u,v,w,T};
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(auto iter=value.begin();iter!=value.end();iter++)
+    {
+        for(int k=0;k<nz;k++)
+        {
+            for(int j=0;j<ny;j++)
+            {
+                for(int ibf=0;ibf<bfsize;ibf++)
+                {
+                    myBf[iter-value.begin()].BufferRecv[lr].setValue(ibf, j, k,*iter);
+                }
+            }
+        }
+    }
+}
+
+
+void nuc3d::boundaryCondition::VisBCsetter_inlet_eta(PDEData3d &myPDE,
+                                                     physicsModel &myPhyMod,
+                                                     NaiverStokesData3d &myFluxes,
+                                                     VectorBuffer &myBf,
+                                                     int lr)
+{
+    std::vector<double> &q0=BCvalue[2+lr];
+    
+    double rho=q0[0];
+    double u=q0[1];
+    double v=q0[2];
+    double w=q0[3];
+    double p=q0[4];
+    double T;
+    double e;
+    double alpha;
+    
+    myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
+    
+    std::vector<double> value={u,v,w,T};
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(auto iter=value.begin();iter!=value.end();iter++)
+    {
+        
+        for(int k=0;k<nz;k++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                for(int ibf=0;ibf<bfsize;ibf++)
+                {
+                    myBf[iter-value.begin()].BufferRecv[2+lr].setValue(i,ibf, k, *iter);
+                }
+            }
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_inlet_zeta(PDEData3d &myPDE,
+                                                      physicsModel &myPhyMod,
+                                                      NaiverStokesData3d &myFluxes,
+                                                      VectorBuffer &myBf,
+                                                      int lr)
+{
+    std::vector<double> &q0=BCvalue[2+lr];
+    
+    double rho=q0[0];
+    double u=q0[1];
+    double v=q0[2];
+    double w=q0[3];
+    double p=q0[4];
+    double T;
+    double e;
+    double alpha;
+    
+    myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
+    
+    std::vector<double> value={u,v,w,T};
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(auto iter=value.begin();iter!=value.end();iter++)
+    {
+        
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                for(int ibf=0;ibf<bfsize;ibf++)
+                {
+                    myBf[iter-value.begin()].BufferRecv[4+lr].setValue(i,j,ibf, *iter);
+                }
+            }
+        }
+    }
+}
+
+// Outlet condition
+void nuc3d::boundaryCondition::setVisBC_Outlet(PDEData3d &myPDE,
+                                               physicsModel &myPhyMod,
+                                               NaiverStokesData3d &myFluxes,
+                                               VectorBuffer &myBf,
+                                               int iface)
+{
+    switch (iface) {
+        case 0:
+            VisBCsetter_outlet_xi(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 1:
+            VisBCsetter_outlet_xi(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 2:
+            VisBCsetter_outlet_eta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 3:
+            VisBCsetter_outlet_eta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 4:
+            VisBCsetter_outlet_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 5:
+            VisBCsetter_outlet_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
+                                                     physicsModel &myPhyMod,
+                                                     NaiverStokesData3d &myFluxes,
+                                                     VectorBuffer &myBf,
+                                                     int lr)
+{
+    Field &u=(myFluxes.getPrimatives())[1];
+    Field &v=(myFluxes.getPrimatives())[2];
+    Field &w=(myFluxes.getPrimatives())[3];
+    Field &T=(myFluxes.getAcoustics())[0];
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            double data=u.getValue(lr*(nx-1),j,k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[0].BufferRecv[lr].setValue(ibf, j, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            double data=v.getValue(lr*(nx-1),j,k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[1].BufferRecv[lr].setValue(ibf, j, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            double data=w.getValue(lr*(nx-1),j,k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[2].BufferRecv[lr].setValue(ibf, j, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            double data=T.getValue(lr*(nx-1),j,k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[3].BufferRecv[lr].setValue(ibf, j, k, data);
+            }
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
+                                                      physicsModel &myPhyMod,
+                                                      NaiverStokesData3d &myFluxes,
+                                                      VectorBuffer &myBf,
+                                                      int lr)
+{
+    Field &u=(myFluxes.getPrimatives())[1];
+    Field &v=(myFluxes.getPrimatives())[2];
+    Field &w=(myFluxes.getPrimatives())[3];
+    Field &T=(myFluxes.getAcoustics())[0];
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=u.getValue(i,lr*(ny-1),k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[0].BufferSend[2+lr].setValue(i,ibf, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=v.getValue(i,lr*(ny-1),k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[1].BufferSend[2+lr].setValue(i,ibf, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=w.getValue(i,lr*(ny-1),k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[2].BufferSend[2+lr].setValue(i,ibf, k, data);
+            }
+        }
+    }
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=T.getValue(i,lr*(ny-1),k);
+            
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[3].BufferSend[2+lr].setValue(i,ibf, k, data);
+            }
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
+                                                       physicsModel &myPhyMod,
+                                                       NaiverStokesData3d &myFluxes,
+                                                       VectorBuffer &myBf,
+                                                       int lr)
+{
+    Field &u=(myFluxes.getPrimatives())[1];
+    Field &v=(myFluxes.getPrimatives())[2];
+    Field &w=(myFluxes.getPrimatives())[3];
+    Field &T=(myFluxes.getAcoustics())[0];
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int j=0;j<ny;j++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=u.getValue(i,j,lr*(nz-1));
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[0].BufferSend[4+lr].setValue(i,j,ibf, data);
+            }
+        }
+    }
+    
+    for(int j=0;j<ny;j++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=v.getValue(i,j,lr*(nz-1));
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[1].BufferSend[4+lr].setValue(i,j,ibf, data);
+            }
+        }
+    }
+    
+    for(int j=0;j<ny;j++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=w.getValue(i,j,lr*(nz-1));
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[2].BufferSend[4+lr].setValue(i,j,ibf, data);
+            }
+        }
+    }
+    
+    for(int j=0;j<ny;j++)
+    {
+        for(int i=0;i<nx;i++)
+        {
+            double data=T.getValue(i,j,lr*(nz-1));
+            for(int ibf=0;ibf<bfsize;ibf++)
+            {
+                myBf[3].BufferSend[4+lr].setValue(i,j,ibf, data);
+            }
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::setVisBC_wall(PDEData3d &myPDE,
+                                          physicsModel &myPhyMod,
+                                          NaiverStokesData3d &myFluxes,
+                                          VectorBuffer &myBf,
+                                          int iface)
+{
+    switch (iface) {
+        case 0:
+            VisBCsetter_wall_xi(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 1:
+            VisBCsetter_wall_xi(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 2:
+            VisBCsetter_wall_eta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 3:
+            VisBCsetter_wall_eta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 4:
+            VisBCsetter_wall_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 5:
+            VisBCsetter_wall_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_wall_xi(PDEData3d &myPDE,
+                                                physicsModel &myPhyMod,
+                                                NaiverStokesData3d &myFluxes,
+                                                VectorBuffer &myBf,
+                                                int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<bfsize;i++)
+            {
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
+                
+                q[0]=prim[1].getValue(iblock,j,k);
+                q[1]=prim[2].getValue(iblock,j,k);
+                q[2]=prim[3].getValue(iblock,j,k);
+                q[3]=accu[0].getValue(iblock,j,k);
+                
+                //u=-u0 v=-v0 w=-w0
+                q[0]*=-1.0;
+                q[1]*=-1.0;
+                q[2]*=-1.0;
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[lr].setValue(ibuff, j, k, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
+                                                 physicsModel &myPhyMod,
+                                                 NaiverStokesData3d &myFluxes,
+                                                 VectorBuffer &myBf,
+                                                 int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<bfsize;j++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                int jblock=lr*(ny-1)+(1-2*lr)*j;
+                int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
+                
+                q[0]=prim[1].getValue(i,jblock,k);
+                q[1]=prim[2].getValue(i,jblock,k);
+                q[2]=prim[3].getValue(i,jblock,k);
+                q[3]=accu[0].getValue(i,jblock,k);
+                
+                //u=-u0 v=-v0 w=-w0
+                q[0]*=-1.0;
+                q[1]*=-1.0;
+                q[2]*=-1.0;
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
+                                                  physicsModel &myPhyMod,
+                                                  NaiverStokesData3d &myFluxes,
+                                                  VectorBuffer &myBf,
+                                                  int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<bfsize;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                int kblock=lr*(nz-1)+(1-2*lr)*k;
+                int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
+                q[0]=prim[1].getValue(i,j,kblock);
+                q[1]=prim[2].getValue(i,j,kblock);
+                q[2]=prim[3].getValue(i,j,kblock);
+                q[3]=accu[0].getValue(i,j,kblock);
+                
+                //u=-u0 v=-v0 w=-w0
+                q[0]*=-1.0;
+                q[1]*=-1.0;
+                q[2]*=-1.0;
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+
+void nuc3d::boundaryCondition::setVisBC_symm(PDEData3d &myPDE,
+                                          physicsModel &myPhyMod,
+                                          NaiverStokesData3d &myFluxes,
+                                          VectorBuffer &myBf,
+                                          int iface)
+{
+    switch (iface) {
+        case 0:
+            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 1:
+            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 2:
+            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 3:
+            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+        case 4:
+            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
+            break;
+        case 5:
+            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
+            break;
+    }
+    
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_symm_xi(PDEData3d &myPDE,
+                                                physicsModel &myPhyMod,
+                                                NaiverStokesData3d &myFluxes,
+                                                VectorBuffer &myBf,
+                                                int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<bfsize;i++)
+            {
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
+                
+                q[0]=prim[1].getValue(iblock,j,k);
+                q[1]=prim[2].getValue(iblock,j,k);
+                q[2]=prim[3].getValue(iblock,j,k);
+                q[3]=accu[0].getValue(iblock,j,k);
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[lr].setValue(ibuff, j, k, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_symm_eta(PDEData3d &myPDE,
+                                                 physicsModel &myPhyMod,
+                                                 NaiverStokesData3d &myFluxes,
+                                                 VectorBuffer &myBf,
+                                                 int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<bfsize;j++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                int jblock=lr*(ny-1)+(1-2*lr)*j;
+                int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
+                
+                q[0]=prim[1].getValue(i,jblock,k);
+                q[1]=prim[2].getValue(i,jblock,k);
+                q[2]=prim[3].getValue(i,jblock,k);
+                q[3]=accu[0].getValue(i,jblock,k);
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+void nuc3d::boundaryCondition::VisBCsetter_symm_zeta(PDEData3d &myPDE,
+                                                  physicsModel &myPhyMod,
+                                                  NaiverStokesData3d &myFluxes,
+                                                  VectorBuffer &myBf,
+                                                  int lr)
+{
+    std::vector<double> q(4);
+    
+    VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
+    const int nx=myFluxes.nx;
+    const int ny=myFluxes.ny;
+    const int nz=myFluxes.nz;
+    const int bfsize=myBf[0].bufferWidth;
+    
+    for(int k=0;k<bfsize;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<nx;i++)
+            {
+                int kblock=lr*(nz-1)+(1-2*lr)*k;
+                int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
+                q[0]=prim[1].getValue(i,j,kblock);
+                q[1]=prim[2].getValue(i,j,kblock);
+                q[2]=prim[3].getValue(i,j,kblock);
+                q[3]=accu[0].getValue(i,j,kblock);
+                
+                for(auto iter=q.begin();iter!=q.end();iter++)
+                {
+                    myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, *iter);
+                }
+            }
+            
+        }
+    }
+}
+
+

@@ -76,16 +76,22 @@ namespace nuc3d
                       boundaryCondition &);
         
     private:
-        void setBoundaryGrad();
+        void setBoundaryGrad(PDEData3d &myPDE,
+                             fieldOperator3d &myOP,
+                             physicsModel &myModel,
+                             std::vector<bufferData> &myBf,
+                             MPIComunicator3d_nonblocking &myMPI,
+                             boundaryCondition &myBC);
         
         void solveGrad();
         void solveGradXi();
         void solveGradEta();
         void solveGradZeta();
-        
         void solveStress();
+        
         void setBoundaryViscousFlux();
         void solveViscousFlux();
+        
         void setDerivativesVis();
         void solveRHS(PDEData3d &);
         
