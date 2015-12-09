@@ -316,7 +316,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
         {
             for(int j=0;j<ny;j++)
             {
-                *iter=flux_xi_l[iter-begl].getValue(lr*(nx-1),j,k);
+                *iter=(lr==0)?0.0:flux_xi_l[iter-begl].getValue(lr*(nx-1),j,k);
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
                     myBf[iter-begl].BufferSend[lr].setValue(ibf, j, k, *iter);
@@ -334,7 +334,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
         {
             for(int j=0;j<ny;j++)
             {
-                *iter=flux_xi_r[iter-begr].getValue(lr*(nx-1),j,k);
+                *iter=(lr==0)?flux_xi_r[iter-begr].getValue(lr*(nx-1),j,k):0.0;
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
@@ -371,7 +371,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_eta_l[iter-begl].getValue(i,lr*(ny-1),k);
+                *iter=(lr==0)?0.0:flux_eta_l[iter-begl].getValue(i,lr*(ny-1),k);
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
@@ -390,7 +390,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_eta_r[iter-begr].getValue(i,lr*(ny-1),k);
+                *iter=(lr==0)?flux_eta_r[iter-begr].getValue(i,lr*(ny-1),k):0.0;
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
@@ -426,7 +426,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_zeta_l[iter-begl].getValue(i,j,lr*(nz-1));
+                *iter=(lr==0)?0.0:flux_zeta_l[iter-begl].getValue(i,j,lr*(nz-1));
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
                     myBf[iter-begl].BufferSend[4+lr].setValue(i,j,ibf, *iter);
@@ -444,7 +444,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_zeta_r[iter-begr].getValue(i,j,lr*(nz-1));
+                *iter=(lr==0)?flux_zeta_r[iter-begr].getValue(i,j,lr*(nz-1)):0.0;
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {

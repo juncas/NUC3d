@@ -57,10 +57,6 @@ namespace nuc3d
         ~NaiverStokesData3d();
         
     public:
-        virtual VectorField& getDrivativeXi();
-        virtual VectorField& getDrivativeEta();
-        virtual VectorField& getDrivativeZeta();
-        virtual void solveLocal();
         
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,
@@ -76,11 +72,17 @@ namespace nuc3d
                       fieldOperator3d &,
                       physicsModel &,
                       std::vector<bufferData> &,
-                      MPIComunicator3d_nonblocking &);
+                      MPIComunicator3d_nonblocking &,
+                      boundaryCondition &);
         
     private:
         void setBoundaryGrad();
+        
         void solveGrad();
+        void solveGradXi();
+        void solveGradEta();
+        void solveGradZeta();
+        
         void solveStress();
         void setBoundaryViscousFlux();
         void solveViscousFlux();
