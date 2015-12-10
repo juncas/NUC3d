@@ -230,9 +230,21 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
                                   MPIComunicator3d_nonblocking &myMPI,
                                   boundaryCondition &myBC)
 {
+    double t0,t1,t2,t3;
+    
+    t0=MPI_Wtime();
     solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
+    t1=MPI_Wtime();
     solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
+    t2=MPI_Wtime();
     solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
+    t3=MPI_Wtime();
+    
+    if(0==myMPI.getMyId())
+    {
+        std::cout<<"xi time= "<<t1-t0<<", eta time= "<<t2-t1<<", zeta time= "<<t3-t2<<"\n"<<std::endl;
+    }
+    
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
     solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
