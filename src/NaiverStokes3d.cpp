@@ -315,29 +315,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &)
 }
 
 
-nuc3d::VectorField& nuc3d::NaiverStokesData3d::getDrivativeXi()
-{
-    for(auto iter=dfdxi.begin();iter!=dfdxi.end();iter++)
-        *iter-=dfvdxi[iter-dfdxi.begin()];
-    
-    return this->dfdxi;
-}
 
-nuc3d::VectorField& nuc3d::NaiverStokesData3d::getDrivativeEta()
-{
-    for(auto iter=dgdeta.begin();iter!=dgdeta.end();iter++)
-        *iter-=dgdeta[iter-dfdxi.begin()];
-    
-    return this->dgdeta;
-}
-
-nuc3d::VectorField& nuc3d::NaiverStokesData3d::getDrivativeZeta()
-{
-    for(auto iter=dhdzeta.begin();iter!=dhdzeta.end();iter++)
-        *iter-=dhvdzeta[iter-dfdxi.begin()];
-    
-    return this->dhdzeta;
-}
 
 
 nuc3d::NaiverStokesData3d::~NaiverStokesData3d()
