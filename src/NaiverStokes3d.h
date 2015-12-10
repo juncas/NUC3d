@@ -56,6 +56,10 @@ namespace nuc3d
         NaiverStokesData3d(int,int,int,int);
         ~NaiverStokesData3d();
         
+        VectorField &getVisFlux_xi(){return Flux_xi_vis;};
+        VectorField &getVisFlux_eta(){return Flux_eta_vis;};
+        VectorField &getVisFlux_zeta(){return Flux_zeta_vis;};
+        
     public:
         
         virtual void solve(PDEData3d &,
@@ -83,14 +87,43 @@ namespace nuc3d
                              MPIComunicator3d_nonblocking &myMPI,
                              boundaryCondition &myBC);
         
-        void solveGrad();
-        void solveGradXi();
-        void solveGradEta();
-        void solveGradZeta();
-        void solveStress();
+        void solveGrads(PDEData3d &myPDE,
+                       fieldOperator3d &myOP,
+                       std::vector<bufferData> &myBf,
+                       MPIComunicator3d_nonblocking &myMPI);
+        
+        void solve_grad(Field &,
+                         fieldOperator3d &,
+                         bufferData &,
+                         MPIComunicator3d_nonblocking &,
+                        gradvector &,
+                        int fdID);
+        
+        void solveGradXi(Field &,
+                         fieldOperator3d &,
+                         bufferData &myBf,
+                         MPIComunicator3d_nonblocking &,
+                         Field &,
+                         int fdID);
+        
+        void solveGradEta(Field &,
+                          fieldOperator3d &,
+                          bufferData &myBf,
+                          MPIComunicator3d_nonblocking &,
+                          Field &,
+                          int fdID);
+        
+        void solveGradZeta(Field &,
+                           fieldOperator3d &,
+                           bufferData &myBf,
+                           MPIComunicator3d_nonblocking &,
+                           Field &,
+                           int fdID);
+        
+        void solveViscousFlux(physicsModel &myPhyMod);
         
         void setBoundaryViscousFlux();
-        void solveViscousFlux();
+        //void solveViscousFlux();
         
         void setDerivativesVis();
         void solveRHS(PDEData3d &);
