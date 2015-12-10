@@ -23,7 +23,7 @@ namespace nuc3d
                                               const double &,
                                               const double &,
                                               const double &,
-                                              const double &,
+                                               double &,
                                               double &,
                                               double &,
                                               double &,
@@ -153,7 +153,7 @@ namespace nuc3d
                             const double &,
                             const double &,
                             const double &,
-                            const double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
+                             double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
                             double &,
                             double &,
                             double &,
@@ -174,7 +174,7 @@ namespace nuc3d
                        const double &,
                        const double &,
                        const double &,
-                       const double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
+                        double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
                        double &,
                        double &,
                        double &,
@@ -223,7 +223,7 @@ namespace nuc3d
                                       const double &u,
                                       const double &v,
                                       const double &w,
-                                      const double &E,
+                                       double &E,
                                       const double &mach,
                                       const double &gamma);
         
