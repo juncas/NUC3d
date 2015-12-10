@@ -196,12 +196,29 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
                                MPIComunicator3d_nonblocking &myMPI,
                                boundaryCondition &myBC)
 {
+    double t0,t1,t2,t3,t4,t5;
     
+    t0=MPI_Wtime();
     nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
+    t1=MPI_Wtime();
     nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
+    t2=MPI_Wtime();
     nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
+    t3=MPI_Wtime();
     nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    t4=MPI_Wtime();
     nuc3d::EulerData3D::solveRHS(myPDE);
+    t5=MPI_Wtime();
+    if(0==myMPI.getMyId())
+    {
+        std::cout<<"xi time= "<<t1-t0
+        <<", eta time= "<<t2-t1
+        <<", zeta time= "<<t3-t2
+        <<", zeta time= "<<t4-t3
+        <<", zeta time= "<<t5-t4
+        <<"\n"<<std::endl;
+    }
+
 }
 
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
