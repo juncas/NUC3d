@@ -153,7 +153,7 @@ namespace nuc3d
                             const double &,
                             const double &,
                             const double &,
-                             double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
+                            const double &, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
                             double &,
                             double &,
                             double &,
