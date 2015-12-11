@@ -122,10 +122,17 @@ namespace nuc3d
         
         void solveViscousFlux(physicsModel &myPhyMod);
         
-        void setBoundaryViscousFlux();
+        void setBoundaryViscousFlux(PDEData3d &myPDE,
+                                    physicsModel &myModel,
+                                    std::vector<bufferData> &myBf,
+                                    boundaryCondition &myBC);
         //void solveViscousFlux();
         
         void setDerivativesVis();
+        void setDerivativeXi();
+        void setDerivativeEta();
+        void setDerivativeZeta();
+        
         void solveRHS(PDEData3d &);
         
     };

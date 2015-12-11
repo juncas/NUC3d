@@ -550,8 +550,11 @@ double nuc3d::physicsModel::EoSIdealGasgetPressure(const double &rho,
                                                    const double &gamma)
 {
     double temp=(E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
-    if(temp<0.0) temp=std::abs(temp);
-    E=temp/(gamma-1.0)+0.5*rho*(u*u + v*v + w*w);
+    if(temp<0.0)
+    {
+        temp=std::abs(temp);
+        E=temp/(gamma-1.0)+0.5*rho*(u*u + v*v + w*w);
+    }
     return temp;
 }
 

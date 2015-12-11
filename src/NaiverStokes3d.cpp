@@ -68,7 +68,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
     solveGrads(myPDE, myOP, myBf, myMPI);
     
     solveViscousFlux(myModel);
-    setBoundaryViscousFlux();
+    setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     
     setDerivativesVis();
 }
@@ -299,9 +299,12 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
     
 }
 
-void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux()
+void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
+                                                       physicsModel &myModel,
+                                                       std::vector<bufferData> &myBf,
+                                                       boundaryCondition &myBC)
 {
-    
+    myBC.setVisFluxBC(myPDE, myModel, *this, myBf);
 }
 
 void nuc3d::NaiverStokesData3d::setDerivativesVis()
@@ -309,14 +312,25 @@ void nuc3d::NaiverStokesData3d::setDerivativesVis()
     
 }
 
-void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &)
+void nuc3d::NaiverStokesData3d::setDerivativeXi()
+{
+    
+}
+void nuc3d::NaiverStokesData3d::setDerivativeEta()
+{
+    
+}
+
+void nuc3d::NaiverStokesData3d::setDerivativeZeta()
 {
     
 }
 
 
-
-
+void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &)
+{
+    
+}
 
 nuc3d::NaiverStokesData3d::~NaiverStokesData3d()
 {}
