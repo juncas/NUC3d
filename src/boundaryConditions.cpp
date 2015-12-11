@@ -523,9 +523,9 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
                     *iter=prim[iter-q.begin()].getValue(iblock, j, k);
                 
                 //u=-u0 v=-v0 w=-w0
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                q[1]*=0.0;
+                q[2]*=0.0;
+                q[3]*=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, xi_x, xi_y, xi_z, fluxl, fluxr);
                 
@@ -577,9 +577,9 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
                     *iter=prim[iter-q.begin()].getValue(i,jblock, k);
                 
                 //u=-u0 v=-v0 w=-w0
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
                 
@@ -631,9 +631,9 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
                     *iter=prim[iter-q.begin()].getValue(i,j,kblock);
                 
                 //u=-u0 v=-v0 w=-w0
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                q[1]*=0.0;
+                q[2]*=0.0;
+                q[3]*=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, zeta_x, zeta_y, zeta_z, fluxl, fluxr);
                 
