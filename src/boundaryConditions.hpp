@@ -79,7 +79,7 @@ namespace nuc3d
             &boundaryCondition::setVisBC_symm// bc_id=3
         };
         
-        psetVisBuffer myVisFluxSetter[4]={
+        psetVisFluxBuffer myVisFluxSetter[4]={
             &boundaryCondition::setVisFluxBC_Inlet, // bc_id=0
             &boundaryCondition::setVisFluxBC_Outlet,// bc_id=1
             &boundaryCondition::setVisFluxBC_wall,// bc_id=2

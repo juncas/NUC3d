@@ -545,17 +545,11 @@ double nuc3d::physicsModel::EoSIdealGasgetPressure(const double &rho,
                                                    const double &u,
                                                    const double &v,
                                                    const double &w,
-                                                    double &E,
+                                                   const double &E,
                                                    const double &mach,
                                                    const double &gamma)
 {
-    double temp=(E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
-    if(temp<0.0)
-    {
-        temp=std::abs(temp);
-        E=temp/(gamma-1.0)+0.5*rho*(u*u + v*v + w*w);
-    }
-    return temp;
+    return (E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
 }
 
 double nuc3d::physicsModel::EoSIdealGasgetTemp(const double &rho,
@@ -622,7 +616,7 @@ void nuc3d::physicsModel::EoSJWLFWD(const double &rho,
                                     const double &u,
                                     const double &v,
                                     const double &w,
-                                     double &E, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
+                                    const double &E, //E=p/(gamma-1)+1/2*rho*(u^2+v^2+w^2)
                                     double &p,
                                     double &T,
                                     double &e,
