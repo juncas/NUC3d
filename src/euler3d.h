@@ -42,6 +42,10 @@ namespace nuc3d
         VectorField eta_xyz;
         VectorField zeta_xyz;
         
+        VectorField dx;
+        VectorField dy;
+        VectorField dz;
+        
         VectorField W_Euler;//primitive values (rho,u,v,w,p,...)
         
         VectorField W0_Euler;//acoustics values (T,e,alpha)
@@ -83,6 +87,9 @@ namespace nuc3d
         VectorField& getXi_xyz(){return xi_xyz;};
         VectorField& getEta_xyz(){return eta_xyz;};
         VectorField& getZeta_xyz(){return zeta_xyz;};
+        VectorField& getDx(){return dx;};
+        VectorField& getDy(){return dy;};
+        VectorField& getDz(){return dz;};
         
         virtual void solve(PDEData3d &,
                            fieldOperator3d &,

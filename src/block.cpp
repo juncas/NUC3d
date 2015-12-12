@@ -235,19 +235,19 @@ void nuc3d::block::getJacobians()
     VectorField &eta_xyz=myFluxes->getEta_xyz();// xyz_Eta
     VectorField &zeta_xyz=myFluxes->getZeta_xyz();// xyz_Zeta
     
+    VectorField &dx=myFluxes->getDx(); // xyz_Xi
+    VectorField &dy=myFluxes->getDy();// xyz_Eta
+    VectorField &dz=myFluxes->getDz();// xyz_Zeta
+    
     Field &jac=myFluxes->getJac();
     
     //std::cout<<"Start calculate xyz_xi, xyz_eta, xyz_zta ..."<<std::endl;
     
-    
-    auto beg=xyz.begin();
-    auto end=xyz.end();
-    
-    for(auto iter=beg;iter!=end;iter++)
+    for(int iter=0;iter!=3;iter++)
     {
-        interpolation_derlag(*iter, xi_xyz[iter-beg],0);
-        interpolation_derlag(*iter, eta_xyz[iter-beg],1);
-        interpolation_derlag(*iter, zeta_xyz[iter-beg],2);
+        interpolation_derlag(xyz[0], dx[iter],iter);
+        interpolation_derlag(xyz[1], dy[iter],iter);
+        interpolation_derlag(xyz[2], dz[iter],iter);
     }
     
     //std::cout<<std::endl;
@@ -265,17 +265,17 @@ void nuc3d::block::getJacobians()
         {
             for(int i=0;i<nx0;i++)
             {
-                double x_xi=xi_xyz[0].getValue(i, j, k);
-                double y_xi=xi_xyz[1].getValue(i, j, k);
-                double z_xi=xi_xyz[2].getValue(i, j, k);
+                double x_xi=dx[0].getValue(i, j, k);
+                double y_xi=dy[0].getValue(i, j, k);
+                double z_xi=dz[0].getValue(i, j, k);
                 
-                double x_eta=eta_xyz[0].getValue(i, j, k);
-                double y_eta=eta_xyz[1].getValue(i, j, k);
-                double z_eta=eta_xyz[2].getValue(i, j, k);
+                double x_eta=dx[1].getValue(i, j, k);
+                double y_eta=dy[1].getValue(i, j, k);
+                double z_eta=dz[1].getValue(i, j, k);
                 
-                double x_zeta=zeta_xyz[0].getValue(i, j, k);
-                double y_zeta=zeta_xyz[1].getValue(i, j, k);
-                double z_zeta=zeta_xyz[2].getValue(i, j, k);
+                double x_zeta=dx[2].getValue(i, j, k);
+                double y_zeta=dy[2].getValue(i, j, k);
+                double z_zeta=dz[2].getValue(i, j, k);
                 
                 double jacob=1.0/(x_xi*(y_eta*z_zeta-y_zeta*z_eta)
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
