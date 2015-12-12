@@ -742,41 +742,41 @@ void nuc3d::boundaryCondition::BCsetter_symm_xi(PDEData3d &myPDE,
                 int iblock=lr*(nx-1)+(1-2*lr)*i;
                 int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
                 
-                double jacob=jac.getValue(iblock,j,k);
-                double xi_x=xi_xyz[0].getValue(iblock,j,k);
-                double xi_y=xi_xyz[1].getValue(iblock,j,k);
-                double xi_z=xi_xyz[2].getValue(iblock,j,k);
+                double jacob=jac.getValue(lr*(nx-1),j,k);
+                double xi_x=xi_xyz[0].getValue(lr*(nx-1),j,k);
+                double xi_y=xi_xyz[1].getValue(lr*(nx-1),j,k);
+                double xi_z=xi_xyz[2].getValue(lr*(nx-1),j,k);
                 
-                double eta_x=eta_xyz[0].getValue(iblock,j,k);
-                double eta_y=eta_xyz[1].getValue(iblock,j,k);
-                double eta_z=eta_xyz[2].getValue(iblock,j,k);
+                double eta_x=eta_xyz[0].getValue(lr*(nx-1),j,k);
+                double eta_y=eta_xyz[1].getValue(lr*(nx-1),j,k);
+                double eta_z=eta_xyz[2].getValue(lr*(nx-1),j,k);
                 
-                double zeta_x=zeta_xyz[0].getValue(iblock,j,k);
-                double zeta_y=zeta_xyz[1].getValue(iblock,j,k);
-                double zeta_z=zeta_xyz[2].getValue(iblock,j,k);
+                double zeta_x=zeta_xyz[0].getValue(lr*(nx-1),j,k);
+                double zeta_y=zeta_xyz[1].getValue(lr*(nx-1),j,k);
+                double zeta_z=zeta_xyz[2].getValue(lr*(nx-1),j,k);
                 
-                double x_xi=dx[0].getValue(iblock,j,k);
-                double y_xi=dy[0].getValue(iblock,j,k);
-                double z_xi=dz[0].getValue(iblock,j,k);
+                double x_xi=dx[0].getValue(lr*(nx-1),j,k);
+                double y_xi=dy[0].getValue(lr*(nx-1),j,k);
+                double z_xi=dz[0].getValue(lr*(nx-1),j,k);
                 
-                double x_eta=dx[1].getValue(iblock,j,k);
-                double y_eta=dy[1].getValue(iblock,j,k);
-                double z_eta=dz[1].getValue(iblock,j,k);
+                double x_eta=dx[1].getValue(lr*(nx-1),j,k);
+                double y_eta=dy[1].getValue(lr*(nx-1),j,k);
+                double z_eta=dz[1].getValue(lr*(nx-1),j,k);
                 
-                double x_zeta=dx[2].getValue(iblock,j,k);
-                double y_zeta=dy[2].getValue(iblock,j,k);
-                double z_zeta=dz[2].getValue(iblock,j,k);
+                double x_zeta=dx[2].getValue(lr*(nx-1),j,k);
+                double y_zeta=dy[2].getValue(lr*(nx-1),j,k);
+                double z_zeta=dz[2].getValue(lr*(nx-1),j,k);
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(iblock, j, k);
+                    *iter=prim[iter-q.begin()].getValue(lr*(nx-1), j, k);
                 
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
                 
-                q[1]=-x_xi*U+x_eta*V+x_zeta*W;
-                q[2]=-y_xi*U+y_eta*V+y_zeta*W;
-                q[3]=-z_xi*U+z_eta*V+z_zeta*W;
+                q[1]=-x_xi*0.0+x_eta*V+x_zeta*W;
+                q[2]=-y_xi*0.0+y_eta*V+y_zeta*W;
+                q[3]=-z_xi*0.0+z_eta*V+z_zeta*W;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, xi_x, xi_y, xi_z, fluxl, fluxr);
                 
@@ -826,41 +826,41 @@ void nuc3d::boundaryCondition::BCsetter_symm_eta(PDEData3d &myPDE,
                 int jblock=lr*(ny-1)+(1-2*lr)*j;
                 int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
                 
-                double jacob=jac.getValue(i,jblock,k);
+                double jacob=jac.getValue(i,lr*(ny-1),k);
                 
-                double xi_x=xi_xyz[0].getValue(i,jblock,k);
-                double xi_y=xi_xyz[1].getValue(i,jblock,k);
-                double xi_z=xi_xyz[2].getValue(i,jblock,k);
+                double xi_x=xi_xyz[0].getValue(i,lr*(ny-1),k);
+                double xi_y=xi_xyz[1].getValue(i,lr*(ny-1),k);
+                double xi_z=xi_xyz[2].getValue(i,lr*(ny-1),k);
                 
-                double eta_x=eta_xyz[0].getValue(i,jblock,k);
-                double eta_y=eta_xyz[1].getValue(i,jblock,k);
-                double eta_z=eta_xyz[2].getValue(i,jblock,k);
+                double eta_x=eta_xyz[0].getValue(i,lr*(ny-1),k);
+                double eta_y=eta_xyz[1].getValue(i,lr*(ny-1),k);
+                double eta_z=eta_xyz[2].getValue(i,lr*(ny-1),k);
                 
-                double zeta_x=zeta_xyz[0].getValue(i,jblock,k);
-                double zeta_y=zeta_xyz[1].getValue(i,jblock,k);
-                double zeta_z=zeta_xyz[2].getValue(i,jblock,k);
+                double zeta_x=zeta_xyz[0].getValue(i,lr*(ny-1),k);
+                double zeta_y=zeta_xyz[1].getValue(i,lr*(ny-1),k);
+                double zeta_z=zeta_xyz[2].getValue(i,lr*(ny-1),k);
                 
-                double x_xi=dx[0].getValue(i, jblock, k);
-                double y_xi=dy[0].getValue(i, jblock, k);
-                double z_xi=dz[0].getValue(i, jblock, k);
+                double x_xi=dx[0].getValue(i, lr*(ny-1), k);
+                double y_xi=dy[0].getValue(i, lr*(ny-1), k);
+                double z_xi=dz[0].getValue(i, lr*(ny-1), k);
                 
-                double x_eta=dx[1].getValue(i, jblock, k);
-                double y_eta=dy[1].getValue(i, jblock, k);
-                double z_eta=dz[1].getValue(i, jblock, k);
+                double x_eta=dx[1].getValue(i, lr*(ny-1), k);
+                double y_eta=dy[1].getValue(i, lr*(ny-1), k);
+                double z_eta=dz[1].getValue(i, lr*(ny-1), k);
                 
-                double x_zeta=dx[2].getValue(i, jblock, k);
-                double y_zeta=dy[2].getValue(i, jblock, k);
-                double z_zeta=dz[2].getValue(i, jblock, k);
+                double x_zeta=dx[2].getValue(i, lr*(ny-1), k);
+                double y_zeta=dy[2].getValue(i, lr*(ny-1), k);
+                double z_zeta=dz[2].getValue(i, lr*(ny-1), k);
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(i,jblock, k);
+                    *iter=prim[iter-q.begin()].getValue(i,lr*(ny-1), k);
                 
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
-                q[1]=x_xi*U-x_eta*V+x_zeta*W;
-                q[2]=y_xi*U-y_eta*V+y_zeta*W;
-                q[3]=z_xi*U-z_eta*V+z_zeta*W;
+                q[1]=x_xi*U-x_eta*0.0+x_zeta*W;
+                q[2]=y_xi*U-y_eta*0.0+y_zeta*W;
+                q[3]=z_xi*U-z_eta*0.0+z_zeta*W;
 
 
                 myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
@@ -911,42 +911,42 @@ void nuc3d::boundaryCondition::BCsetter_symm_zeta(PDEData3d &myPDE,
                 int kblock=lr*(nz-1)+(1-2*lr)*k;
                 int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
                 
-                double jacob=jac.getValue(i,j,kblock);
+                double jacob=jac.getValue(i,j,lr*(nz-1));
                 
-                double xi_x=xi_xyz[0].getValue(i,j,kblock);
-                double xi_y=xi_xyz[1].getValue(i,j,kblock);
-                double xi_z=xi_xyz[2].getValue(i,j,kblock);
+                double xi_x=xi_xyz[0].getValue(i,j,lr*(nz-1));
+                double xi_y=xi_xyz[1].getValue(i,j,lr*(nz-1));
+                double xi_z=xi_xyz[2].getValue(i,j,lr*(nz-1));
                 
-                double eta_x=eta_xyz[0].getValue(i,j,kblock);
-                double eta_y=eta_xyz[1].getValue(i,j,kblock);
-                double eta_z=eta_xyz[2].getValue(i,j,kblock);
+                double eta_x=eta_xyz[0].getValue(i,j,lr*(nz-1));
+                double eta_y=eta_xyz[1].getValue(i,j,lr*(nz-1));
+                double eta_z=eta_xyz[2].getValue(i,j,lr*(nz-1));
                 
-                double zeta_x=zeta_xyz[0].getValue(i,j,kblock);
-                double zeta_y=zeta_xyz[1].getValue(i,j,kblock);
-                double zeta_z=zeta_xyz[2].getValue(i,j,kblock);
+                double zeta_x=zeta_xyz[0].getValue(i,j,lr*(nz-1));
+                double zeta_y=zeta_xyz[1].getValue(i,j,lr*(nz-1));
+                double zeta_z=zeta_xyz[2].getValue(i,j,lr*(nz-1));
                 
-                double x_xi=dx[0].getValue(i,j,kblock);
-                double y_xi=dy[0].getValue(i,j,kblock);
-                double z_xi=dz[0].getValue(i,j,kblock);
+                double x_xi=dx[0].getValue(i,j,lr*(nz-1));
+                double y_xi=dy[0].getValue(i,j,lr*(nz-1));
+                double z_xi=dz[0].getValue(i,j,lr*(nz-1));
                 
-                double x_eta=dx[1].getValue(i,j,kblock);
-                double y_eta=dy[1].getValue(i,j,kblock);
-                double z_eta=dz[1].getValue(i,j,kblock);
+                double x_eta=dx[1].getValue(i,j,lr*(nz-1));
+                double y_eta=dy[1].getValue(i,j,lr*(nz-1));
+                double z_eta=dz[1].getValue(i,j,lr*(nz-1));
                 
-                double x_zeta=dx[2].getValue(i,j,kblock);
-                double y_zeta=dy[2].getValue(i,j,kblock);
-                double z_zeta=dz[2].getValue(i,j,kblock);
+                double x_zeta=dx[2].getValue(i,j,lr*(nz-1));
+                double y_zeta=dy[2].getValue(i,j,lr*(nz-1));
+                double z_zeta=dz[2].getValue(i,j,lr*(nz-1));
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(i,j,kblock);
+                    *iter=prim[iter-q.begin()].getValue(i,j,lr*(nz-1));
                 
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
                 
-                q[1]=x_xi*U+x_eta*V-x_zeta*W;
-                q[2]=y_xi*U+y_eta*V-y_zeta*W;
-                q[3]=z_xi*U+z_eta*V-z_zeta*W;
+                q[1]=x_xi*U+x_eta*V-x_zeta*0.0;
+                q[2]=y_xi*U+y_eta*V-y_zeta*0.0;
+                q[3]=z_xi*U+z_eta*V-z_zeta*0.0;
 
                 
                 myPhyMod.solveRiemannPoint(q, jacob, zeta_x, zeta_y, zeta_z, fluxl, fluxr);
