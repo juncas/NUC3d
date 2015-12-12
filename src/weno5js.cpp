@@ -19,6 +19,7 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
     double alpha0,alpha1,alpha2,alphaSum;
     double is0,is1,is2;
     double q30,q31,q32;
+    double tau;
 
     is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
         +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
@@ -41,11 +42,16 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
     q32= coeff_weno5_alpha[2][0]*f[2]
         +coeff_weno5_alpha[2][1]*f[3]
         +coeff_weno5_alpha[2][2]*f[4];
-
+    
     alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
     alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
     alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
-
+    
+    tau=std::abs(is2-is0);
+    alpha0=coeff_weno5_c[0]*(1.0+std::pow(tau/(is0+ss),p));
+    alpha1=coeff_weno5_c[1]*(1.0+std::pow(tau/(is1+ss),p));
+    alpha2=coeff_weno5_c[2]*(1.0+std::pow(tau/(is2+ss),p));
+    
     alphaSum=alpha0+alpha1+alpha2;
 
     omega0=alpha0/alphaSum;
