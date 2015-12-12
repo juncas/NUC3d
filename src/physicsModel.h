@@ -98,6 +98,7 @@ namespace nuc3d
         
         int getEqNum(){return neqs;};
         double getMach(){return myModelParameters["Mach"];};
+        double getWallTemp(){return myModelParameters["T_wall"];};
         
         void initial(PDEData3d &,std::shared_ptr<EulerData3D> );
         

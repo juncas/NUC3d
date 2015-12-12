@@ -37,7 +37,8 @@ myModelParameters(
                       {"Pt",0.72},
                       {"Gamma",1.4},
                       {"T_ref",110.4},
-                      {"T_inf",288.0}
+                      {"T_inf",288.0},
+                      {"T_wall",1.0}
                   }
                   ),
 myVisModelMap(
