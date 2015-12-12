@@ -48,6 +48,7 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
     alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
     
     tau=std::abs(is2-is0);
+    
     alpha0=coeff_weno5_c[0]*(1.0+std::pow(tau/(is0+ss),p));
     alpha1=coeff_weno5_c[1]*(1.0+std::pow(tau/(is1+ss),p));
     alpha2=coeff_weno5_c[2]*(1.0+std::pow(tau/(is2+ss),p));
