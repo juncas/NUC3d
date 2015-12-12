@@ -60,6 +60,7 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
     omega2=alpha2/alphaSum;
 
     return omega0*q30+omega1*q31+omega2*q32;
+    
 }
 
 void nuc3d::weno5js::interpolationInner(
