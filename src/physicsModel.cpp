@@ -27,9 +27,15 @@ myEosBWDMap(
 myRiemannMap(
              {
                  { "AUSM",&nuc3d::physicsModel::RiemannAUSM },
-                 { "LF",&nuc3d::physicsModel::RiemannLF }
+                 { "LF",&nuc3d::physicsModel::RiemannLF}
              }
              ),
+myRiemannPointMap(
+                  {
+                      { "AUSM",&nuc3d::physicsModel::solveRiemannPointAUSM},
+                      { "LF",&::nuc3d::physicsModel::solveRiemannPointLF}
+                  }
+                  ),
 myModelParameters(
                   {
                       {"Reynolds",1000},
@@ -42,10 +48,10 @@ myModelParameters(
                   }
                   ),
 myVisModelMap(
-              {
-                  {"Sutherland",&nuc3d::physicsModel::sutherland},
-                  {"Constant",&nuc3d::physicsModel::constant}
-              }
+{
+    {"Sutherland",&nuc3d::physicsModel::sutherland},
+    {"Constant",&nuc3d::physicsModel::constant}
+}
               )
 {
     std::string str;
@@ -511,8 +517,7 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
     return pressureR;
 }
 
-void nuc3d::physicsModel::RiemannLF(
-                                    const Field &Jacobian,
+void nuc3d::physicsModel::RiemannLF(const Field &Jacobian,
                                     const VectorField &xx_xyz,
                                     const VectorField &W_vec,
                                     const VectorField &W0_vec,
@@ -524,12 +529,13 @@ void nuc3d::physicsModel::RiemannLF(
     double rho, u, v, w;
     double alpha;
     double xx_x, xx_y, xx_z, jac;
-    double mach, machp, machn;
-    double p, p_p, p_n;
+    double mach;
+    double p;
     double U0;
     double theta;
     double MaxEigenLocal;
     double fluxp[5], fluxn[5];
+    double flux[5];
     
     int nx = Jacobian.getSizeX();
     int ny = Jacobian.getSizeY();
@@ -565,12 +571,6 @@ void nuc3d::physicsModel::RiemannLF(
                 
                 MaxEigen=(MaxEigen>=MaxEigenLocal)?MaxEigen:MaxEigenLocal;
                 
-                machp = getMachL(mach);
-                machn = getMachR(mach);
-                
-                p_p = getPressureL(mach, p);
-                p_n = getPressureR(mach, p);
-                
                 
                 auto iterRho = Q_vec.begin();
                 auto iterU = Q_vec.begin() + 1;
@@ -578,31 +578,35 @@ void nuc3d::physicsModel::RiemannLF(
                 auto iterW = Q_vec.begin() + 3;
                 auto iterE = Q_vec.begin() + 4;
                 
-                fluxp[0] = machp*alpha*iterRho->getValue(i, j, k);
-                fluxp[1] = machp*alpha*iterU->getValue(i, j, k) + xx_x*p_p/jac;
-                fluxp[2] = machp*alpha*iterV->getValue(i, j, k) + xx_y*p_p/jac;
-                fluxp[3] = machp*alpha*iterW->getValue(i, j, k) + xx_z*p_p/jac;
-                fluxp[4] = machp*alpha*iterE->getValue(i, j, k) + machp*alpha*p/jac;
+                flux[0]=U0*iterRho->getValue(i, j, k);
+                flux[1]=U0*iterU->getValue(i, j, k)+ xx_x*p/jac;
+                flux[2]=U0*iterV->getValue(i, j, k)+ xx_y*p/jac;
+                flux[3]=U0*iterW->getValue(i, j, k)+ xx_z*p/jac;
+                flux[4]=U0*(iterE->getValue(i, j, k)+p/jac);
                 
-                fluxn[0] = machn*alpha*iterRho->getValue(i, j, k);
-                fluxn[1] = machn*alpha*iterU->getValue(i, j, k) + xx_x*p_n/jac;
-                fluxn[2] = machn*alpha*iterV->getValue(i, j, k) + xx_y*p_n/jac;
-                fluxn[3] = machn*alpha*iterW->getValue(i, j, k) + xx_z*p_n/jac;
-                fluxn[4] = machn*alpha*iterE->getValue(i, j, k) + machn*alpha*p/jac;
+                fluxp[0] = 0.5*(flux[0]+MaxEigenLocal*iterRho->getValue(i, j, k));
+                fluxp[1] = 0.5*(flux[1]+MaxEigenLocal*iterU->getValue(i, j, k));
+                fluxp[2] = 0.5*(flux[2]+MaxEigenLocal*iterV->getValue(i, j, k));
+                fluxp[3] = 0.5*(flux[3]+MaxEigenLocal*iterW->getValue(i, j, k));
+                fluxp[4] = 0.5*(flux[4]+MaxEigenLocal*iterE->getValue(i, j, k));
+                
+                fluxn[0] = 0.5*(flux[0]-MaxEigenLocal*iterRho->getValue(i, j, k));
+                fluxn[1] = 0.5*(flux[1]-MaxEigenLocal*iterU->getValue(i, j, k));
+                fluxn[2] = 0.5*(flux[2]-MaxEigenLocal*iterV->getValue(i, j, k));
+                fluxn[3] = 0.5*(flux[3]-MaxEigenLocal*iterW->getValue(i, j, k));
+                fluxn[4] = 0.5*(flux[4]-MaxEigenLocal*iterE->getValue(i, j, k));
                 
                 for (auto iter = FluxL.begin(); (iter - FluxL.begin()) != 5; iter++)
                     iter->setValue(i, j, k, fluxp[iter - FluxL.begin()]);
                 for (auto iter = FluxL.begin() + 5; iter != FluxL.end(); iter++)
-                    iter->setValue(i, j, k, machp*alpha*Q_vec[iter - FluxL.begin()].getValue(i, j, k));
+                    iter->setValue(i, j, k, 0.5*(U0+MaxEigenLocal)*Q_vec[iter - FluxL.begin()].getValue(i, j, k));
                 
                 for (auto iter = FluxR.begin(); (iter - FluxR.begin()) != 5; iter++)
                     iter->setValue(i, j, k, fluxn[iter - FluxR.begin()]);
                 for (auto iter = FluxR.begin() + 5; iter != FluxR.end(); iter++)
-                    iter->setValue(i, j, k, machn*alpha*Q_vec[iter - FluxR.begin()].getValue(i, j, k));
+                    iter->setValue(i, j, k, 0.5*(U0-MaxEigenLocal)*Q_vec[iter - FluxR.begin()].getValue(i, j, k));
                 
             }
-
-    
 };
 
 void nuc3d::physicsModel::EoSIdealGasFWD(const double &rho,
@@ -774,6 +778,20 @@ void nuc3d::physicsModel::solveRiemannPoint(const std::vector<double> &prim,
                                             std::vector<double> &fluxl,
                                             std::vector<double> &fluxr)
 {
+    if (myRiemannMap.find(myRiemannName) != myRiemannMap.end())
+        (this->*myRiemannPointMap[myRiemannName])(prim,jac,xx_x,xx_y,xx_z,fluxl,fluxr);
+    else
+        std::cout << "Riemann Solver " << myRiemannName << " does not exist!" << std::endl;
+}
+
+void nuc3d::physicsModel::solveRiemannPointAUSM(const std::vector<double> &prim,
+                                                const double jac,
+                                                const double xx_x,
+                                                const double xx_y,
+                                                const double xx_z,
+                                                std::vector<double> &fluxl,
+                                                std::vector<double> &fluxr)
+{
     const double &rho=prim[0];
     const double &u=prim[1];
     const double &v=prim[2];
@@ -846,6 +864,82 @@ void nuc3d::physicsModel::solveRiemannPoint(const std::vector<double> &prim,
     
     
     
+}
+void nuc3d::physicsModel::solveRiemannPointLF(const std::vector<double> &prim,
+                                              const double jac,
+                                              const double xx_x,
+                                              const double xx_y,
+                                              const double xx_z,
+                                              std::vector<double> &fluxl,
+                                              std::vector<double> &fluxr)
+{
+    const double &rho=prim[0];
+    const double &u=prim[1];
+    const double &v=prim[2];
+    const double &w=prim[3];
+    const double &p=prim[4];
+    double flux[5];
+    
+    double _rho;
+    double _rhou;
+    double _rhov;
+    double _rhow;
+    double _E;
+    double _p;
+    double _T;
+    double _e;
+    double _alpha;
+    
+    
+    (this->*myEosBWDMap[myEoSName])(rho,
+                                    u,
+                                    v,
+                                    w,
+                                    p,
+                                    _rho,
+                                    _rhou,
+                                    _rhov,
+                                    _rhow,
+                                    _E);
+    
+    (this->*myEosFWDMap[myEoSName])(rho,
+                                    u,
+                                    v,
+                                    w,
+                                    _E,
+                                    _p,
+                                    _T,
+                                    _e,
+                                    _alpha);
+    
+    double mach;
+    double U0;
+    double theta;
+    theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
+    double alpha = _alpha*theta;
+    
+    U0=(xx_x*u + xx_y*v + xx_z*w);
+    
+    mach = U0 / alpha;
+    double MaxEigenLocal=std::abs(U0)+alpha;
+    
+    flux[0]=U0*_rho/jac;
+    flux[1]=U0*_rhou/jac+ xx_x*p/jac;
+    flux[2]=U0*_rhov/jac+ xx_y*p/jac;
+    flux[3]=U0*_rhow/jac+ xx_z*p/jac;
+    flux[4]=U0*(_E/jac+p/jac);
+    
+    fluxl[0] = 0.5*(flux[0]+MaxEigenLocal*_rho/jac);
+    fluxl[1] = 0.5*(flux[1]+MaxEigenLocal*_rhou/jac);
+    fluxl[2] = 0.5*(flux[2]+MaxEigenLocal*_rhov/jac);
+    fluxl[3] = 0.5*(flux[3]+MaxEigenLocal*_rhow/jac);
+    fluxl[4] = 0.5*(flux[4]+MaxEigenLocal*_E/jac);
+    
+    fluxr[0] = 0.5*(flux[0]-MaxEigenLocal*_rho/jac);
+    fluxr[1] = 0.5*(flux[1]-MaxEigenLocal*_rhou/jac);
+    fluxr[2] = 0.5*(flux[2]-MaxEigenLocal*_rhov/jac);
+    fluxr[3] = 0.5*(flux[3]-MaxEigenLocal*_rhow/jac);
+    fluxr[4] = 0.5*(flux[4]-MaxEigenLocal*_E/jac);
 }
 /**************************************************************************************
  End of definition

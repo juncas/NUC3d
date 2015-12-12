@@ -106,8 +106,7 @@ namespace nuc3d
         
         void reconstructionInner(const Field&, int, int, Field &);
         
-        void reconstructionBoundary(
-                                    const Field &,
+        void reconstructionBoundary(                                    const Field &,
                                     const Field &,
                                     const Field &,
                                     int,

@@ -14,7 +14,9 @@ PDEData3d.cpp\
 physicsModel.cpp\
 singleBlock.cpp\
 TVD-RK3.cpp\
-	weno5js.cpp
+	weno5js.cpp\
+ 	weno5z.cpp\
+	upwind1st.cpp
 OBJS=$(srcs:.cpp=.o)
 
 %.o:%.cpp

@@ -51,6 +51,14 @@ namespace nuc3d
                                                VectorField &,
                                                double &);
         
+        typedef void (physicsModel::*pRiemannPoint)(const std::vector<double> &,
+                                                    const double ,
+                                                    const double ,
+                                                    const double ,
+                                                    const double ,
+                                                    std::vector<double> &,
+                                                    std::vector<double> &);
+        
         typedef void (physicsModel::*pVisMod)(const Field &T,
                                               Field &miu,
                                               Field &coeff,
@@ -71,6 +79,7 @@ namespace nuc3d
         std::map<std::string, pEoSBWD> myEosBWDMap;
         std::map<std::string, pRiemann> myRiemannMap;
         std::map<std::string, pVisMod> myVisModelMap;
+        std::map<std::string, pRiemannPoint> myRiemannPointMap;
         
         std::map<std::string, double> myModelParameters; //parameters for EoS
     public:
@@ -238,22 +247,37 @@ namespace nuc3d
                                   const double &gamma);
         
         double EoSIdealGasgetE0(const double &rho,
-                                  const double &u,
-                                  const double &v,
-                                  const double &w,
-                                  const double &E,
-                                  const double &p,
-                                  const double &mach,
-                                  const double &gamma);
+                                const double &u,
+                                const double &v,
+                                const double &w,
+                                const double &E,
+                                const double &p,
+                                const double &mach,
+                                const double &gamma);
         
         double EoSIdealGasgetAlpha(const double &rho,
-                                  const double &u,
-                                  const double &v,
-                                  const double &w,
-                                  const double &E,
-                                  const double &p,
-                                  const double &mach,
-                                  const double &gamma);
+                                   const double &u,
+                                   const double &v,
+                                   const double &w,
+                                   const double &E,
+                                   const double &p,
+                                   const double &mach,
+                                   const double &gamma);
+        void solveRiemannPointAUSM(const std::vector<double> &prim,
+                                   const double jac,
+                                   const double xx_x,
+                                   const double xx_y,
+                                   const double xx_z,
+                                   std::vector<double> &fluxl,
+                                   std::vector<double> &fluxr);
+        
+        void solveRiemannPointLF(const std::vector<double> &prim,
+                                   const double jac,
+                                   const double xx_x,
+                                   const double xx_y,
+                                   const double xx_z,
+                                   std::vector<double> &fluxl,
+                                   std::vector<double> &fluxr);
         
         
     };

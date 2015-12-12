@@ -25,6 +25,8 @@
 		E3A7AF471BEA1C2300385249 /* PDEData3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */; };
 		E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4EF1BEB18F300F84DBF /* bufferData.cpp */; };
 		E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */; };
+		E3E5AEBF1C1C557C00238C41 /* upwind1st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */; };
+		E3E5AEC21C1C564E00238C41 /* weno5z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEC01C1C564E00238C41 /* weno5z.cpp */; };
 		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +81,10 @@
 		E3A7C4F01BEB18F300F84DBF /* bufferData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bufferData.hpp; path = src/bufferData.hpp; sourceTree = SOURCE_ROOT; };
 		E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = boundaryConditions.cpp; path = src/boundaryConditions.cpp; sourceTree = SOURCE_ROOT; };
 		E3A7C4F31BEB1F7E00F84DBF /* boundaryConditions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = boundaryConditions.hpp; path = src/boundaryConditions.hpp; sourceTree = SOURCE_ROOT; };
+		E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = upwind1st.cpp; path = src/upwind1st.cpp; sourceTree = SOURCE_ROOT; };
+		E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = upwind1st.hpp; path = src/upwind1st.hpp; sourceTree = SOURCE_ROOT; };
+		E3E5AEC01C1C564E00238C41 /* weno5z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5z.cpp; path = src/weno5z.cpp; sourceTree = SOURCE_ROOT; };
+		E3E5AEC11C1C564E00238C41 /* weno5z.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = weno5z.hpp; path = src/weno5z.hpp; sourceTree = SOURCE_ROOT; };
 		E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fieldOperator.cpp; path = src/fieldOperator.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -154,6 +160,10 @@
 				E34642971BD1329B007BB96D /* TVD-RK3.h */,
 				E346429C1BD1329B007BB96D /* weno5js.cpp */,
 				E346429D1BD1329B007BB96D /* weno5js.h */,
+				E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */,
+				E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */,
+				E3E5AEC01C1C564E00238C41 /* weno5z.cpp */,
+				E3E5AEC11C1C564E00238C41 /* weno5z.hpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -275,6 +285,7 @@
 				E30F01A11BD646440091F90C /* block.cpp in Sources */,
 				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
 				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */,
+				E3E5AEBF1C1C557C00238C41 /* upwind1st.cpp in Sources */,
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
 				E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */,
 				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
@@ -282,6 +293,7 @@
 				E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */,
 				E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */,
 				E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */,
+				E3E5AEC21C1C564E00238C41 /* weno5z.cpp in Sources */,
 				E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */,
 				E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */,
 				E3A7AF471BEA1C2300385249 /* PDEData3d.cpp in Sources */,

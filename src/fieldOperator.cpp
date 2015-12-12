@@ -3,6 +3,8 @@
 
 #include "fieldOperator.h"
 #include "weno5js.h"
+#include "weno5z.hpp"
+#include "upwind1st.hpp"
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
 
@@ -121,7 +123,17 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
 	{
 		bufferSize=3;
 		myInteroplators.push_back(std::make_shared<weno5js>());
-	}
+    }
+    else if(s=="weno5z")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<weno5z>());
+    }
+    else if(s=="upwind1st")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<upwind1st>());
+    }
 	else
 	{
 		myInteroplators.push_back(std::make_shared<weno5js>());
@@ -133,25 +145,52 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
 {
 	std::string s=MethodMap["scheme_y_ivs"];
 
-	if(s=="weno5js")
-	{
-		bufferSize=3;
-		myInteroplators.push_back(std::make_shared<weno5js>());
-	}
-	else
-	{
-		myInteroplators.push_back(std::make_shared<weno5js>());
-	}
+    if(s=="weno5js")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<weno5js>());
+    }
+    else if(s=="weno5z")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<weno5z>());
+    }
+    else if(s=="upwind1st")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<upwind1st>());
+    }
+    else
+    {
+        myInteroplators.push_back(std::make_shared<weno5js>());
+    }
+
 }
 
 void nuc3d::fieldOperator3d::setMethodIvsZ()
 {
 	std::string s=MethodMap["scheme_z_ivs"];
 
-	if(s=="weno5js")
-		myInteroplators.push_back(std::make_shared<weno5js>());
-	else
-		myInteroplators.push_back(std::make_shared<weno5js>());
+    if(s=="weno5js")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<weno5js>());
+    }
+    else if(s=="weno5z")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<weno5z>());
+    }
+    else if(s=="upwind1st")
+    {
+        bufferSize=3;
+        myInteroplators.push_back(std::make_shared<upwind1st>());
+    }
+    else
+    {
+        myInteroplators.push_back(std::make_shared<weno5js>());
+    }
+
 }
 
 void nuc3d::fieldOperator3d::setDiffMethodX()
