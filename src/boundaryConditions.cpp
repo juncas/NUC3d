@@ -554,8 +554,8 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
                 
                 q[1]=-x_xi*U+x_eta*V+x_zeta*W;
-                q[2]=(-y_xi*U+y_eta*V+y_zeta*W)*0.0;
-                q[3]=(-z_xi*U+z_eta*V+z_zeta*W)*0.0;
+                q[2]=(-y_xi*U+y_eta*V+y_zeta*W);
+                q[3]=(-z_xi*U+z_eta*V+z_zeta*W);
 
 //                //u=-u0 v=-v0 w=-w0
 //                q[1]*=-1;
@@ -584,6 +584,7 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
     std::vector<double> fluxl(myPhyMod.getEqNum());
     std::vector<double> fluxr(myPhyMod.getEqNum());
     std::vector<double> q(myPhyMod.getEqNum());
+    double mach=myPhyMod.getMach();
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -595,6 +596,7 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
     VectorField &dz=myFluxes.getDz();
     
     VectorField &prim=myFluxes.getPrimatives();
+    VectorField &accu=myFluxes.getAcoustics();
     
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
@@ -637,19 +639,20 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
                 double z_zeta=dz[2].getValue(i, jblock, k);
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(i,jblock, k);
+                    *iter=prim[iter-q.begin()].getValue(i,lr*(ny-1), k);
                 //
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
                 
-//                q[1]=(x_xi*U-x_eta*V+x_zeta*W);
-//                q[2]=y_xi*U-y_eta*V+y_zeta*W;
-//                q[3]=(z_xi*U-z_eta*V+z_zeta*W);
+                double rho0=q[0];
+                double T0=accu[0].getValue(i,lr*(ny-1), k);
                 
-                q[1]=-x_eta*V;
-                q[2]=-y_eta*V;
-                q[3]=-z_eta*V;
+                q[0]=rho0*T0/1.0;
+                
+                q[1]=(x_xi*U-x_eta*V+x_zeta*W)*0.0;
+                q[2]=y_xi*U-y_eta*V+y_zeta*W;
+                q[3]=(z_xi*U-z_eta*V+z_zeta*W)*0.0;
                 
 //                //u=-u0 v=-v0 w=-w0
 //                q[1]*=-1;
@@ -737,8 +740,8 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
                 
-                q[1]=(x_xi*U+x_eta*V-x_zeta*W)*0.0;
-                q[2]=(y_xi*U+y_eta*V-y_zeta*W)*0.0;
+                q[1]=(x_xi*U+x_eta*V-x_zeta*W);
+                q[2]=(y_xi*U+y_eta*V-y_zeta*W);
                 q[3]=z_xi*U+z_eta*V-z_zeta*W;
 
 //                
