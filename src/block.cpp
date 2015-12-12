@@ -580,7 +580,7 @@ void nuc3d::block::initialQ(double mach)
                 jacobian=jac.getValue(i, j, k);
                
                 rho=1.0;
-                u=0.0;
+                u=1.0;
                 v=0.0;
                 w=0.0;
                 p=1.0/(gamma*mach*mach);
