@@ -651,7 +651,7 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
                 q[0]=rho0*T0/1.0;
                 
                 q[1]=(x_xi*U-x_eta*V+x_zeta*W)*0.0;
-                q[2]=y_xi*U-y_eta*V+y_zeta*W;
+                q[2]=(y_xi*U-y_eta*V+y_zeta*W)*0.0;
                 q[3]=(z_xi*U-z_eta*V+z_zeta*W)*0.0;
                 
 //                //u=-u0 v=-v0 w=-w0
