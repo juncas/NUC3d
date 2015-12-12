@@ -61,7 +61,8 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
 
 //    return omega0*q30+omega1*q31+omega2*q32;
 
-    return f[2];
+    return f[2];//should add first order
+    
 }
 
 void nuc3d::weno5js::interpolationInner(
