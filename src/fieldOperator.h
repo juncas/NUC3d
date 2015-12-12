@@ -87,6 +87,7 @@ namespace nuc3d
         int bufferSize;
         
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
+        std::vector<std::shared_ptr<interoplation>> myInteroplatorsBND;
         std::vector<std::shared_ptr<differential>> myDifferenters;
         
         std::shared_ptr<integration> myIntegrators;
