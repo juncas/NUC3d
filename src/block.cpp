@@ -680,7 +680,7 @@ void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
     std::string step;
     std::string mid("_ID_");
     std::string id;
-    std::string tailname = (".dat");
+    std::string tailname = (".bin");
     
     std::stringstream ss_step,ss_id;
     ss_step << istep;
@@ -709,7 +709,7 @@ void nuc3d::block::inputQ_binary(int myID,int step0)
     std::string step;
     std::string mid("_ID_");
     std::string id;
-    std::string tailname = (".dat");
+    std::string tailname = (".bin");
     
     std::stringstream ss_step,ss_id;
     ss_step << step0;
