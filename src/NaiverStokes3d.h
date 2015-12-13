@@ -88,14 +88,14 @@ namespace nuc3d
                              boundaryCondition &myBC);
         
         void solveGrads(PDEData3d &myPDE,
-                       fieldOperator3d &myOP,
-                       std::vector<bufferData> &myBf,
-                       MPIComunicator3d_nonblocking &myMPI);
+                        fieldOperator3d &myOP,
+                        std::vector<bufferData> &myBf,
+                        MPIComunicator3d_nonblocking &myMPI);
         
         void solve_grad(Field &,
-                         fieldOperator3d &,
-                         bufferData &,
-                         MPIComunicator3d_nonblocking &,
+                        fieldOperator3d &,
+                        bufferData &,
+                        MPIComunicator3d_nonblocking &,
                         gradvector &,
                         int fdID);
         
@@ -128,10 +128,22 @@ namespace nuc3d
                                     boundaryCondition &myBC);
         //void solveViscousFlux();
         
-        void setDerivativesVis();
-        void setDerivativeXi();
-        void setDerivativeEta();
-        void setDerivativeZeta();
+        void setDerivativesVis(fieldOperator3d &myOP,
+                               std::vector<bufferData> &myBf,
+                               MPIComunicator3d_nonblocking &myMPI,
+                               boundaryCondition &myBC);
+        void setDerivativeXi(fieldOperator3d &myOP,
+                             std::vector<bufferData> &myBf,
+                             MPIComunicator3d_nonblocking &myMPI,
+                             boundaryCondition &myBC);
+        void setDerivativeEta(fieldOperator3d &myOP,
+                              std::vector<bufferData> &myBf,
+                              MPIComunicator3d_nonblocking &myMPI,
+                              boundaryCondition &myBC);
+        void setDerivativeZeta(fieldOperator3d &myOP,
+                               std::vector<bufferData> &myBf,
+                               MPIComunicator3d_nonblocking &myMPI,
+                               boundaryCondition &myBC);
         
         void solveRHS(PDEData3d &);
         

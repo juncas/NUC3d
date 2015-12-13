@@ -70,7 +70,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
     solveViscousFlux(myModel);
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     
-    setDerivativesVis();
+    setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
 
 
@@ -307,30 +307,113 @@ void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
     myBC.setVisFluxBC(myPDE, myModel, *this, myBf);
 }
 
-void nuc3d::NaiverStokesData3d::setDerivativesVis()
+void nuc3d::NaiverStokesData3d::setDerivativesVis(fieldOperator3d &myOP,
+                                                  std::vector<bufferData> &myBf,
+                                                  MPIComunicator3d_nonblocking &myMPI,
+                                                  boundaryCondition &myBC)
 {
-    setDerivativeXi();
-    setDerivativeEta();
-    setDerivativeZeta();
+    setDerivativeXi(myOP,myBf,myMPI,myBC);
+    setDerivativeEta(myOP,myBf,myMPI,myBC);
+    setDerivativeZeta(myOP,myBf,myMPI,myBC);
+    MPI_Barrier(MPI_COMM_WORLD);
 }
 
-void nuc3d::NaiverStokesData3d::setDerivativeXi()
+void nuc3d::NaiverStokesData3d::setDerivativeXi(fieldOperator3d &myOP,
+                                                std::vector<bufferData> &myBf,
+                                                MPIComunicator3d_nonblocking &myMPI,
+                                                boundaryCondition &myBC)
 {
+    auto beg=Flux_xi_vis.begin();
+    auto end=Flux_xi_vis.end();
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        myMPI.bufferSendRecv(*iter, myBf[iter-beg], 0, static_cast<int>(iter-beg));
+        myOP.differenceInner(*iter, 0, dfvdxi[iter-beg]);
+        myMPI.waitSendRecv(myBf[iter-beg], 0);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[0], myBf[iter-beg].BufferRecv[1], 0, dfvdxi[iter-beg]);
+    }
     
 }
-void nuc3d::NaiverStokesData3d::setDerivativeEta()
+void nuc3d::NaiverStokesData3d::setDerivativeEta(fieldOperator3d &myOP,
+                                                 std::vector<bufferData> &myBf,
+                                                 MPIComunicator3d_nonblocking &myMPI,
+                                                 boundaryCondition &myBC)
 {
+    auto beg=Flux_eta_vis.begin();
+    auto end=Flux_eta_vis.end();
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        myMPI.bufferSendRecv(*iter, myBf[iter-beg], 1, static_cast<int>(iter-beg));
+        myOP.differenceInner(*iter, 1, dgvdeta[iter-beg]);
+        myMPI.waitSendRecv(myBf[iter-beg], 1);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[2], myBf[iter-beg].BufferRecv[3], 1, dgvdeta[iter-beg]);
+    }
+
     
 }
 
-void nuc3d::NaiverStokesData3d::setDerivativeZeta()
+void nuc3d::NaiverStokesData3d::setDerivativeZeta(fieldOperator3d &myOP,
+                                                  std::vector<bufferData> &myBf,
+                                                  MPIComunicator3d_nonblocking &myMPI,
+                                                  boundaryCondition &myBC)
 {
+    auto beg=Flux_zeta_vis.begin();
+    auto end=Flux_zeta_vis.end();
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        myMPI.bufferSendRecv(*iter, myBf[iter-beg], 2, static_cast<int>(iter-beg));
+        myOP.differenceInner(*iter, 2, dhvdzeta[iter-beg]);
+        myMPI.waitSendRecv(myBf[iter-beg], 2);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[4], myBf[iter-beg].BufferRecv[5], 2, dhvdzeta[iter-beg]);
+    }
+
     
 }
 
 
-void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &)
+void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
 {
+    VectorField &df_v=this->dfdxi;
+    VectorField &dg_v=this->dgdeta;
+    VectorField &dh_v=this->dhdzeta;
+    
+    VectorField &dfv_v=this->dfvdxi;
+    VectorField &dgv_v=this->dgvdeta;
+    VectorField &dhv_v=this->dhvdzeta;
+    
+    auto beg=myPDE.getRHS().begin();
+    auto end=myPDE.getRHS().end();
+    
+    for (auto iter=beg ; iter!=end ; iter++)
+    {
+        int nx0=iter->getSizeX();
+        int ny0=iter->getSizeY();
+        int nz0=iter->getSizeZ();
+        
+        for (int k=0; k<nz0; k++)
+        {
+            for (int j=0; j<ny0; j++)
+            {
+                for (int i=0; i<nx0; i++)
+                {
+                    double df=df_v[iter-beg].getValue(i, j, k);
+                    double dg=dg_v[iter-beg].getValue(i, j, k);
+                    double dh=dh_v[iter-beg].getValue(i, j, k);
+                    
+                    double dfv=dfv_v[iter-beg].getValue(i, j, k);
+                    double dgv=dgv_v[iter-beg].getValue(i, j, k);
+                    double dhv=dhv_v[iter-beg].getValue(i, j, k);
+                    
+                    double rhs=df+dg+dh-(dfv+dgv+dhv);
+                    
+                    iter->setValue(i, j, k, rhs);
+                }
+            }
+        }
+    }
+    
+    EulerData3D::getDt();
+    myPDE.setDt(dt);
     
 }
 

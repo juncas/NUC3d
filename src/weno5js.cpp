@@ -56,14 +56,12 @@ double nuc3d::weno5js::weno5jsInterpolation(const double *f)
     return omega0*q30+omega1*q31+omega2*q32;
 }
 
-void nuc3d::weno5js::interpolationInner(
-                                        const Field & fieldIN,
+void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
                                         const int dim0,
                                         const int dim1,
                                         const int dim2,
                                         const int uw,//uw=(1,-1)
-                                        Field & fieldOUT
-                                        )
+                                        Field & fieldOUT)
 {
     double flux[5];
     double h;
@@ -80,33 +78,35 @@ void nuc3d::weno5js::interpolationInner(
     int strideL=2-(1-uw)/2;
     int strideR=2+(1-uw)/2;
     
+    int ibeg=strideL*dim0;
+    int iend=nx-strideR*dim0;
+    int jbeg=strideL*dim1;
+    int jend=ny-strideR*dim1;
+    int kbeg=strideL*dim2;
+    int kend=nz-strideR*dim2;
+    
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
        ((ny+dim1)==(fieldOUT.getSizeY()))&&
        ((nz+dim2)==(fieldOUT.getSizeZ())) )
     {
-        for(int k=0;k<nz;k++)
+        for(int k=kbeg;k<kend;k++)
         {
-            for(int j=0;j<ny;j++)
+            for(int j=jbeg;j<jend;j++)
             {
-                for(int i=0;i<nx;i++)
+                for(int i=ibeg;i<iend;i++)
                 {
-                    if((((i-strideL*dim0)>=0)&&((j-strideL*dim1)>=0)&&((k-strideL*dim2)>=0))&&
-                       (((i+strideR*dim0)<nx)&&((j+strideR*dim1)<ny)&&((k+strideR*dim2)<nz)))
+                    for(int z=-2;z<=2;z++)
                     {
-                        for(int z=-2;z<=2;z++)
-                        {
-                            int stride=(1-uw)/2+z*uw;
-                            int itemp=i+stride*dim0;
-                            int jtemp=j+stride*dim1;
-                            int ktemp=k+stride*dim2;
-                            
-                            flux[2+z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                        }
-                        h=weno5jsInterpolation(flux);
+                        int stride=(1-uw)/2+z*uw;
+                        int itemp=i+stride*dim0;
+                        int jtemp=j+stride*dim1;
+                        int ktemp=k+stride*dim2;
                         
-                        fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
+                        flux[2+z]=fieldIN.getValue(itemp,jtemp,ktemp);
                     }
+                    h=weno5jsInterpolation(flux);
                     
+                    fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
             }
         }
@@ -114,15 +114,13 @@ void nuc3d::weno5js::interpolationInner(
 }
 
 
-void nuc3d::weno5js::interpolationBoundaryL(
-                                            const Field & fieldIN,
+void nuc3d::weno5js::interpolationBoundaryL(const Field & fieldIN,
                                             const Field & boundaryL,
                                             const int dim0,
                                             const int dim1,
                                             const int dim2,
                                             const int uw,//uw=(1,-1)
-                                            Field & fieldOUT
-                                            )
+                                            Field & fieldOUT)
 {
     double flux[5];
     double h;
@@ -139,6 +137,13 @@ void nuc3d::weno5js::interpolationBoundaryL(
     int strideL=3-(1-uw)/2;
     int strideR=1+(1-uw)/2;
     
+    int ibeg=strideL*dim0;
+    int iend=nx-strideR*dim0;
+    int jbeg=strideL*dim1;
+    int jend=ny-strideR*dim1;
+    int kbeg=strideL*dim2;
+    int kend=nz-strideR*dim2;
+
     
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
        ((ny+dim1)==(fieldOUT.getSizeY()))&&
@@ -185,15 +190,13 @@ void nuc3d::weno5js::interpolationBoundaryL(
     }
 }
 
-void nuc3d::weno5js::interpolationBoundaryR(
-                                            const Field & fieldIN,
+void nuc3d::weno5js::interpolationBoundaryR(const Field & fieldIN,
                                             const Field & boundaryR,
                                             const int dim0,
                                             const int dim1,
                                             const int dim2,
                                             const int uw,//uw=(1,-1)
-                                            Field & fieldOUT
-                                            )
+                                            Field & fieldOUT)
 {
     double flux[5];
     double h;

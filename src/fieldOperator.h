@@ -28,20 +28,20 @@ namespace nuc3d
                                         const int,
                                         Field &)=0;
         virtual void interpolationBoundaryL(
-                                           const Field &,
-                                           const Field &,
-                                           const int,
-                                           const int,
-                                           const int,
-                                           const int,
-                                           Field &)=0;
+                                            const Field &,
+                                            const Field &,
+                                            const int,
+                                            const int,
+                                            const int,
+                                            const int,
+                                            Field &)=0;
         virtual void interpolationBoundaryR(
-                                           const Field &,
-                                           const Field &,                                           const int,
-                                           const int,
-                                           const int,
-                                           const int,
-                                           Field &)=0;
+                                            const Field &,
+                                            const Field &,                                           const int,
+                                            const int,
+                                            const int,
+                                            const int,
+                                            Field &)=0;
     };
     
     class integration
@@ -78,14 +78,20 @@ namespace nuc3d
                                        const int,
                                        Field &)=0;
         
-        virtual void differentialBoundary(
-                                          const Field &,
-                                          const Field &,
-                                          const Field &,
-                                          const int,
-                                          const int,
-                                          const int,
-                                          Field &)=0;
+        virtual void differentialBoundaryL(
+                                           const Field &,
+                                           const Field &,
+                                           const int,
+                                           const int,
+                                           const int,
+                                           Field &)=0;
+        virtual void differentialBoundaryR(
+                                           const Field &,
+                                           const Field &,
+                                           const int,
+                                           const int,
+                                           const int,
+                                           Field &)=0;
     };
     
     class fieldOperator3d//should only operate on fields
@@ -95,6 +101,7 @@ namespace nuc3d
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
         std::vector<std::shared_ptr<interoplation>> myInteroplatorsBND;
         std::vector<std::shared_ptr<differential>> myDifferenters;
+        std::vector<std::shared_ptr<differential>> myDifferentersBND;
         
         std::shared_ptr<integration> myIntegrators;
         
@@ -129,7 +136,9 @@ namespace nuc3d
                                 const Field &,
                                 const Field &,
                                 int,
-                                Field &);
+                                Field &,
+                                int typeL,
+                                int typeR);
         
         
         void timeIntegral (const VectorField&, // rhs
@@ -153,28 +162,46 @@ namespace nuc3d
         void setDiffMethodZ();
         
         void reconstructionBoundaryInnerL(const Field &fieldIN,
-                                         const Field &boundaryL,
-                                         const int direction,
-                                         const int upwind,
-                                         Field &fieldOUT);
+                                          const Field &boundaryL,
+                                          const int direction,
+                                          const int upwind,
+                                          Field &fieldOUT);
         
         void reconstructionBoundaryExteriorL(const Field &fieldIN,
-                                            const Field &boundaryL,
-                                            const int direction,
-                                            const int upwind,
-                                            Field &fieldOUT);
+                                             const Field &boundaryL,
+                                             const int direction,
+                                             const int upwind,
+                                             Field &fieldOUT);
         void reconstructionBoundaryInnerR(const Field &fieldIN,
-                                         const Field &boundaryR,
-                                         const int direction,
-                                         const int upwind,
-                                         Field &fieldOUT);
+                                          const Field &boundaryR,
+                                          const int direction,
+                                          const int upwind,
+                                          Field &fieldOUT);
         
         void reconstructionBoundaryExteriorR(const Field &fieldIN,
-                                            const Field &boundaryR,
-                                            const int direction,
-                                            const int upwind,
-                                            Field &fieldOUT);
-
+                                             const Field &boundaryR,
+                                             const int direction,
+                                             const int upwind,
+                                             Field &fieldOUT);
+        
+        void differenceBoundaryInnerL(const Field &fieldIN,
+                                      const Field &boundaryL,
+                                      const int direction,
+                                      Field &fieldOUT);
+        
+        void differenceBoundaryExteriorL(const Field &fieldIN,
+                                         const Field &boundaryL,
+                                         const int direction,                                             Field &fieldOUT);
+        void differenceBoundaryInnerR(const Field &fieldIN,
+                                      const Field &boundaryR,
+                                      const int direction,
+                                      Field &fieldOUT);
+        
+        void differenceBoundaryExteriorR(const Field &fieldIN,
+                                         const Field &boundaryR,
+                                         const int direction,
+                                         Field &fieldOUT);
+        
         
     };
 }

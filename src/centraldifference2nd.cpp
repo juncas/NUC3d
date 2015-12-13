@@ -1,18 +1,18 @@
 #ifndef centraldifference6th_cpp
 #define centraldifference6th_cpp
-#include "centraldifference6th.h"
+#include "centraldifference2nd.hpp"
 
-nuc3d::centraldifference6th::centraldifference6th()
+nuc3d::centraldifference2nd::centraldifference2nd()
 {
     
 }
 
-nuc3d::centraldifference6th::~centraldifference6th()
+nuc3d::centraldifference2nd::~centraldifference2nd()
 {
     
 }
 
-double nuc3d::centraldifference6th::cd6differential(const double *fl,
+double nuc3d::centraldifference2nd::cd6differential(const double *fl,
                                                     const double *fr)
 {
     double df;
@@ -24,7 +24,7 @@ double nuc3d::centraldifference6th::cd6differential(const double *fl,
     return df;
 }
 
-void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
+void nuc3d::centraldifference2nd::differentialInner(const Field & fieldIN,
                                                     const int dim0,
                                                     const int dim1,
                                                     const int dim2,
@@ -92,7 +92,7 @@ void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
 }
 
 
-void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
+void nuc3d::centraldifference2nd::differentialBoundaryL(const Field & fieldIN,
                                                         const Field & boundaryL,
                                                         const int dim0,
                                                         const int dim1,
@@ -172,7 +172,7 @@ void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
 }
 
 
-void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
+void nuc3d::centraldifference2nd::differentialBoundaryR(const Field & fieldIN,
                                                         const Field & boundaryR,
                                                         const int dim0,
                                                         const int dim1,
@@ -240,9 +240,9 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
                         {
                             flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
                         }
-
+                        
                     }
-
+                    
                     
                     h= cd6differential(flux_l,flux_r);
                     

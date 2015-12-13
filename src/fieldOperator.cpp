@@ -20,7 +20,10 @@ MethodMap(
               {"scheme_z_ivsBND","weno5js"},
               {"scheme_x_vis","cd6"},
               {"scheme_y_vis","cd6"},
-              {"scheme_z_vis","cd6"}
+              {"scheme_z_vis","cd6"},
+              {"scheme_x_visBND","cd2"},
+              {"scheme_y_visBND","cd2"},
+              {"scheme_z_visBND","cd2"},
           }
           )
 {
@@ -471,23 +474,76 @@ void nuc3d::fieldOperator3d::differenceBoundary(
                                                 const Field &boundaryL,
                                                 const Field &boundaryR,
                                                 int direction,
-                                                Field &fieldOUT)
+                                                Field &fieldOUT,
+                                                int typeL,
+                                                int typeR)
+{
+    
+    if((-1)==typeL)
+        differenceBoundaryExteriorL(fieldIN,boundaryL,direction,fieldOUT);
+    else
+        differenceBoundaryInnerL(fieldIN,boundaryL,direction,fieldOUT);
+    
+    if((-1)==typeR)
+        differenceBoundaryExteriorR(fieldIN,boundaryR,direction,fieldOUT);
+    else
+        differenceBoundaryInnerR(fieldIN,boundaryR,direction,fieldOUT);
+}
+
+
+void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
+                              const Field &boundaryL,
+                              const int direction,
+                              Field &fieldOUT)
 {
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialBoundary(fieldIN,boundaryL,boundaryR,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT);
             break;
         case 1:
-            myDifferenters[1]->differentialBoundary(fieldIN,boundaryL,boundaryR,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT);
             break;
         case 2:
-            myDifferenters[2]->differentialBoundary(fieldIN,boundaryL,boundaryR,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT);
+            break;
+    }
+}
+
+void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
+                                 const Field &boundaryL,
+                                 const int direction,                                             Field &fieldOUT)
+{
+    
+}
+
+void nuc3d::fieldOperator3d::differenceBoundaryInnerR(const Field &fieldIN,
+                              const Field &boundaryR,
+                              const int direction,
+                              Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myDifferenters[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT);
+            break;
+        case 1:
+            myDifferenters[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT);
+            break;
+        case 2:
+            myDifferenters[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT);
             break;
     }
     
 }
 
+void nuc3d::fieldOperator3d::differenceBoundaryExteriorR(const Field &fieldIN,
+                                 const Field &boundaryR,
+                                 const int direction,
+                                 Field &fieldOUT)
+{
+    
+}
 
 void nuc3d::fieldOperator3d::timeIntegral (const VectorField &rhs, // rhs
                                            const VectorField &u_n, // u_n
