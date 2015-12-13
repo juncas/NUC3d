@@ -88,6 +88,8 @@ namespace nuc3d
         
         void printStatus();
         void outputQ_tecplot(int,physicsModel&);
+        void outputQ_binary(int,physicsModel&);
+        void inputQ_binary(int,int);
     private:
         
        typedef double (block::*pDer_lag)(const int ,
@@ -165,7 +167,9 @@ namespace nuc3d
                                               int);
         
         void readField(std::ifstream &, Field &);
-        void writeField(std::ofstream &myFile, nuc3d::Field &myField);
+        void writeField(std::ofstream &myFile, Field &myField);
+        void readField_binary(std::ifstream &, Field &);
+        void writeField_binary(std::ofstream &myFile, Field &myField);
     };
     
 }

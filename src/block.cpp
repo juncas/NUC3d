@@ -88,12 +88,17 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     
-    initialQ(myPhyMod.getMach());
+    if(0==(myIO.getStep("startStep")))
+        initialQ(myPhyMod.getMach());
+    else
+        inputQ_binary(myMPI.getMyId(),myIO.getStep("startStep"));
+    
     if(myMPI.getMyId()==0) std::cout<<"Flow field has been initialized!"<<std::endl;
     
     myBC.initialBC(mybuffer,myMPI);
     
 }
+
 void nuc3d::block::writeField(std::ofstream &myFile, nuc3d::Field &myField)
 {
     int nx0=myField.getSizeX();
@@ -604,9 +609,9 @@ void nuc3d::block::initialQ(double mach)
 
 void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
 {
-    std::string forename_flow = ("flowData/NUC3d_ID_");
+    std::string forename_flow = ("flowData/NUC3d_step_");
     std::string step;
-    std::string mid("_Step_");
+    std::string mid("_id_");
     std::string id;
     std::string tailname = (".dat");
     
@@ -617,7 +622,7 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     ss_id<<myID;
     ss_id>>id;
     
-    std::string filename_flow = forename_flow + id + mid + step + tailname;
+    std::string filename_flow = forename_flow + step + mid + id + tailname;
     
     std::ofstream myIOfile;
     
@@ -669,3 +674,101 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     
 }
 
+void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
+{
+    std::string forename_flow = ("flowData/NUC3d_step_");
+    std::string step;
+    std::string mid("_ID_");
+    std::string id;
+    std::string tailname = (".dat");
+    
+    std::stringstream ss_step,ss_id;
+    ss_step << istep;
+    ss_step >> step;
+    
+    ss_id<<myID;
+    ss_id>>id;
+    
+    std::string filename_flow = forename_flow + step + mid + id + tailname;
+    
+    std::ofstream myIOfile;
+    
+    myIOfile.open(filename_flow,std::ios::out|std::ios::binary);
+    VectorField &Q=myPDE.getQ();
+    myIOfile.write(reinterpret_cast<char *>(&time), sizeof(time));
+    for(auto iter=Q.begin();iter!=Q.end();iter++)
+    {
+        writeField_binary(myIOfile,*iter);
+    }
+        
+}
+
+void nuc3d::block::inputQ_binary(int myID,int step0)
+{
+    std::string forename_flow = ("flowData/NUC3d_step_");
+    std::string step;
+    std::string mid("_ID_");
+    std::string id;
+    std::string tailname = (".dat");
+    
+    std::stringstream ss_step,ss_id;
+    ss_step << step0;
+    ss_step >> step;
+    
+    ss_id<<myID;
+    ss_id>>id;
+    
+    std::string filename_flow = forename_flow + step + mid + id + tailname;
+    
+    std::ifstream myIOfile;
+    
+    myIOfile.open(filename_flow,std::ios::in|std::ios::binary);
+    VectorField &Q=myPDE.getQ();
+    
+    myIOfile.read(reinterpret_cast<char *>(&time), sizeof (time));
+    istep=step0;
+    for(auto iter=Q.begin();iter!=Q.end();iter++)
+    {
+        readField_binary(myIOfile,*iter);
+    }
+    
+}
+
+void nuc3d::block::writeField_binary(std::ofstream &myFile, nuc3d::Field &myField)
+{
+    int nx0=myField.getSizeX();
+    int ny0=myField.getSizeY();
+    int nz0=myField.getSizeZ();
+    
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                double value=myField.getValue(i,j,k);
+                myFile.write(reinterpret_cast<char *>(&value), sizeof(value));
+            }
+        }
+    }
+}
+
+
+void nuc3d::block::readField_binary(std::ifstream &myFile, nuc3d::Field &myField)
+{
+    int nx0=myField.getSizeX();
+    int ny0=myField.getSizeY();
+    int nz0=myField.getSizeZ();
+    for(int k=0;k<nz0;k++)
+    {
+        for(int j=0;j<ny0;j++)
+        {
+            for(int i=0;i<nx0;i++)
+            {
+                double value;
+                myFile.read(reinterpret_cast<char *>(&value), sizeof(value));
+                myField.setValue(i,j,k,value);
+            }
+        }
+    }
+}
