@@ -8,32 +8,32 @@
 #include "singleBlock.h"
 
 nuc3d::singleBlock::singleBlock():
-	myBlock(),
-	myMPI(),
-	myIO(),
-	myPhys(),
-	myOperator(),
-	myBC()
+myBlock(),
+myMPI(),
+myIO(),
+myPhys(),
+myOperator(),
+myBC()
 {
-
+    
 }
 
 nuc3d::singleBlock::~singleBlock()
 {
-
+    
 }
 
 /*==========================================================================
-
-  Initial Block functions:
-  -initialBlock()
-  =========================================================================*/
+ 
+ Initial Block functions:
+ -initialBlock()
+ =========================================================================*/
 
 void nuc3d::singleBlock::loop()
 {
-	initialBlock();
+    initialBlock();
     MPI_Barrier(MPI_COMM_WORLD);
-	solvePDE();
+    solvePDE();
 }
 
 void nuc3d::singleBlock::initialBlock()
@@ -43,77 +43,83 @@ void nuc3d::singleBlock::initialBlock()
 }
 
 /*==========================================================================
-
-  Block solve functions:
-  -solvePDE()
-  =========================================================================*/
+ 
+ Block solve functions:
+ -solvePDE()
+ =========================================================================*/
 
 void nuc3d::singleBlock::solvePDE()
 {
     if(myMPI.getMyId()==0) std::cout<<"Start solving......\n";
-	while (myIO.ifsolve())
-	{
-		myBlock.solve(myOperator, myPhys, myMPI, myBC, myIO);
-
-		if(0==myMPI.getMyId()) myBlock.printStatus();
-
-		if (myIO.ifsave()) output();
-	}
+    while (myIO.ifsolve())
+    {
+        myBlock.solve(myOperator, myPhys, myMPI, myBC, myIO);
+        
+        if(0==myMPI.getMyId()) myBlock.printStatus();
+        
+        if (myIO.ifsave()) output();
+    }
     output();
-	if(0==myMPI.getMyId()) std::cout<<"Calculation finished!!"<<std::endl;
+    if(0==myMPI.getMyId()) std::cout<<"Calculation finished!!"<<std::endl;
 }
 
 void nuc3d::singleBlock::output()
 {
     if(myMPI.getMyId()==0) std::cout<<"Saving data......"<<std::endl;
-    myBlock.outputQ_tecplot(myMPI.getMyId(),myPhys);
+    
+    if(("yes")==(myIO.getType("Binary")))
+        myBlock.outputQ_binary(myMPI.getMyId(),myPhys);
+    if(("yes")==(myIO.getType("Tecplot")))
+        myBlock.outputQ_tecplot(myMPI.getMyId(),myPhys);
+    
+    myIO.renewIOcontroller();
 }
 
 
 void nuc3d::singleBlock::readData(std::ifstream &myFile, VectorField &dataVec)
 {
-	double value;
-
-	int nx=(dataVec.begin())->getSizeX();
-	int ny=(dataVec.begin())->getSizeY();
-	int nz=(dataVec.begin())->getSizeZ();
-
-	for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
-	{
-		for(int k=0;k<nz;k++)
-		{
-			for(int j=0;j<ny;j++)
-			{
-				for(int i=0;i<nx;i++)
-				{
-					myFile>>value;
-					iter->setValue(i, j, k, value);
-				}
-			}
-		}
-	}
+    double value;
+    
+    int nx=(dataVec.begin())->getSizeX();
+    int ny=(dataVec.begin())->getSizeY();
+    int nz=(dataVec.begin())->getSizeZ();
+    
+    for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
+    {
+        for(int k=0;k<nz;k++)
+        {
+            for(int j=0;j<ny;j++)
+            {
+                for(int i=0;i<nx;i++)
+                {
+                    myFile>>value;
+                    iter->setValue(i, j, k, value);
+                }
+            }
+        }
+    }
 }
 
 void nuc3d::singleBlock::writeData(std::ofstream &myFile, VectorField &dataVec)
 {
-	double value;
-	int nx=(dataVec.begin())->getSizeX();
-	int ny=(dataVec.begin())->getSizeY();
-	int nz=(dataVec.begin())->getSizeZ();
-
-	for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
-	{
-		for(int k=0;k<nz;k++)
-		{
-			for(int j=0;j<ny;j++)
-			{
-				for(int i=0;i<nx;i++)
-				{
-					value=iter->getValue(i,j,k);
-					myFile<<value<<std::endl;
-				}
-			}
-		}
-	}
-
+    double value;
+    int nx=(dataVec.begin())->getSizeX();
+    int ny=(dataVec.begin())->getSizeY();
+    int nz=(dataVec.begin())->getSizeZ();
+    
+    for (auto iter = dataVec.begin(); iter != dataVec.end(); ++iter)
+    {
+        for(int k=0;k<nz;k++)
+        {
+            for(int j=0;j<ny;j++)
+            {
+                for(int i=0;i<nx;i++)
+                {
+                    value=iter->getValue(i,j,k);
+                    myFile<<value<<std::endl;
+                }
+            }
+        }
+    }
+    
 }

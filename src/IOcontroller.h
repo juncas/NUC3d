@@ -16,6 +16,7 @@ namespace nuc3d
 		
         std::map<std::string,int> myIOController;
         std::map<std::string,double> myTimeController;
+        std::map<std::string,std::string> myIOFileType;
 	public:
         
 		IOController();
@@ -24,9 +25,12 @@ namespace nuc3d
         bool ifsave();
         
 	public:
-		int getStep(std::string);
-		double getValue(std::string);
-		std::istream& readIOFile(std::istream&,std::map<std::string,int> &,std::map<std::string,double> &);
+        int getStep(std::string);
+        double getValue(std::string);
+        std::string getType(std::string);
+        void renewIOcontroller();
+    private:
+		std::istream& readIOFile(std::istream&,std::map<std::string,int> &,std::map<std::string,double> &,std::map<std::string,std::string> &);
 	};
 }
 #endif
