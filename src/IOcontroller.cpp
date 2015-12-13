@@ -40,7 +40,8 @@ myIOFileType
     std::ifstream file(filename);
     
     //std::cout<<"Starting reading IOController.in..."<<std::endl;
-    auto count=myTimeController.size()+myIOController.size();	if(file)
+    auto count=myTimeController.size()+myIOController.size()+myIOFileType.size();
+    if(file)
     {
         while(readIOFile(file,myIOController,myTimeController,myIOFileType))
             count--;
@@ -113,7 +114,7 @@ void nuc3d::IOController::renewIOcontroller()
     std::ifstream file(filename);
     
     //std::cout<<"Starting reading IOController.in..."<<std::endl;
-    auto count=myTimeController.size()+myIOController.size();	if(file)
+    auto count=myTimeController.size()+myIOController.size()+myIOFileType.size();    if(file)
     {
         while(readIOFile(file,myIOController,myTimeController,myIOFileType))
             count--;
