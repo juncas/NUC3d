@@ -27,11 +27,17 @@ namespace nuc3d
                                         const int,
                                         const int,
                                         Field &)=0;
-        virtual void interpolationBoundary(
-                                           const Field &,
+        virtual void interpolationBoundaryL(
                                            const Field &,
                                            const Field &,
                                            const int,
+                                           const int,
+                                           const int,
+                                           const int,
+                                           Field &)=0;
+        virtual void interpolationBoundaryR(
+                                           const Field &,
+                                           const Field &,                                           const int,
                                            const int,
                                            const int,
                                            const int,
@@ -107,12 +113,14 @@ namespace nuc3d
         
         void reconstructionInner(const Field&, int, int, Field &);
         
-        void reconstructionBoundary(                                    const Field &,
+        void reconstructionBoundary(const Field &,
                                     const Field &,
                                     const Field &,
                                     int,
                                     int,
-                                    Field &);
+                                    Field &,
+                                    int typeL,
+                                    int typeR);
         
         void differenceInner(const Field&, int, Field &);
         
@@ -143,6 +151,30 @@ namespace nuc3d
         void setDiffMethodX();
         void setDiffMethodY();
         void setDiffMethodZ();
+        
+        void reconstructionBoundaryInnerL(const Field &fieldIN,
+                                         const Field &boundaryL,
+                                         const int direction,
+                                         const int upwind,
+                                         Field &fieldOUT);
+        
+        void reconstructionBoundaryExteriorL(const Field &fieldIN,
+                                            const Field &boundaryL,
+                                            const int direction,
+                                            const int upwind,
+                                            Field &fieldOUT);
+        void reconstructionBoundaryInnerR(const Field &fieldIN,
+                                         const Field &boundaryR,
+                                         const int direction,
+                                         const int upwind,
+                                         Field &fieldOUT);
+        
+        void reconstructionBoundaryExteriorR(const Field &fieldIN,
+                                            const Field &boundaryR,
+                                            const int direction,
+                                            const int upwind,
+                                            Field &fieldOUT);
+
         
     };
 }

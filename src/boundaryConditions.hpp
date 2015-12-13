@@ -112,6 +112,8 @@ namespace nuc3d
         
         void initialBC(VectorBuffer &,
                        MPIComunicator3d_nonblocking &);
+        
+        int &getBCtype(int i){return BCTopo[i].Type;};
     private:
         std::ifstream& readBCTopo(std::ifstream&,int);
         

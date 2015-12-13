@@ -343,18 +343,106 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
                                                     const Field &boundaryR,
                                                     const int direction,
                                                     const int upwind,
-                                                    Field &fieldOUT)
+                                                    Field &fieldOUT,
+                                                    int typeL,
+                                                    int typeR)
+{
+    if((-1)==typeL)
+        reconstructionBoundaryExteriorL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    
+    if((-1)==typeR)
+        reconstructionBoundaryExteriorR(fieldIN,boundaryR,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
+    
+}
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorL(
+                                                             const Field &fieldIN,
+                                                             const Field &boundaryL,
+                                                             const int direction,
+                                                             const int upwind,
+                                                             Field &fieldOUT)
 {
     switch(direction)
     {
         case 0:
-            myInteroplatorsBND[0]->interpolationBoundary(fieldIN,boundaryL,boundaryR,1,0,0,upwind,fieldOUT);
+            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT);
             break;
         case 1:
-            myInteroplatorsBND[1]->interpolationBoundary(fieldIN,boundaryL,boundaryR,0,1,0,upwind,fieldOUT);
+            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT);
             break;
         case 2:
-            myInteroplatorsBND[2]->interpolationBoundary(fieldIN,boundaryL,boundaryR,0,0,1,upwind,fieldOUT);
+            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT);
+            break;
+    }
+    
+}
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryInnerL(
+                                                          const Field &fieldIN,
+                                                          const Field &boundaryL,
+                                                          const int direction,
+                                                          const int upwind,
+                                                          Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myInteroplators[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT);
+            break;
+        case 1:
+            myInteroplators[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT);
+            break;
+        case 2:
+            myInteroplators[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT);
+            break;
+    }
+    
+}
+
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorR(
+                                                             const Field &fieldIN,
+                                                             const Field &boundaryR,
+                                                             const int direction,
+                                                             const int upwind,
+                                                             Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT);
+            break;
+        case 1:
+            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT);
+            break;
+        case 2:
+            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT);
+            break;
+    }
+    
+}
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryInnerR(
+                                                          const Field &fieldIN,
+                                                          const Field &boundaryR,
+                                                          const int direction,
+                                                          const int upwind,
+                                                          Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myInteroplators[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT);
+            break;
+        case 1:
+            myInteroplators[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT);
+            break;
+        case 2:
+            myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT);
             break;
     }
     

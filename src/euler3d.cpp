@@ -255,6 +255,9 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
 {
     VectorField &pFlux = myFlux.FluxL;
     VectorField &pReconFlux = myFlux.reconstFluxL;
+    int myBCtypeL=myBC.getBCtype(dir*2);
+    int myBCtypeR=myBC.getBCtype(dir*2+1);
+
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
@@ -270,7 +273,7 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferSend[dir*2]:bf.BufferRecv[dir*2];
         Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferSend[dir*2+1]:bf.BufferRecv[dir*2+1];
         
-        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf);
+        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf,myBCtypeL,myBCtypeR);
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
@@ -286,6 +289,8 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
 {
     VectorField &pFlux = myFlux.FluxR;
     VectorField &pReconFlux = myFlux.reconstFluxR;
+    int myBCtypeL=myBC.getBCtype(dir*2);
+    int myBCtypeR=myBC.getBCtype(dir*2+1);
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
@@ -301,7 +306,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferRecv[dir*2]:bf.BufferRecv[dir*2];
         Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferRecv[dir*2+1]:bf.BufferRecv[dir*2+1];
         
-        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, -1, rf);
+        myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, -1, rf,myBCtypeL,myBCtypeR);
     }
     MPI_Barrier(MPI_COMM_WORLD);
 

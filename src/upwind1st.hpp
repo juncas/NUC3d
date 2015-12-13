@@ -27,15 +27,22 @@ namespace nuc3d
                                 const int,
                                 const int,
                                 Field &);
-        void interpolationBoundary(
-                                   const Field &,
-                                   const Field &,
-                                   const Field &,
-                                   const int,
-                                   const int,
-                                   const int,
-                                   const int,
-                                   Field &);
+        void interpolationBoundaryL(
+                                    const Field &,
+                                    const Field &,
+                                    const int,
+                                    const int,
+                                    const int,
+                                    const int,
+                                    Field &);
+        void interpolationBoundaryR(
+                                    const Field &,
+                                    const Field &,
+                                    const int,
+                                    const int,
+                                    const int,
+                                    const int,
+                                    Field &);
     private:
         double upwind1stInterpolation(const double *);
     };

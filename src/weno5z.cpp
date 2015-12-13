@@ -43,7 +43,7 @@ double nuc3d::weno5z::weno5zInterpolation(const double *f)
     +coeff_weno5_alpha[2][1]*f[3]
     +coeff_weno5_alpha[2][2]*f[4];
     
-   
+    
     tau=std::abs(is2-is0);
     
     alpha0=coeff_weno5_c[0]*(1.0+std::pow(tau/(is0+ss),p));
@@ -60,13 +60,13 @@ double nuc3d::weno5z::weno5zInterpolation(const double *f)
 }
 
 void nuc3d::weno5z::interpolationInner(
-                                        const Field & fieldIN,
-                                        const int dim0,
-                                        const int dim1,
-                                        const int dim2,
-                                        const int uw,//uw=(1,-1)
-                                        Field & fieldOUT
-                                        )
+                                       const Field & fieldIN,
+                                       const int dim0,
+                                       const int dim1,
+                                       const int dim2,
+                                       const int uw,//uw=(1,-1)
+                                       Field & fieldOUT
+                                       )
 {
     double flux[5];
     double h;
@@ -117,10 +117,9 @@ void nuc3d::weno5z::interpolationInner(
 }
 
 
-void nuc3d::weno5z::interpolationBoundary(
+void nuc3d::weno5z::interpolationBoundaryL(
                                            const Field & fieldIN,
                                            const Field & boundaryL,
-                                           const Field & boundaryR,
                                            const int dim0,
                                            const int dim1,
                                            const int dim2,
@@ -183,7 +182,49 @@ void nuc3d::weno5z::interpolationBoundary(
                         fieldOUT.setValue(i,j,k,h);
                         
                     }
-                    else if(!(((i+3*dim0)<nx)&&((j+3*dim1)<ny)&&((k+3*dim2)<nz)))
+                }
+            }
+        }
+    }
+}
+
+void nuc3d::weno5z::interpolationBoundaryR(
+                                           const Field & fieldIN,
+                                           const Field & boundaryR,
+                                           const int dim0,
+                                           const int dim1,
+                                           const int dim2,
+                                           const int uw,//uw=(1,-1)
+                                           Field & fieldOUT
+                                           )
+{
+    double flux[5];
+    double h;
+    
+    
+    int nx;
+    int ny;
+    int nz;
+    
+    nx=fieldIN.getSizeX();
+    ny=fieldIN.getSizeY();
+    nz=fieldIN.getSizeZ();
+    
+    int strideL=3-(1-uw)/2;
+    int strideR=1+(1-uw)/2;
+    
+    
+    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
+       ((ny+dim1)==(fieldOUT.getSizeY()))&&
+       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    {
+        for(int k=0;k<nz;++k)
+        {
+            for(int j=0;j<ny;++j)
+            {
+                for(int i=0;i<nx;++i)
+                {
+                    if(!(((i+3*dim0)<nx)&&((j+3*dim1)<ny)&&((k+3*dim2)<nz)))
                     {
                         for(int z=-2;z<=2;z++)
                         {
