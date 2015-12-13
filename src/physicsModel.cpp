@@ -212,7 +212,26 @@ void nuc3d::physicsModel::sutherland(const Field &T,
                                      double T_ref,
                                      double T_inf)
 {
+    int nx=T.getSizeX();
+    int ny=T.getSizeX();
+    int nz=T.getSizeX();
     
+    for (int k = 0; k < nz; ++k)
+    {
+        for (int j = 0; j < ny; ++j)
+        {
+            for (int i = 0; i < nx; ++i)
+            {
+                double T_local=T.getValue(i, j, k);
+                double non_dim_T_ref=T_ref/T_inf;
+                double miu0=(1.0+non_dim_T_ref)/(T_local+non_dim_T_ref)*pow(T_local,1.5)/Reynolds;
+                double coeff0=miu0/((gamma-1.0)*Mach*Mach*pt);
+                
+                miu.setValue(i, j, k, miu0);
+                coeff.setValue(i, j, k, coeff0);
+            }
+        }
+    }
 }
 
 void nuc3d::physicsModel::constant(const Field &T,

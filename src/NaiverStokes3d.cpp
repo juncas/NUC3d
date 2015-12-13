@@ -186,15 +186,15 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 
                 //Jacobians
                 double xi_x=xi_xyz[0].getValue(i, j, k);
-                double eta_x=xi_xyz[1].getValue(i, j, k);
-                double zeta_x=xi_xyz[2].getValue(i, j, k);
+                double eta_x=eta_xyz[0].getValue(i, j, k);
+                double zeta_x=zeta_xyz[0].getValue(i, j, k);
                 
-                double xi_y=eta_xyz[0].getValue(i, j, k);
+                double xi_y=xi_xyz[1].getValue(i, j, k);
                 double eta_y=eta_xyz[1].getValue(i, j, k);
-                double zeta_y=eta_xyz[2].getValue(i, j, k);
+                double zeta_y=zeta_xyz[1].getValue(i, j, k);
                 
-                double xi_z=zeta_xyz[0].getValue(i, j, k);
-                double eta_z=zeta_xyz[1].getValue(i, j, k);
+                double xi_z=xi_xyz[2].getValue(i, j, k);
+                double eta_z=eta_xyz[2].getValue(i, j, k);
                 double zeta_z=zeta_xyz[2].getValue(i, j, k);
                 
                 double jac=jacobian.getValue(i, j, k);
@@ -309,7 +309,9 @@ void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
 
 void nuc3d::NaiverStokesData3d::setDerivativesVis()
 {
-    
+    setDerivativeXi();
+    setDerivativeEta();
+    setDerivativeZeta();
 }
 
 void nuc3d::NaiverStokesData3d::setDerivativeXi()
