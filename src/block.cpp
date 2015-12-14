@@ -80,13 +80,13 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     }
     myFile.close();
     
+    if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
 //    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
 //      writeField(myFile_o, *iter);
     
-    if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     
     if(0==(myIO.getStep("startStep")))
         initialQ(myPhyMod.getMach());
