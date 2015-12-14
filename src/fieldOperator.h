@@ -26,7 +26,8 @@ namespace nuc3d
                                         const int,
                                         const int,
                                         const int,
-                                        Field &)=0;
+                                        Field &,
+                                        const int)=0;
         virtual void interpolationBoundaryL(
                                             const Field &,
                                             const Field &,
@@ -34,14 +35,16 @@ namespace nuc3d
                                             const int,
                                             const int,
                                             const int,
-                                            Field &)=0;
+                                            Field &,
+                                            const int)=0;
         virtual void interpolationBoundaryR(
                                             const Field &,
                                             const Field &,                                           const int,
                                             const int,
                                             const int,
                                             const int,
-                                            Field &)=0;
+                                            Field &,
+                                            const int)=0;
     };
     
     class integration
@@ -76,7 +79,8 @@ namespace nuc3d
                                        const int,
                                        const int,
                                        const int,
-                                       Field &)=0;
+                                       Field &,
+                                       const int)=0;
         
         virtual void differentialBoundaryL(
                                            const Field &,
@@ -84,19 +88,23 @@ namespace nuc3d
                                            const int,
                                            const int,
                                            const int,
-                                           Field &)=0;
+                                           Field &,
+                                           const int)=0;
         virtual void differentialBoundaryR(
                                            const Field &,
                                            const Field &,
                                            const int,
                                            const int,
                                            const int,
-                                           Field &)=0;
+                                           Field &,
+                                           const int)=0;
     };
     
     class fieldOperator3d//should only operate on fields
     {
-        int bufferSize;
+        int bufferSize_xi;
+        int bufferSize_eta;
+        int bufferSize_zeta;
         
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
         std::vector<std::shared_ptr<interoplation>> myInteroplatorsBND;

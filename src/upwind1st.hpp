@@ -26,7 +26,8 @@ namespace nuc3d
                                 const int,
                                 const int,
                                 const int,
-                                Field &);
+                                Field &,
+                                const int tilesize);
         void interpolationBoundaryL(
                                     const Field &,
                                     const Field &,
@@ -34,7 +35,8 @@ namespace nuc3d
                                     const int,
                                     const int,
                                     const int,
-                                    Field &);
+                                    Field &,
+                                    const int tilesize);
         void interpolationBoundaryR(
                                     const Field &,
                                     const Field &,
@@ -42,9 +44,9 @@ namespace nuc3d
                                     const int,
                                     const int,
                                     const int,
-                                    Field &);
-    private:
-        double upwind1stInterpolation(const double *);
+                                    Field &,
+                                    const int tilesize);
+
     };
 }
 

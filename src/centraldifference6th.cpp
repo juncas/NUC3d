@@ -1,6 +1,7 @@
 #ifndef centraldifference6th_cpp
 #define centraldifference6th_cpp
 #include "centraldifference6th.h"
+#include "schemes.hpp"
 
 nuc3d::centraldifference6th::centraldifference6th()
 {
@@ -12,23 +13,12 @@ nuc3d::centraldifference6th::~centraldifference6th()
     
 }
 
-double nuc3d::centraldifference6th::cd6differential(const double *fl,
-                                                    const double *fr)
-{
-    double df;
-    
-    df = coeff_cd6_alpha[2]*(fr[2]-fl[2])
-    +coeff_cd6_alpha[1]*(fr[1]-fl[1])
-    +coeff_cd6_alpha[0]*(fr[0]-fl[0]);
-    
-    return df;
-}
-
 void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
                                                     const int dim0,
                                                     const int dim1,
                                                     const int dim2,
-                                                    Field & fieldOUT)
+                                                    Field & fieldOUT,
+                                                    const int tilesize)
 {
     double flux_l[3];
     double flux_r[3];
@@ -42,15 +32,12 @@ void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
     
-    int strideL=3;
-    int strideR=3;
-    
-    int ibeg=strideL*dim0;
-    int iend=nx-strideR*dim0;
-    int jbeg=strideL*dim1;
-    int jend=ny-strideR*dim1;
-    int kbeg=strideL*dim2;
-    int kend=nz-strideR*dim2;
+    int ibeg=(tilesize-1)*dim0;
+    int iend=nx-tilesize*dim0;
+    int jbeg=(tilesize-1)*dim1;
+    int jend=ny-tilesize*dim1;
+    int kbeg=(tilesize-1)*dim2;
+    int kend=nz-tilesize*dim2;
     
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
        ((ny+dim1)==(fieldOUT.getSizeY()))&&
@@ -82,7 +69,7 @@ void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
                         flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
                     }
                     
-                    h= cd6differential(flux_l,flux_r);
+                    h= nuc3d::cd6differential(flux_l,flux_r);
                     
                     fieldOUT.setValue(i,j,k,h);
                 }
@@ -97,8 +84,8 @@ void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
                                                         const int dim0,
                                                         const int dim1,
                                                         const int dim2,
-                                                        Field & fieldOUT
-                                                        )
+                                                        Field & fieldOUT,
+                                                        const int tilesize)
 {
     double flux_l[3];
     double flux_r[3];
@@ -112,14 +99,12 @@ void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
     
-    int strideL=3;
-    
     int ibeg=0;
-    int iend=(strideL-nx)*dim0+nx;
+    int iend=dim0*(tilesize-nx)+nx;
     int jbeg=0;
-    int jend=(strideL-ny)*dim1+ny;
+    int jend=dim1*(tilesize-ny)+ny;
     int kbeg=0;
-    int kend=(strideL-nz)*dim2+nz;
+    int kend=dim2*(tilesize-nz)+nz;
     
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
        ((ny+dim1)==(fieldOUT.getSizeY()))&&
@@ -162,7 +147,7 @@ void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
                         flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
                     }
                     
-                    h= cd6differential(flux_l,flux_r);
+                    h= nuc3d::cd6differential(flux_l,flux_r);
                     
                     fieldOUT.setValue(i,j,k,h);
                 }
@@ -177,8 +162,8 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
                                                         const int dim0,
                                                         const int dim1,
                                                         const int dim2,
-                                                        Field & fieldOUT
-                                                        )
+                                                        Field & fieldOUT,
+                                                        const int tilesize)
 {
     double flux_l[3];
     double flux_r[3];
@@ -192,13 +177,12 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
     
-    int strideR=3;
-    
-    int ibeg=(nx-strideR)*dim0;
+   
+    int ibeg=dim0*(nx-tilesize);
     int iend=nx;
-    int jbeg=(ny-strideR)*dim1;
+    int jbeg=dim1*(ny-tilesize);
     int jend=ny;
-    int kbeg=(nz-strideR)*dim2;
+    int kbeg=dim2*(nz-tilesize);
     int kend=nz;
     
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
@@ -244,7 +228,7 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
                     }
 
                     
-                    h= cd6differential(flux_l,flux_r);
+                    h= nuc3d::cd6differential(flux_l,flux_r);
                     
                     fieldOUT.setValue(i,j,k,h);
                 }

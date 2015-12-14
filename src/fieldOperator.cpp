@@ -7,6 +7,7 @@
 #include "upwind1st.hpp"
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
+#include "centraldifference2nd.hpp"
 
 nuc3d::fieldOperator3d::fieldOperator3d():
 MethodMap(
@@ -127,17 +128,17 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     
     if(s=="weno5js")
     {
-        bufferSize=3;
+        bufferSize_xi=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
     else if(s=="weno5z")
     {
-        bufferSize=3;
+        bufferSize_xi=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
     else if(s=="upwind1st")
     {
-        bufferSize=3;
+        bufferSize_xi=1;
         myInteroplators.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -149,17 +150,14 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     
     if(s_BND=="weno5js")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5js>());
     }
     else if(s_BND=="weno5z")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5z>());
     }
     else if(s_BND=="upwind1st")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -175,17 +173,17 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     
     if(s=="weno5js")
     {
-        bufferSize=3;
+        bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
     else if(s=="weno5z")
     {
-        bufferSize=3;
+        bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
     else if(s=="upwind1st")
     {
-        bufferSize=3;
+        bufferSize_eta=1;
         myInteroplators.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -197,17 +195,14 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     
     if(s_BND=="weno5js")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5js>());
     }
     else if(s_BND=="weno5z")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5z>());
     }
     else if(s_BND=="upwind1st")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -222,17 +217,17 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     
     if(s=="weno5js")
     {
-        bufferSize=3;
+        bufferSize_zeta=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
     else if(s=="weno5z")
     {
-        bufferSize=3;
+        bufferSize_zeta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
     else if(s=="upwind1st")
     {
-        bufferSize=3;
+        bufferSize_zeta=1;
         myInteroplators.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -244,17 +239,14 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     
     if(s_BND=="weno5js")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5js>());
     }
     else if(s_BND=="weno5z")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<weno5z>());
     }
     else if(s_BND=="upwind1st")
     {
-        bufferSize=3;
         myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
     }
     else
@@ -270,9 +262,13 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
     
     if(s=="cd6")
     {
-        bufferSize=3;
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferenters.push_back(
+                                 std::make_shared<centraldifference2nd>());
     }
     else
         myDifferenters.push_back(
@@ -285,9 +281,13 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
     
     if(s=="cd6")
     {
-        bufferSize=3;
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferenters.push_back(
+                                 std::make_shared<centraldifference2nd>());
     }
     else
         myDifferenters.push_back(
@@ -300,10 +300,13 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
     
     if(s=="cd6")
     {
-        bufferSize=3;
-        
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferenters.push_back(
+                                 std::make_shared<centraldifference2nd>());
     }
     else
         myDifferenters.push_back(
@@ -329,13 +332,13 @@ void nuc3d::fieldOperator3d::reconstructionInner(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationInner(fieldIN,1,0,0,upwind,fieldOUT);
+            myInteroplators[0]->interpolationInner(fieldIN,1,0,0,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationInner(fieldIN,0,1,0,upwind,fieldOUT);
+            myInteroplators[1]->interpolationInner(fieldIN,0,1,0,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationInner(fieldIN,0,0,1,upwind,fieldOUT);
+            myInteroplators[2]->interpolationInner(fieldIN,0,0,1,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -372,13 +375,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorL(
     switch(direction)
     {
         case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT);
+            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT);
+            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT);
+            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -394,13 +397,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerL(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT);
+            myInteroplators[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT);
+            myInteroplators[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT);
+            myInteroplators[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -417,13 +420,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorR(
     switch(direction)
     {
         case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT);
+            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT);
+            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT);
+            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -439,13 +442,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerR(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT);
+            myInteroplators[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT);
+            myInteroplators[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT);
+            myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -458,13 +461,13 @@ void nuc3d::fieldOperator3d::differenceInner(const Field& fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialInner(fieldIN,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialInner(fieldIN,1,0,0,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialInner(fieldIN,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialInner(fieldIN,0,1,0,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialInner(fieldIN,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialInner(fieldIN,0,0,1,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -499,13 +502,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -514,6 +517,19 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
                                  const Field &boundaryL,
                                  const int direction,                                             Field &fieldOUT)
 {
+    switch(direction)
+    {
+        case 0:
+            myDifferentersBND[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT,bufferSize_xi);
+            break;
+        case 1:
+            myDifferentersBND[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT,bufferSize_eta);
+            break;
+        case 2:
+            myDifferentersBND[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT,bufferSize_zeta);
+            break;
+    }
+
     
 }
 
@@ -525,13 +541,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerR(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT);
+            myDifferenters[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT);
+            myDifferenters[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT);
+            myDifferenters[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -542,6 +558,19 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorR(const Field &fieldIN,
                                  const int direction,
                                  Field &fieldOUT)
 {
+    switch(direction)
+    {
+        case 0:
+            myDifferentersBND[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT,bufferSize_xi);
+            break;
+        case 1:
+            myDifferentersBND[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT,bufferSize_eta);
+            break;
+        case 2:
+            myDifferentersBND[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT,bufferSize_zeta);
+            break;
+    }
+
     
 }
 
@@ -552,11 +581,6 @@ void nuc3d::fieldOperator3d::timeIntegral (const VectorField &rhs, // rhs
                                            int step)
 {
     myIntegrators->integrationAll(rhs,u_n,u_i,dt,step);
-}
-
-int nuc3d::fieldOperator3d::getBufferSize()
-{
-    return bufferSize;
 }
 
 #endif
