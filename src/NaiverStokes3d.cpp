@@ -48,13 +48,13 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
                                       MPIComunicator3d_nonblocking &myMPI,
                                       boundaryCondition &myBC)
 {
-    nuc3d::EulerData3D::solveCon2Prim(myPDE, myModel);
-    nuc3d::EulerData3D::solveRiemann(myPDE, myModel);
-    nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
-    nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    this->EulerData3D::solveCon2Prim(myPDE, myModel);
+    this->EulerData3D::solveRiemann(myPDE, myModel);
+    this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
+    this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     
-    nuc3d::NaiverStokesData3d::solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
-    nuc3d::NaiverStokesData3d::solveRHS(myPDE);
+    solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
+    solveRHS(myPDE);
 }
 
 void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
