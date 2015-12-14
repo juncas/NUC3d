@@ -90,35 +90,37 @@ namespace nuc3d
         void solveGrads(PDEData3d &myPDE,
                         fieldOperator3d &myOP,
                         std::vector<bufferData> &myBf,
-                        MPIComunicator3d_nonblocking &myMPI);
+                        MPIComunicator3d_nonblocking &myMPI,
+                        boundaryCondition &myBC);
         
         void solve_grad(Field &,
                         fieldOperator3d &,
                         bufferData &,
                         MPIComunicator3d_nonblocking &,
                         gradvector &,
-                        int fdID);
+                        int fdID,
+                        boundaryCondition &myBC);
         
         void solveGradXi(Field &,
                          fieldOperator3d &,
                          bufferData &myBf,
                          MPIComunicator3d_nonblocking &,
                          Field &,
-                         int fdID);
+                         int fdID,int typeL,int typeR);
         
         void solveGradEta(Field &,
                           fieldOperator3d &,
                           bufferData &myBf,
                           MPIComunicator3d_nonblocking &,
                           Field &,
-                          int fdID);
+                          int fdID,int typeL,int typeR);
         
         void solveGradZeta(Field &,
                            fieldOperator3d &,
                            bufferData &myBf,
                            MPIComunicator3d_nonblocking &,
                            Field &,
-                           int fdID);
+                           int fdID,int typeL,int typeR);
         
         void solveViscousFlux(physicsModel &myPhyMod);
         

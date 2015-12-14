@@ -65,7 +65,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          boundaryCondition &myBC)
 {
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
-    solveGrads(myPDE, myOP, myBf, myMPI);
+    solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     
     solveViscousFlux(myModel);
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
@@ -87,17 +87,18 @@ void nuc3d::NaiverStokesData3d::setBoundaryGrad(PDEData3d &myPDE,
 void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
                                            fieldOperator3d &myOP,
                                            std::vector<bufferData> &myBf,
-                                           MPIComunicator3d_nonblocking &myMPI)
+                                           MPIComunicator3d_nonblocking &myMPI,
+                                           boundaryCondition &myBC)
 {
     Field &u=EulerData3D::W_Euler[1];
     Field &v=EulerData3D::W_Euler[2];
     Field &w=EulerData3D::W_Euler[3];
     Field &T=EulerData3D::W0_Euler[0];
     
-    solve_grad(u,myOP,myBf[0],myMPI,du,0);
-    solve_grad(v,myOP,myBf[1],myMPI,dv,1);
-    solve_grad(w,myOP,myBf[2],myMPI,dw,2);
-    solve_grad(T,myOP,myBf[3],myMPI,dT,3);
+    solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
+    solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
+    solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
+    solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
     MPI_Barrier(MPI_COMM_WORLD);
 }
 
@@ -106,11 +107,21 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
                                            bufferData &myBf,
                                            MPIComunicator3d_nonblocking &myMPI,
                                            gradvector &myGrad,
-                                           int fdID)
+                                           int fdID,
+                                           boundaryCondition &myBC)
 {
-    solveGradXi(myField,myOP,myBf,myMPI,myGrad.getdxi(),fdID);
-    solveGradEta(myField,myOP,myBf,myMPI,myGrad.getdeta(),fdID);
-    solveGradZeta(myField,myOP,myBf,myMPI,myGrad.getdzeta(),fdID);
+    int typeL;
+    int typeR;
+    
+    typeL=myBC.getBCtype(0);
+    typeR=myBC.getBCtype(1);
+    solveGradXi(myField,myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
+    typeL=myBC.getBCtype(2);
+    typeR=myBC.getBCtype(3);
+    solveGradEta(myField,myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
+    typeL=myBC.getBCtype(4);
+    typeR=myBC.getBCtype(5);
+    solveGradZeta(myField,myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradXi(Field &myField,
@@ -118,12 +129,14 @@ void nuc3d::NaiverStokesData3d::solveGradXi(Field &myField,
                                             bufferData &myBf,
                                             MPIComunicator3d_nonblocking &myMPI,
                                             Field &dxi,
-                                            int fdID)
+                                            int fdID,
+                                            int typeL,
+                                            int typeR)
 {
     myMPI.bufferSendRecv(myField, myBf, 0, fdID);
     myOP.differenceInner(myField, 0, dxi);
     myMPI.waitSendRecv(myBf, 0);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[0], myBf.BufferRecv[1], 0, dxi);
+    myOP.differenceBoundary(myField, myBf.BufferRecv[0], myBf.BufferRecv[1], 0, dxi,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
@@ -131,12 +144,14 @@ void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
                                              bufferData &myBf,
                                              MPIComunicator3d_nonblocking &myMPI,
                                              Field &deta,
-                                             int fdID)
+                                             int fdID,
+                                             int typeL,
+                                             int typeR)
 {
     myMPI.bufferSendRecv(myField, myBf, 1, fdID);
     myOP.differenceInner(myField, 1, deta);
     myMPI.waitSendRecv(myBf, 1);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta);
+    myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
@@ -144,12 +159,14 @@ void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
                                               bufferData &myBf,
                                               MPIComunicator3d_nonblocking &myMPI,
                                               Field &dzeta,
-                                              int fdID)
+                                              int fdID,
+                                              int typeL,
+                                              int typeR)
 {
     myMPI.bufferSendRecv(myField, myBf, 2, fdID);
     myOP.differenceInner(myField, 2, dzeta);
     myMPI.waitSendRecv(myBf, 2);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[4], myBf.BufferRecv[5], 2, dzeta);
+    myOP.differenceBoundary(myField, myBf.BufferRecv[4], myBf.BufferRecv[5], 2, dzeta,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
@@ -325,12 +342,14 @@ void nuc3d::NaiverStokesData3d::setDerivativeXi(fieldOperator3d &myOP,
 {
     auto beg=Flux_xi_vis.begin();
     auto end=Flux_xi_vis.end();
+    int typeL=myBC.getBCtype(0);
+    int typeR=myBC.getBCtype(1);
     for(auto iter=beg;iter!=end;iter++)
     {
         myMPI.bufferSendRecv(*iter, myBf[iter-beg], 0, static_cast<int>(iter-beg));
         myOP.differenceInner(*iter, 0, dfvdxi[iter-beg]);
         myMPI.waitSendRecv(myBf[iter-beg], 0);
-        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[0], myBf[iter-beg].BufferRecv[1], 0, dfvdxi[iter-beg]);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[0], myBf[iter-beg].BufferRecv[1], 0, dfvdxi[iter-beg],typeL,typeR);
     }
     
 }
@@ -341,12 +360,14 @@ void nuc3d::NaiverStokesData3d::setDerivativeEta(fieldOperator3d &myOP,
 {
     auto beg=Flux_eta_vis.begin();
     auto end=Flux_eta_vis.end();
+    int typeL=myBC.getBCtype(2);
+    int typeR=myBC.getBCtype(3);
     for(auto iter=beg;iter!=end;iter++)
     {
         myMPI.bufferSendRecv(*iter, myBf[iter-beg], 1, static_cast<int>(iter-beg));
         myOP.differenceInner(*iter, 1, dgvdeta[iter-beg]);
         myMPI.waitSendRecv(myBf[iter-beg], 1);
-        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[2], myBf[iter-beg].BufferRecv[3], 1, dgvdeta[iter-beg]);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[2], myBf[iter-beg].BufferRecv[3], 1, dgvdeta[iter-beg],typeL,typeR);
     }
 
     
@@ -359,12 +380,14 @@ void nuc3d::NaiverStokesData3d::setDerivativeZeta(fieldOperator3d &myOP,
 {
     auto beg=Flux_zeta_vis.begin();
     auto end=Flux_zeta_vis.end();
+    int typeL=myBC.getBCtype(4);
+    int typeR=myBC.getBCtype(5);
     for(auto iter=beg;iter!=end;iter++)
     {
         myMPI.bufferSendRecv(*iter, myBf[iter-beg], 2, static_cast<int>(iter-beg));
         myOP.differenceInner(*iter, 2, dhvdzeta[iter-beg]);
         myMPI.waitSendRecv(myBf[iter-beg], 2);
-        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[4], myBf[iter-beg].BufferRecv[5], 2, dhvdzeta[iter-beg]);
+        myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[4], myBf[iter-beg].BufferRecv[5], 2, dhvdzeta[iter-beg],typeL,typeR);
     }
 
     

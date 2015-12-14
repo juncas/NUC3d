@@ -4,6 +4,7 @@ boundaryConditions.cpp\
 bufferData.cpp\
 centraldifference6th.cpp\
 euler3d.cpp\
+NaiverStokes3d.cpp\
 field.cpp\
 fieldOperator.cpp\
 IOcontroller.cpp\
@@ -16,7 +17,9 @@ singleBlock.cpp\
 TVD-RK3.cpp\
 	weno5js.cpp\
  	weno5z.cpp\
-	upwind1st.cpp
+	upwind1st.cpp\
+	centraldifference2nd.cpp\
+ 	schemes.cpp
 OBJS=$(srcs:.cpp=.o)
 
 %.o:%.cpp

@@ -490,7 +490,8 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
     }
     else if ("NaiverStokes3d"==myPhy.getMyModelName())
     {
-        //        myFluxes=std::make_shared<NaiverStokesData3d>(nx0,ny0,nz0,myPhy.getEqNum());
+        myFluxes=std::make_shared<NaiverStokesData3d>(nx0,ny0,nz0,myPhy.getEqNum());
+
     }
     else if ("NaiverStokesReactive3d"==myPhy.getMyModelName())
     {
