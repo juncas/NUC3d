@@ -55,7 +55,6 @@ dgdeta(neqs,Field(nx0,ny0,nz0)),
 dhdzeta(neqs,Field(nx0,ny0,nz0)),
 dt(0.0)
 {
-    std::cout<<"initialized Euler"<<std::endl;
 }
 
 void nuc3d::EulerData3D::initialxyz(VectorField &XYZ_c)

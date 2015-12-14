@@ -23,13 +23,13 @@ nuc3d::gradvector::~gradvector()
  Member functions of class: NaiverStokesData3d
  **************************************************************************************/
 nuc3d::NaiverStokesData3d::NaiverStokesData3d(int nx0, int ny0, int nz0, int neqs):
-EulerData3D(nx0,ny0,nz0,neqs),
+NaiverStokesData3d::EulerData3D(nx0,ny0,nz0,neqs),
 du(nx0,ny0,nz0),
 dv(nx0,ny0,nz0),
 dw(nx0,ny0,nz0),
 dT(nx0,ny0,nz0),
-miu(nx0,ny0,nz0,1.0),
-coeff(nx0,ny0,nz0,1.0),
+miu(nx0,ny0,nz0),
+coeff(nx0,ny0,nz0),
 tau(9,Field(nx0,ny0,nz0)),
 Flux_xi_vis(neqs,Field(nx0,ny0,nz0)),
 Flux_eta_vis(neqs,Field(nx0,ny0,nz0)),
@@ -38,7 +38,7 @@ dfvdxi(neqs,Field(nx0,ny0,nz0)),
 dgvdeta(neqs,Field(nx0,ny0,nz0)),
 dhvdzeta(neqs,Field(nx0,ny0,nz0))
 {
-    std::cout<<"initialized NS"<<std::endl;
+    
 }
 
 void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,

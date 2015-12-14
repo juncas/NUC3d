@@ -478,10 +478,7 @@ double nuc3d::block::interpolation_derlag_center_zeta(const int ibeg,
 
 void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
 {
-    std::cout<<"PDE initializing"<<std::endl;
     myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
-    std::cout<<"PDE initialized"<<std::endl;
-    
     if("Euler3d"==myPhy.getMyModelName())
     {
         myFluxes=std::make_shared<EulerData3D>(nx0,ny0,nz0,myPhy.getEqNum());
