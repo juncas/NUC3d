@@ -251,14 +251,6 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 double tau_tz=coeff0*tz;
                 
 //                tau[0].setValue(i,j, k, tau_xx);
-//                tau[1].setValue(i,j, k, tau_xy);
-//                tau[2].setValue(i,j, k, tau_xz);
-//                tau[3].setValue(i,j, k, tau_yy);
-//                tau[4].setValue(i,j, k, tau_yz);
-//                tau[5].setValue(i,j, k, tau_zz);
-//                tau[6].setValue(i,j, k, tau_tx);
-//                tau[7].setValue(i,j, k, tau_ty);
-//                tau[8].setValue(i,j, k, tau_tz);
                 
                 double fv[5];
                 double gv[5];
