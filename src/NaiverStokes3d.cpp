@@ -38,7 +38,7 @@ dfvdxi(neqs,Field(nx0,ny0,nz0)),
 dgvdeta(neqs,Field(nx0,ny0,nz0)),
 dhvdzeta(neqs,Field(nx0,ny0,nz0))
 {
-    
+    std::cout<<"initialized NS"<<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
