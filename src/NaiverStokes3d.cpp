@@ -428,7 +428,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
         }
     }
     
-    EulerData3D::getDt();
+    this->EulerData3D::getDt();
     myPDE.setDt(dt);
     
 }

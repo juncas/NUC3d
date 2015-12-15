@@ -301,7 +301,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
     std::vector<double> fluxl(myPhyMod.getEqNum());
     std::vector<double> fluxr(myPhyMod.getEqNum());
     std::vector<double> q(myPhyMod.getEqNum());
-
+    
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -370,7 +370,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
             
             for(auto iter=q.begin();iter!=q.end();iter++)
                 *iter=prim[iter-q.begin()].getValue(i,lr*(ny-1), k);
-
+            
             myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
             
             for(auto iter=myBf.begin();iter!=myBf.end();iter++)
@@ -1369,36 +1369,27 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_xi(PDEData3d &myPDE,
 {
     std::vector<double> q(4);
     
-    VectorField &prim=myFluxes.getPrimatives();
-    VectorField &accu=myFluxes.getAcoustics();
-    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
     
-    for(int k=0;k<nz;k++)
+    double T_wall=myPhyMod.getWallTemp();
+    
+    q[0]=0.0;
+    q[1]=0.0;
+    q[2]=0.0;
+    q[3]=T_wall;
+    
+    for(auto iter=q.begin();iter!=q.end();iter++)
     {
-        for(int j=0;j<ny;j++)
+        for(int k=0;k<nz;k++)
         {
-            for(int i=0;i<bfsize;i++)
+            for(int j=0;j<ny;j++)
             {
-                int iblock=lr*(nx-1)+(1-2*lr)*i;
-                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
-                
-                q[0]=prim[1].getValue(iblock,j,k);
-                q[1]=prim[2].getValue(iblock,j,k);
-                q[2]=prim[3].getValue(iblock,j,k);
-                q[3]=accu[0].getValue(iblock,j,k);
-                
-                //u=-u0 v=-v0 w=-w0
-                q[0]*=-1.0;
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                
-                for(auto iter=q.begin();iter!=q.end();iter++)
+                for(int i=0;i<bfsize;i++)
                 {
-                    myBf[iter-q.begin()].BufferRecv[lr].setValue(ibuff, j, k, *iter);
+                    myBf[iter-q.begin()].BufferRecv[lr].setValue(i, j, k, *iter);
                 }
             }
             
@@ -1414,35 +1405,27 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
 {
     std::vector<double> q(4);
     
-    VectorField &prim=myFluxes.getPrimatives();
-    VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
     
-    for(int k=0;k<nz;k++)
+    double T_wall=myPhyMod.getWallTemp();
+    
+    q[0]=0.0;
+    q[1]=0.0;
+    q[2]=0.0;
+    q[3]=T_wall;
+    
+    for(auto iter=q.begin();iter!=q.end();iter++)
     {
-        for(int j=0;j<bfsize;j++)
+        for(int k=0;k<nz;k++)
         {
-            for(int i=0;i<nx;i++)
+            for(int j=0;j<bfsize;j++)
             {
-                int jblock=lr*(ny-1)+(1-2*lr)*j;
-                int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
-                
-                q[0]=prim[1].getValue(i,jblock,k);
-                q[1]=prim[2].getValue(i,jblock,k);
-                q[2]=prim[3].getValue(i,jblock,k);
-                q[3]=accu[0].getValue(i,jblock,k);
-                
-                //u=-u0 v=-v0 w=-w0
-                q[0]*=-1.0;
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                
-                for(auto iter=q.begin();iter!=q.end();iter++)
+                for(int i=0;i<nx;i++)
                 {
-                    myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, *iter);
+                    myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,j, k, *iter);
                 }
             }
             
@@ -1458,34 +1441,28 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
 {
     std::vector<double> q(4);
     
-    VectorField &prim=myFluxes.getPrimatives();
-    VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
     
-    for(int k=0;k<bfsize;k++)
-    {
-        for(int j=0;j<ny;j++)
+    double T_wall=myPhyMod.getWallTemp();
+    
+    q[0]=0.0;
+    q[1]=0.0;
+    q[2]=0.0;
+    q[3]=T_wall;
+    
+    
+    for(auto iter=q.begin();iter!=q.end();iter++)
+    {        
+        for(int k=0;k<bfsize;k++)
         {
-            for(int i=0;i<nx;i++)
+            for(int j=0;j<ny;j++)
             {
-                int kblock=lr*(nz-1)+(1-2*lr)*k;
-                int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
-                q[0]=prim[1].getValue(i,j,kblock);
-                q[1]=prim[2].getValue(i,j,kblock);
-                q[2]=prim[3].getValue(i,j,kblock);
-                q[3]=accu[0].getValue(i,j,kblock);
-                
-                //u=-u0 v=-v0 w=-w0
-                q[0]*=-1.0;
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                
-                for(auto iter=q.begin();iter!=q.end();iter++)
+                for(int i=0;i<nx;i++)
                 {
-                    myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, *iter);
+                    myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,k, *iter);
                 }
             }
             
