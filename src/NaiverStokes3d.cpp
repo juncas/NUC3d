@@ -51,17 +51,17 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
     
     //this->EulerData3D::solve(myPDE, myOP, myBf, myModel, myMPI, myBC);
     
-    if(0==myMPI.getMyId()) std::cout<<"solving solveCon2Prim"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveCon2Prim"<<std::endl;
     this->EulerData3D::solveCon2Prim(myPDE, myModel);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveRiemann"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveRiemann"<<std::endl;
     this->EulerData3D::solveRiemann(myPDE, myModel);
-    if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryCondition"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryCondition"<<std::endl;
     this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveInv"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveInv"<<std::endl;
     this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveVis"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveVis"<<std::endl;
     solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveRHS"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveRHS"<<std::endl;
     solveRHS(myPDE);
 }
 
@@ -72,19 +72,19 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
-    if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
     
-    if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     
-    if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
     solveViscousFlux(myModel);
     
-    if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     
-    if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
     setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
 
@@ -110,13 +110,13 @@ void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
     Field &w=this->EulerData3D::W_Euler[3];
     Field &T=this->EulerData3D::W0_Euler[0];
     
-    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad u"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad u"<<std::endl;
     solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad v"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad v"<<std::endl;
     solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad w"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad w"<<std::endl;
     solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
-    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad T"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad T"<<std::endl;
     solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
     MPI_Barrier(MPI_COMM_WORLD);
 }
@@ -134,17 +134,17 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
     
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveGradXi"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradXi"<<std::endl;
     solveGradXi(myField,myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(2);
     typeR=myBC.getBCtype(3);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveGradEta"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradEta"<<std::endl;
     solveGradEta(myField,myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(4);
     typeR=myBC.getBCtype(5);
-    if(0==myMPI.getMyId()) std::cout<<"solving solveGradZeta"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradZeta"<<std::endl;
     solveGradZeta(myField,myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
 }
 
@@ -172,15 +172,15 @@ void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
                                              int typeL,
                                              int typeR)
 {
-    if(0==myMPI.getMyId()) std::cout<<"solving bufferSendRecv"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving bufferSendRecv"<<std::endl;
     myMPI.bufferSendRecv(myField, myBf, 1, fdID);
-    if(0==myMPI.getMyId()) std::cout<<"solving differenceInner"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving differenceInner"<<std::endl;
     myOP.differenceInner(myField, 1, deta);
-    if(0==myMPI.getMyId()) std::cout<<"solving waitSendRecv"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving waitSendRecv"<<std::endl;
     myMPI.waitSendRecv(myBf, 1);
-    if(0==myMPI.getMyId()) std::cout<<"solving differenceBoundary"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solving differenceBoundary"<<std::endl;
     myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta,typeL,typeR);
-    if(0==myMPI.getMyId()) std::cout<<"solved solveGradEta"<<std::endl;
+    //if(0==myMPI.getMyId()) std::cout<<"solved solveGradEta"<<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
@@ -201,7 +201,7 @@ void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
 void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
 {
     
-    myPhyMod.getMiu(W0_Euler[0], miu, coeff);
+    myPhyMod.getMiu(this->EulerData3D::W0_Euler[0], miu, coeff);
     for (int k=0; k<nz; k++)
     {
         for (int j=0; j<ny; j++)
