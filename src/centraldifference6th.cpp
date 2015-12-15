@@ -32,11 +32,11 @@ void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
     
-    int ibeg=(tilesize-1)*dim0;
+    int ibeg=tilesize*dim0;
     int iend=nx-tilesize*dim0;
-    int jbeg=(tilesize-1)*dim1;
+    int jbeg=tilesize*dim1;
     int jend=ny-tilesize*dim1;
-    int kbeg=(tilesize-1)*dim2;
+    int kbeg=tilesize*dim2;
     int kend=nz-tilesize*dim2;
     
     if( ((nx+dim0)==(fieldOUT.getSizeX()))&&

@@ -22,8 +22,8 @@ namespace nuc3d
                                const double &p);
     double cd6differential(const double *fl,
                            const double *fr);
-    double cd2differential(const double *fl,
-                           const double *fr);
+    double cd2differential(const double &fl,
+                           const double &fr);
     
     const double coeff_weno5_alpha[3][3] = {
         {1.0/3.0,-7.0/6.0,11.0/6.0},

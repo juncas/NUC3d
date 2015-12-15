@@ -112,12 +112,12 @@ double nuc3d::cd6differential(const double *fl,
 }
 
 
-double nuc3d::cd2differential(const double *fl,
-                              const double *fr)
+double nuc3d::cd2differential(const double &fl,
+                              const double &fr)
 {
     double df;
     
-    df = 0.5*(fr[0]-fl[0]);
+    df = 0.5*(fr-fl);
     
     return df;
 }
