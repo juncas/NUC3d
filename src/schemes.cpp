@@ -117,7 +117,7 @@ double nuc3d::cd2differential(const double &fl,
 {
     double df;
     
-    df = (fr-fl);
+    df = 0.5*(fr-fl);
     
     return df;
 }
