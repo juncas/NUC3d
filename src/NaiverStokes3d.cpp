@@ -134,12 +134,17 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
     
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
+    if(0==myMPI.getMyId()) std::cout<<"solving solveGradXi"<<std::endl;
     solveGradXi(myField,myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
+    
     typeL=myBC.getBCtype(2);
     typeR=myBC.getBCtype(3);
+    if(0==myMPI.getMyId()) std::cout<<"solving solveGradEta"<<std::endl;
     solveGradEta(myField,myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
+    
     typeL=myBC.getBCtype(4);
     typeR=myBC.getBCtype(5);
+    if(0==myMPI.getMyId()) std::cout<<"solving solveGradZeta"<<std::endl;
     solveGradZeta(myField,myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
 }
 
