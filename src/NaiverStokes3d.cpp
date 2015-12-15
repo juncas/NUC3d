@@ -270,7 +270,6 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 double tau_ty=coeff0*ty;
                 double tau_tz=coeff0*tz;
                 
-//                tau[0].setValue(i,j, k, tau_xx);
                 
                 double fv[5];
                 double gv[5];
@@ -325,53 +324,7 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
             }
         }
     }
-//    
-//    std::string filename_flow = ("vis_flux.dat");    std::ofstream myIOfile;
-//    
-//    myIOfile.open(filename_flow);
-//    
-//    std::string TECplotHeader[2]={"title=NUC3d\n",
-//        "variables=x,y,z"};
-//    
-//    myIOfile<<TECplotHeader[0]
-//    <<TECplotHeader[1];
-//    
-//    for(int i=0;i<(12);i++)
-//    {
-//        std::string head("Val_");
-//        std::string temp;
-//        std::stringstream sstemp;
-//        
-//        sstemp<<i;
-//        sstemp>>temp;
-//        myIOfile<<","<<head+temp;
-//    }
-//    
-//    myIOfile<<"\n Zone I = "<<nx<<", J= "<<ny<<", K="<<nz<<"\n";
-//    
-//    for (int k=0; k<nz; k++)
-//    {
-//        for (int j=0; j<ny; j++)
-//        {
-//            for (int i=0; i<nx; i++)
-//            {
-//                myIOfile<<i<<" "<<j<<" "<<k<<" "
-//                <<du.getdxi().getValue(i, j, k)<<" "
-//                <<du.getdeta().getValue(i, j, k)<<" "
-//                <<du.getdzeta().getValue(i, j, k)<<" "
-//                <<dv.getdxi().getValue(i, j, k)<<" "
-//                <<dv.getdeta().getValue(i, j, k)<<" "
-//                <<dv.getdzeta().getValue(i, j, k)<<" "
-//                <<dw.getdxi().getValue(i, j, k)<<" "
-//                <<dw.getdeta().getValue(i, j, k)<<" "
-//                <<dw.getdzeta().getValue(i, j, k)<<" "
-//                <<dT.getdxi().getValue(i, j, k)<<" "
-//                <<dT.getdeta().getValue(i, j, k)<<" "
-//                <<dT.getdzeta().getValue(i, j, k)<<"\n";
-//            }
-//        }
-//    }
-//    myIOfile.close();
+
 }
 
 void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
@@ -478,8 +431,6 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
         
-        double max=0.0;
-
         for (int k=0; k<nz0; k++)
         {
             for (int j=0; j<ny0; j++)
