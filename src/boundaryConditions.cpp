@@ -298,8 +298,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
                                                   VectorBuffer &myBf,
                                                   int lr)
 {
-    std::vector<double> fluxl(myPhyMod.getEqNum());
-    std::vector<double> fluxr(myPhyMod.getEqNum());
+    
     VectorField &flux_xi_l=myFluxes.getFluxXi().FluxL;
     VectorField &flux_xi_r=myFluxes.getFluxXi().FluxR;
     
@@ -308,40 +307,62 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
+    std::vector<double> fluxl(bfsize+2);
+    std::vector<double> fluxr(bfsize+2);
     
-    auto begl=fluxl.begin();
-    auto endl=fluxl.end();
-    
-    for(auto iter=begl;iter!=endl;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<ny;j++)
             {
-                *iter=flux_xi_l[iter-begl].getValue(lr*(nx-1),j,k);
+                for(auto iter_tub=fluxl.begin();iter_tub!=(fluxl.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(nx-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxl.begin());
+                    *iter_tub=flux_xi_l[iter].getValue(idx,j,k);
+                }
+                
+                
+                for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
+                {
+                    
+                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                }
+                
+                
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begl].BufferSend[lr].setValue(ibf, j, k, *iter);
+                    myBf[iter].BufferSend[lr].setValue(ibf, j, k, fluxl[ibf+2]);
                 }
             }
         }
     }
     
-    auto begr=fluxr.begin();
-    auto endr=fluxr.end();
     
-    for(auto iter=begr;iter!=endr;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<ny;j++)
             {
-                *iter=flux_xi_r[iter-begr].getValue(lr*(nx-1),j,k);
+                for(auto iter_tub=fluxr.begin();iter_tub!=(fluxr.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(nx-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxr.begin());
+                    *iter_tub=flux_xi_r[iter].getValue(idx,j,k);
+                }
+                
+                
+                for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
+                {
+                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                }
+                
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begr].BufferRecv[lr].setValue(ibf, j, k, *iter);
+                    myBf[iter].BufferRecv[lr].setValue(ibf, j, k, fluxr[ibf+2]);
                 }
+                
             }
         }
     }
@@ -354,8 +375,6 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
                                                    VectorBuffer &myBf,
                                                    int lr)
 {
-    std::vector<double> fluxl(myPhyMod.getEqNum());
-    std::vector<double> fluxr(myPhyMod.getEqNum());
     VectorField &flux_eta_l=myFluxes.getFluxEta().FluxL;
     VectorField &flux_eta_r=myFluxes.getFluxEta().FluxR;
     
@@ -363,40 +382,58 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
+    std::vector<double> fluxl(bfsize+2);
+    std::vector<double> fluxr(bfsize+2);
     
-    auto begl=fluxl.begin();
-    auto endl=fluxl.end();
     
-    for(auto iter=begl;iter!=endl;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int k=0;k<nz;k++)
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_eta_l[iter-begl].getValue(i,lr*(ny-1),k);
+                for(auto iter_tub=fluxl.begin();iter_tub!=(fluxl.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(ny-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxl.begin());
+                    *iter_tub=flux_eta_l[iter].getValue(i,idx,k);
+                }
+                
+                for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
+                {
+                    
+                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begl].BufferSend[2+lr].setValue(i,ibf, k, *iter);
+                    myBf[iter].BufferSend[2+lr].setValue(i,ibf, k, fluxl[ibf+2]);
                 }
             }
         }
     }
     
-    auto begr=fluxr.begin();
-    auto endr=fluxr.end();
     
-    for(auto iter=begr;iter!=endr;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int k=0;k<nz;k++)
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_eta_r[iter-begr].getValue(i,lr*(ny-1),k);
+                for(auto iter_tub=fluxr.begin();iter_tub!=(fluxr.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(ny-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxr.begin());
+                    *iter_tub=flux_eta_r[iter].getValue(i,idx,k);
+                }
+                
+                for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
+                {
+                    
+                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begr].BufferRecv[2+lr].setValue(i,ibf, k, *iter);
+                    myBf[iter].BufferRecv[2+lr].setValue(i,ibf, k, fluxr[ibf+2]);
                 }
             }
         }
@@ -409,8 +446,7 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
                                                     VectorBuffer &myBf,
                                                     int lr)
 {
-    std::vector<double> fluxl(myPhyMod.getEqNum());
-    std::vector<double> fluxr(myPhyMod.getEqNum());
+    
     VectorField &flux_zeta_l=myFluxes.getFluxZeta().FluxL;
     VectorField &flux_zeta_r=myFluxes.getFluxZeta().FluxR;
     
@@ -418,39 +454,55 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
+    std::vector<double> fluxl(bfsize+2);
+    std::vector<double> fluxr(bfsize+2);
     
-    auto begl=fluxl.begin();
-    auto endl=fluxl.end();
-    
-    for(auto iter=begl;iter!=endl;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int j=0;j<ny;j++)
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_zeta_l[iter-begl].getValue(i,j,lr*(nz-1));
+                for(auto iter_tub=fluxl.begin();iter_tub!=(fluxl.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(nz-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxl.begin());
+                    *iter_tub=flux_zeta_l[iter].getValue(i,j,idx);
+                }
+                
+                for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
+                {
+                    
+                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                }
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begl].BufferSend[4+lr].setValue(i,j,ibf, *iter);
+                    myBf[iter].BufferSend[4+lr].setValue(i,j,ibf, fluxl[ibf+2]);
                 }
             }
         }
     }
     
-    auto begr=fluxr.begin();
-    auto endr=fluxr.end();
-    
-    for(auto iter=begr;iter!=endr;iter++)
+    for(int iter=0;iter!=myPhyMod.getEqNum();iter++)
     {
         for(int j=0;j<ny;j++)
         {
             for(int i=0;i<nx;i++)
             {
-                *iter=flux_zeta_r[iter-begr].getValue(i,j,lr*(nz-1));
+                for(auto iter_tub=fluxr.begin();iter_tub!=(fluxr.begin()+bfsize-1);iter_tub++)
+                {
+                    int idx=lr*(ny-bfsize+1)+(1-lr)*(bfsize-2)+(2*lr-1)*static_cast<int>(iter_tub-fluxr.begin());
+                    *iter_tub=flux_zeta_r[iter].getValue(i,j,idx);
+                }
+                
+                for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
+                {
+                    
+                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter-begr].BufferRecv[4+lr].setValue(i,j,ibf, *iter);
+                    myBf[iter].BufferRecv[4+lr].setValue(i,j,ibf, fluxr[ibf+2]);
                 }
             }
         }
@@ -500,8 +552,8 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
     VectorField &xi_xyz=myFluxes.getXi_xyz();
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
+    double T;
     
-    double mach=myPhyMod.getMach();
     double T_wall=myPhyMod.getWallTemp();
     
     const int nx=myFluxes.nx;
@@ -515,7 +567,6 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
         {
             for(int i=0;i<bfsize;i++)
             {
-                int iblock=lr*(nx-1)+(1-2*lr)*i;
                 int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
                 
                 double jacob=jac.getValue(lr*(nx-1),j,k);
@@ -524,11 +575,14 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
                 double xi_z=xi_xyz[2].getValue(lr*(nx-1),j,k);
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(iblock, j, k);
-
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                    *iter=prim[iter-q.begin()].getValue(lr*(nx-1), j, k);
+                
+                T=accu[0].getValue(lr*(nx-1), j, k);
+                
+                q[0]=q[0]*T/T_wall;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, xi_x, xi_y, xi_z, fluxl, fluxr);
                 
@@ -557,7 +611,7 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
     
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
-    double mach=myPhyMod.getMach();
+    double T;
     double T_wall=myPhyMod.getWallTemp();
     
     const int nx=myFluxes.nx;
@@ -571,7 +625,6 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                int jblock=lr*(ny-1)+(1-2*lr)*j;
                 int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
                 
                 double jacob=jac.getValue(i,lr*(ny-1),k);
@@ -579,24 +632,16 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
                 double eta_x=eta_xyz[0].getValue(i,lr*(ny-1),k);
                 double eta_y=eta_xyz[1].getValue(i,lr*(ny-1),k);
                 double eta_z=eta_xyz[2].getValue(i,lr*(ny-1),k);
-
+                
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(i,jblock, k);
+                    *iter=prim[iter-q.begin()].getValue(i,lr*(ny-1), k);
                 
-//                double rho0=q[0];
-//                double T0=accu[0].getValue(i,lr*(ny-1), k);
-//                
-//                q[0]=rho0*T0/T_wall;
-//                
-//                q[1]=0.0;
-//                q[2]=0.0;
-//                q[3]=0.0;
-//                
-                
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                T=accu[0].getValue(i,lr*(ny-1), k);
+                q[0]=q[0]*T/T_wall;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
                 
@@ -626,7 +671,7 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
     
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
-    double mach=myPhyMod.getMach();
+    double T;
     double T_wall=myPhyMod.getWallTemp();
     
     const int nx=myFluxes.nx;
@@ -640,31 +685,25 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
-                int kblock=lr*(nz-1)+(1-2*lr)*k;
                 int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
                 
                 double jacob=jac.getValue(i,j,lr*(nz-1));
-
+                
                 double zeta_x=zeta_xyz[0].getValue(i,j,lr*(nz-1));
                 double zeta_y=zeta_xyz[1].getValue(i,j,lr*(nz-1));
                 double zeta_z=zeta_xyz[2].getValue(i,j,lr*(nz-1));
-
+                
                 
                 for(auto iter=q.begin();iter!=q.end();iter++)
-                    *iter=prim[iter-q.begin()].getValue(i,j,kblock);
+                    *iter=prim[iter-q.begin()].getValue(i,j,lr*(nz-1));
                 
-//                double rho0=q[0];
-//                double T0=accu[0].getValue(i,j,lr*(nz-1));
-//                
-//                q[0]=rho0*T0/T_wall;
-//                
-//                q[1]=0.0;
-//                q[2]=0.0;
-//                q[3]=0.0;
+                T=accu[0].getValue(i,j,lr*(nz-1));
                 
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                q[3]*=-1.0;
+                q[0]=q[0]*T/T_wall;
+                
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 myPhyMod.solveRiemannPoint(q, jacob, zeta_x, zeta_y, zeta_z, fluxl, fluxr);
                 
@@ -811,7 +850,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_eta(PDEData3d &myPDE,
     VectorField &dx=myFluxes.getDx();
     VectorField &dy=myFluxes.getDy();
     VectorField &dz=myFluxes.getDz();
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     
     const int nx=myFluxes.nx;
@@ -863,8 +902,8 @@ void nuc3d::boundaryCondition::BCsetter_symm_eta(PDEData3d &myPDE,
                 q[1]=x_xi*U-x_eta*V+x_zeta*W;
                 q[2]=y_xi*U-y_eta*V+y_zeta*W;
                 q[3]=z_xi*U-z_eta*V+z_zeta*W;
-
-
+                
+                
                 myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
                 
                 for(auto iter=myBf.begin();iter!=myBf.end();iter++)
@@ -896,7 +935,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_zeta(PDEData3d &myPDE,
     VectorField &dx=myFluxes.getDx();
     VectorField &dy=myFluxes.getDy();
     VectorField &dz=myFluxes.getDz();
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     
     const int nx=myFluxes.nx;
@@ -949,7 +988,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_zeta(PDEData3d &myPDE,
                 q[1]=x_xi*U+x_eta*V-x_zeta*W;
                 q[2]=y_xi*U+y_eta*V-y_zeta*W;
                 q[3]=z_xi*U+z_eta*V-z_zeta*W;
-
+                
                 
                 myPhyMod.solveRiemannPoint(q, jacob, zeta_x, zeta_y, zeta_z, fluxl, fluxr);
                 
@@ -970,7 +1009,7 @@ void nuc3d::boundaryCondition::setVisBC(PDEData3d &myPDE,
                                         NaiverStokesData3d &myFluxes,
                                         VectorBuffer &myBf)
 {
-
+    
     for(auto iter=BCTopo.begin();iter!=BCTopo.end();iter++)
     {
         int iface=static_cast<int>(iter-BCTopo.begin());
@@ -979,7 +1018,7 @@ void nuc3d::boundaryCondition::setVisBC(PDEData3d &myPDE,
             (this->*myVisSetter[BCTopo[iface].id])(myPDE,myPhyMod,myFluxes,myBf,iface);
         }
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::setVisBC_Inlet(PDEData3d &myPDE,
@@ -1008,7 +1047,7 @@ void nuc3d::boundaryCondition::setVisBC_Inlet(PDEData3d &myPDE,
             VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::VisBCsetter_inlet_xi(PDEData3d &myPDE,
@@ -1018,7 +1057,7 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_xi(PDEData3d &myPDE,
                                                     int lr)
 {
     std::vector<double> &q0=BCvalue[lr];
-
+    
     double rho=q0[0];
     double u=q0[1];
     double v=q0[2];
@@ -1027,16 +1066,16 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_xi(PDEData3d &myPDE,
     double T;
     double e;
     double alpha;
-
+    
     myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
-
+    
     std::vector<double> value={u,v,w,T};
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(auto iter=value.begin();iter!=value.end();iter++)
     {
         for(int k=0;k<nz;k++)
@@ -1060,7 +1099,7 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_eta(PDEData3d &myPDE,
                                                      int lr)
 {
     std::vector<double> &q0=BCvalue[2+lr];
-
+    
     double rho=q0[0];
     double u=q0[1];
     double v=q0[2];
@@ -1069,18 +1108,18 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_eta(PDEData3d &myPDE,
     double T;
     double e;
     double alpha;
-
+    
     myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
-
+    
     std::vector<double> value={u,v,w,T};
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(auto iter=value.begin();iter!=value.end();iter++)
     {
-
+        
         for(int k=0;k<nz;k++)
         {
             for(int i=0;i<nx;i++)
@@ -1101,7 +1140,7 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_zeta(PDEData3d &myPDE,
                                                       int lr)
 {
     std::vector<double> &q0=BCvalue[2+lr];
-
+    
     double rho=q0[0];
     double u=q0[1];
     double v=q0[2];
@@ -1110,19 +1149,19 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_zeta(PDEData3d &myPDE,
     double T;
     double e;
     double alpha;
-
+    
     myPhyMod.prim2conPoint(rho,u,v,w,p,T,e,alpha);
-
+    
     std::vector<double> value={u,v,w,T};
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(auto iter=value.begin();iter!=value.end();iter++)
     {
-
+        
         for(int j=0;j<ny;j++)
         {
             for(int i=0;i<nx;i++)
@@ -1175,57 +1214,57 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
     Field &v=(myFluxes.getPrimatives())[2];
     Field &w=(myFluxes.getPrimatives())[3];
     Field &T=(myFluxes.getAcoustics())[0];
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
         {
             double data=u.getValue(lr*(nx-1),j,k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[0].BufferRecv[lr].setValue(ibf, j, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
         {
             double data=v.getValue(lr*(nx-1),j,k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[1].BufferRecv[lr].setValue(ibf, j, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
         {
             double data=w.getValue(lr*(nx-1),j,k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[2].BufferRecv[lr].setValue(ibf, j, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
         {
             double data=T.getValue(lr*(nx-1),j,k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[3].BufferRecv[lr].setValue(ibf, j, k, data);
@@ -1244,57 +1283,57 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
     Field &v=(myFluxes.getPrimatives())[2];
     Field &w=(myFluxes.getPrimatives())[3];
     Field &T=(myFluxes.getAcoustics())[0];
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
         {
             double data=u.getValue(i,lr*(ny-1),k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[0].BufferSend[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
         {
             double data=v.getValue(i,lr*(ny-1),k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[1].BufferSend[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
         {
             double data=w.getValue(i,lr*(ny-1),k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[2].BufferSend[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
         {
             double data=T.getValue(i,lr*(ny-1),k);
-
+            
             for(int ibf=0;ibf<bfsize;ibf++)
             {
                 myBf[3].BufferSend[2+lr].setValue(i,ibf, k, data);
@@ -1313,12 +1352,12 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
     Field &v=(myFluxes.getPrimatives())[2];
     Field &w=(myFluxes.getPrimatives())[3];
     Field &T=(myFluxes.getAcoustics())[0];
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1330,7 +1369,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             }
         }
     }
-
+    
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1342,7 +1381,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             }
         }
     }
-
+    
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1354,7 +1393,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             }
         }
     }
-
+    
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1403,15 +1442,15 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_xi(PDEData3d &myPDE,
                                                    int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1420,23 +1459,23 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_xi(PDEData3d &myPDE,
             {
                 int iblock=lr*(nx-1)+(1-2*lr)*i;
                 int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
-
+                
                 q[0]=prim[1].getValue(iblock,j,k);
                 q[1]=prim[2].getValue(iblock,j,k);
                 q[2]=prim[3].getValue(iblock,j,k);
                 q[3]=accu[0].getValue(iblock,j,k);
-
+                
                 //u=-u0 v=-v0 w=-w0
                 q[0]*=-1.0;
                 q[1]*=-1.0;
                 q[2]*=-1.0;
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[lr].setValue(ibuff, j, k, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1448,14 +1487,14 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                                                     int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<bfsize;j++)
@@ -1464,23 +1503,23 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
             {
                 int jblock=lr*(ny-1)+(1-2*lr)*j;
                 int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
-
+                
                 q[0]=prim[1].getValue(i,jblock,k);
                 q[1]=prim[2].getValue(i,jblock,k);
                 q[2]=prim[3].getValue(i,jblock,k);
                 q[3]=accu[0].getValue(i,jblock,k);
-
+                
                 //u=-u0 v=-v0 w=-w0
                 q[0]*=-1.0;
                 q[1]*=-1.0;
                 q[2]*=-1.0;
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1492,14 +1531,14 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
                                                      int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<bfsize;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1512,18 +1551,18 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
                 q[1]=prim[2].getValue(i,j,kblock);
                 q[2]=prim[3].getValue(i,j,kblock);
                 q[3]=accu[0].getValue(i,j,kblock);
-
+                
                 //u=-u0 v=-v0 w=-w0
                 q[0]*=-1.0;
                 q[1]*=-1.0;
                 q[2]*=-1.0;
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1555,7 +1594,7 @@ void nuc3d::boundaryCondition::setVisBC_symm(PDEData3d &myPDE,
             VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::VisBCsetter_symm_xi(PDEData3d &myPDE,
@@ -1565,15 +1604,15 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_xi(PDEData3d &myPDE,
                                                    int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
-
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1582,18 +1621,18 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_xi(PDEData3d &myPDE,
             {
                 int iblock=lr*(nx-1)+(1-2*lr)*i;
                 int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
-
+                
                 q[0]=prim[1].getValue(iblock,j,k);
                 q[1]=prim[2].getValue(iblock,j,k);
                 q[2]=prim[3].getValue(iblock,j,k);
                 q[3]=accu[0].getValue(iblock,j,k);
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[lr].setValue(ibuff, j, k, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1605,14 +1644,14 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_eta(PDEData3d &myPDE,
                                                     int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<bfsize;j++)
@@ -1621,18 +1660,18 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_eta(PDEData3d &myPDE,
             {
                 int jblock=lr*(ny-1)+(1-2*lr)*j;
                 int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
-
+                
                 q[0]=prim[1].getValue(i,jblock,k);
                 q[1]=prim[2].getValue(i,jblock,k);
                 q[2]=prim[3].getValue(i,jblock,k);
                 q[3]=accu[0].getValue(i,jblock,k);
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1644,14 +1683,14 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_zeta(PDEData3d &myPDE,
                                                      int lr)
 {
     std::vector<double> q(4);
-
+    
     VectorField &prim=myFluxes.getPrimatives();
     VectorField &accu=myFluxes.getAcoustics();
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     for(int k=0;k<bfsize;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1664,13 +1703,13 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_zeta(PDEData3d &myPDE,
                 q[1]=prim[2].getValue(i,j,kblock);
                 q[2]=prim[3].getValue(i,j,kblock);
                 q[3]=accu[0].getValue(i,j,kblock);
-
+                
                 for(auto iter=q.begin();iter!=q.end();iter++)
                 {
                     myBf[iter-q.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, *iter);
                 }
             }
-
+            
         }
     }
 }
@@ -1680,7 +1719,7 @@ void nuc3d::boundaryCondition::setVisFluxBC(PDEData3d &myPDE,
                                             NaiverStokesData3d &myFluxes,
                                             VectorBuffer &myBf)
 {
-
+    
     for(auto iter=BCTopo.begin();iter!=BCTopo.end();iter++)
     {
         int iface=static_cast<int>(iter-BCTopo.begin());
@@ -1689,7 +1728,7 @@ void nuc3d::boundaryCondition::setVisFluxBC(PDEData3d &myPDE,
             (this->*myVisFluxSetter[BCTopo[iface].id])(myPDE,myPhyMod,myFluxes,myBf,iface);
         }
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::setVisFluxBC_Inlet(PDEData3d &myPDE,
@@ -1718,7 +1757,7 @@ void nuc3d::boundaryCondition::setVisFluxBC_Inlet(PDEData3d &myPDE,
             VisFluxBCsetter_inlet_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_xi(PDEData3d &myPDE,
@@ -1731,9 +1770,9 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_xi(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_xi=myFluxes.getVisFlux_xi();
-
+    
     for(auto iter=visflux_xi.begin();iter!=visflux_xi.end();iter++)
     {
         for(int k=0;k<nz;k++)
@@ -1743,11 +1782,11 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_xi(PDEData3d &myPDE,
                 for(int i=0;i<bfsize;i++)
                 {
                     double value=0.0;
-
+                    
                     myBf[iter-visflux_xi.begin()].BufferRecv[lr].setValue(i, j, k, value);
                 }
             }
-
+            
         }
     }
 }
@@ -1762,12 +1801,12 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_eta(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_eta=myFluxes.getVisFlux_eta();
-
+    
     for(auto iter=visflux_eta.begin();iter!=visflux_eta.end();iter++)
     {
-
+        
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<bfsize;j++)
@@ -1778,10 +1817,10 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_eta(PDEData3d &myPDE,
                     myBf[iter-visflux_eta.begin()].BufferRecv[2+lr].setValue(i,j, k, value);
                 }
             }
-
+            
         }
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_zeta(PDEData3d &myPDE,
@@ -1794,9 +1833,9 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_zeta(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_zeta=myFluxes.getVisFlux_zeta();
-
+    
     for(auto iter=visflux_zeta.begin();iter!=visflux_zeta.end();iter++)
     {
         for(int k=0;k<bfsize;k++)
@@ -1806,22 +1845,22 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_inlet_zeta(PDEData3d &myPDE,
                 for(int i=0;i<nx;i++)
                 {
                     double value=0.0;
-
+                    
                     myBf[iter-visflux_zeta.begin()].BufferRecv[4+lr].setValue(i,j,k, value);
                 }
             }
         }
     }
-
+    
 }
 
 
 //outlet
 void nuc3d::boundaryCondition::setVisFluxBC_Outlet(PDEData3d &myPDE,
-                         physicsModel &myPhyMod,
-                         NaiverStokesData3d &myFluxes,
-                         VectorBuffer &myBf,
-                         int iface)
+                                                   physicsModel &myPhyMod,
+                                                   NaiverStokesData3d &myFluxes,
+                                                   VectorBuffer &myBf,
+                                                   int iface)
 {
     switch (iface) {
         case 0:
@@ -1843,23 +1882,23 @@ void nuc3d::boundaryCondition::setVisFluxBC_Outlet(PDEData3d &myPDE,
             VisFluxBCsetter_outlet_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
-
+    
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_xi(PDEData3d &myPDE,
-                               physicsModel &myPhyMod,
-                               NaiverStokesData3d &myFluxes,
-                               VectorBuffer &myBf,
-                               int lr)
+                                                         physicsModel &myPhyMod,
+                                                         NaiverStokesData3d &myFluxes,
+                                                         VectorBuffer &myBf,
+                                                         int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_xi=myFluxes.getVisFlux_xi();
-
+    
     for(auto iter=visflux_xi.begin();iter!=visflux_xi.end();iter++)
     {
         for(int k=0;k<nz;k++)
@@ -1869,32 +1908,32 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_xi(PDEData3d &myPDE,
                 for(int i=0;i<bfsize;i++)
                 {
                     double value=iter->getValue(lr*(nx-1), j, k);
-
+                    
                     myBf[iter-visflux_xi.begin()].BufferRecv[lr].setValue(i, j, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_eta(PDEData3d &myPDE,
-                                physicsModel &myPhyMod,
-                                NaiverStokesData3d &myFluxes,
-                                VectorBuffer &myBf,
-                                int lr)
+                                                          physicsModel &myPhyMod,
+                                                          NaiverStokesData3d &myFluxes,
+                                                          VectorBuffer &myBf,
+                                                          int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_eta=myFluxes.getVisFlux_eta();
-
+    
     for(auto iter=visflux_eta.begin();iter!=visflux_eta.end();iter++)
     {
-
+        
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<bfsize;j++)
@@ -1905,26 +1944,26 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_eta(PDEData3d &myPDE,
                     myBf[iter-visflux_eta.begin()].BufferRecv[2+lr].setValue(i,j, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_zeta(PDEData3d &myPDE,
-                                 physicsModel &myPhyMod,
-                                 NaiverStokesData3d &myFluxes,
-                                 VectorBuffer &myBf,
-                                 int lr)
+                                                           physicsModel &myPhyMod,
+                                                           NaiverStokesData3d &myFluxes,
+                                                           VectorBuffer &myBf,
+                                                           int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_zeta=myFluxes.getVisFlux_zeta();
-
+    
     for(auto iter=visflux_zeta.begin();iter!=visflux_zeta.end();iter++)
     {
         for(int k=0;k<bfsize;k++)
@@ -1934,22 +1973,22 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_outlet_zeta(PDEData3d &myPDE,
                 for(int i=0;i<nx;i++)
                 {
                     double value=iter->getValue(i, j, lr*(nz-1));
-
+                    
                     myBf[iter-visflux_zeta.begin()].BufferRecv[4+lr].setValue(i,j,k, value);
                 }
             }
         }
     }
-
-
+    
+    
 }
 
 //wall
 void nuc3d::boundaryCondition::setVisFluxBC_wall(PDEData3d &myPDE,
-                       physicsModel &myPhyMod,
-                       NaiverStokesData3d &myFluxes,
-                       VectorBuffer &myBf,
-                       int iface)
+                                                 physicsModel &myPhyMod,
+                                                 NaiverStokesData3d &myFluxes,
+                                                 VectorBuffer &myBf,
+                                                 int iface)
 {
     switch (iface) {
         case 0:
@@ -1971,23 +2010,23 @@ void nuc3d::boundaryCondition::setVisFluxBC_wall(PDEData3d &myPDE,
             VisFluxBCsetter_wall_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
-
+    
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_wall_xi(PDEData3d &myPDE,
-                             physicsModel &myPhyMod,
-                             NaiverStokesData3d &myFluxes,
-                             VectorBuffer &myBf,
-                             int lr)
+                                                       physicsModel &myPhyMod,
+                                                       NaiverStokesData3d &myFluxes,
+                                                       VectorBuffer &myBf,
+                                                       int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_xi=myFluxes.getVisFlux_xi();
-
+    
     for(auto iter=visflux_xi.begin();iter!=visflux_xi.end();iter++)
     {
         for(int k=0;k<nz;k++)
@@ -1998,35 +2037,35 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_wall_xi(PDEData3d &myPDE,
                 {
                     int iblock=lr*(nx-1)+(1-2*lr)*i;
                     int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
-
+                    
                     double value=iter->getValue(iblock, j, k);
-
+                    
                     myBf[iter-visflux_xi.begin()].BufferRecv[lr].setValue(ibuff, j, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_wall_eta(PDEData3d &myPDE,
-                              physicsModel &myPhyMod,
-                              NaiverStokesData3d &myFluxes,
-                              VectorBuffer &myBf,
-                              int lr)
+                                                        physicsModel &myPhyMod,
+                                                        NaiverStokesData3d &myFluxes,
+                                                        VectorBuffer &myBf,
+                                                        int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_eta=myFluxes.getVisFlux_eta();
-
+    
     for(auto iter=visflux_eta.begin();iter!=visflux_eta.end();iter++)
     {
-
+        
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<bfsize;j++)
@@ -2035,30 +2074,30 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_wall_eta(PDEData3d &myPDE,
                 {
                     int jblock=lr*(ny-1)+(1-2*lr)*j;
                     int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
-
+                    
                     double value=iter->getValue(i, jblock, k);
                     myBf[iter-visflux_eta.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 void nuc3d::boundaryCondition::VisFluxBCsetter_wall_zeta(PDEData3d &myPDE,
-                               physicsModel &myPhyMod,
-                               NaiverStokesData3d &myFluxes,
-                               VectorBuffer &myBf,
-                               int lr)
+                                                         physicsModel &myPhyMod,
+                                                         NaiverStokesData3d &myFluxes,
+                                                         VectorBuffer &myBf,
+                                                         int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_zeta=myFluxes.getVisFlux_zeta();
-
+    
     for(auto iter=visflux_zeta.begin();iter!=visflux_zeta.end();iter++)
     {
         for(int k=0;k<bfsize;k++)
@@ -2069,27 +2108,27 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_wall_zeta(PDEData3d &myPDE,
                 {
                     int kblock=lr*(nz-1)+(1-2*lr)*k;
                     int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
-
+                    
                     double value=iter->getValue(i, j, kblock);
-
-
+                    
+                    
                     myBf[iter-visflux_zeta.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, value);
                 }
             }
         }
     }
-
-
+    
+    
 }
 
 //symmetric
 void nuc3d::boundaryCondition::setVisFluxBC_symm(PDEData3d &myPDE,
-                       physicsModel &myPhyMod,
-                       NaiverStokesData3d &myFluxes,
-                       VectorBuffer &myBf,
-                       int iface)
+                                                 physicsModel &myPhyMod,
+                                                 NaiverStokesData3d &myFluxes,
+                                                 VectorBuffer &myBf,
+                                                 int iface)
 {
-
+    
     switch (iface) {
         case 0:
             VisFluxBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,0);
@@ -2110,22 +2149,22 @@ void nuc3d::boundaryCondition::setVisFluxBC_symm(PDEData3d &myPDE,
             VisFluxBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
-
+    
 }
 
 void nuc3d::boundaryCondition::VisFluxBCsetter_symm_xi(PDEData3d &myPDE,
-                             physicsModel &myPhyMod,
-                             NaiverStokesData3d &myFluxes,
-                             VectorBuffer &myBf,
-                             int lr)
+                                                       physicsModel &myPhyMod,
+                                                       NaiverStokesData3d &myFluxes,
+                                                       VectorBuffer &myBf,
+                                                       int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_xi=myFluxes.getVisFlux_xi();
-
+    
     for(auto iter=visflux_xi.begin();iter!=visflux_xi.end();iter++)
     {
         for(int k=0;k<nz;k++)
@@ -2136,34 +2175,34 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_symm_xi(PDEData3d &myPDE,
                 {
                     int iblock=lr*(nx-1)+(1-2*lr)*i;
                     int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
-
+                    
                     double value=iter->getValue(iblock, j, k);
-
+                    
                     myBf[iter-visflux_xi.begin()].BufferRecv[lr].setValue(ibuff, j, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 void nuc3d::boundaryCondition::VisFluxBCsetter_symm_eta(PDEData3d &myPDE,
-                              physicsModel &myPhyMod,
-                              NaiverStokesData3d &myFluxes,
-                              VectorBuffer &myBf,
-                              int lr)
+                                                        physicsModel &myPhyMod,
+                                                        NaiverStokesData3d &myFluxes,
+                                                        VectorBuffer &myBf,
+                                                        int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_eta=myFluxes.getVisFlux_eta();
-
+    
     for(auto iter=visflux_eta.begin();iter!=visflux_eta.end();iter++)
     {
-
+        
         for(int k=0;k<nz;k++)
         {
             for(int j=0;j<bfsize;j++)
@@ -2172,30 +2211,30 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_symm_eta(PDEData3d &myPDE,
                 {
                     int jblock=lr*(ny-1)+(1-2*lr)*j;
                     int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
-
+                    
                     double value=iter->getValue(i, jblock, k);
                     myBf[iter-visflux_eta.begin()].BufferRecv[2+lr].setValue(i,jbuff, k, value);
                 }
             }
-
+            
         }
     }
-
-
+    
+    
 }
 void nuc3d::boundaryCondition::VisFluxBCsetter_symm_zeta(PDEData3d &myPDE,
-                               physicsModel &myPhyMod,
-                               NaiverStokesData3d &myFluxes,
-                               VectorBuffer &myBf,
-                               int lr)
+                                                         physicsModel &myPhyMod,
+                                                         NaiverStokesData3d &myFluxes,
+                                                         VectorBuffer &myBf,
+                                                         int lr)
 {
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
-
+    
     VectorField &visflux_zeta=myFluxes.getVisFlux_zeta();
-
+    
     for(auto iter=visflux_zeta.begin();iter!=visflux_zeta.end();iter++)
     {
         for(int k=0;k<bfsize;k++)
@@ -2206,10 +2245,10 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_symm_zeta(PDEData3d &myPDE,
                 {
                     int kblock=lr*(nz-1)+(1-2*lr)*k;
                     int kbuff=(bfsize-1)*(1-lr)-(1-2*lr)*k;
-
+                    
                     double value=iter->getValue(i, j, kblock);
-
-
+                    
+                    
                     myBf[iter-visflux_zeta.begin()].BufferRecv[4+lr].setValue(i,j,kbuff, value);
                 }
             }
