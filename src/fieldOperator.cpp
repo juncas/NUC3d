@@ -262,17 +262,33 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
     
     if(s=="cd6")
     {
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference6th>());
+        myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
     else if(s=="cd2")
     {
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference2nd>());
+        myDifferenters.push_back(std::make_shared<centraldifference2nd>());
     }
     else
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference6th>());
+    {
+        myDifferenters.push_back(std::make_shared<centraldifference6th>());
+    }
+    
+    std::string s_BND=MethodMap["scheme_x_visBND"];
+    
+    if(s_BND=="cd6")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
+    }
+    else
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+    
+    
 }
 
 void nuc3d::fieldOperator3d::setDiffMethodY()
@@ -290,8 +306,26 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
                                  std::make_shared<centraldifference2nd>());
     }
     else
+    {
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
+    }
+    
+    std::string s_BND=MethodMap["scheme_y_visBND"];
+    
+    if(s_BND=="cd6")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
+    }
+    else
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+
 }
 
 void nuc3d::fieldOperator3d::setDiffMethodZ()
@@ -309,8 +343,26 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
                                  std::make_shared<centraldifference2nd>());
     }
     else
+    {
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
+    }
+    std::string s_BND=MethodMap["scheme_z_visBND"];
+    
+    if(s_BND=="cd6")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+    else if(s=="cd2")
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
+    }
+    else
+    {
+        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
+    }
+    
+
 }
 
 void nuc3d::fieldOperator3d::setTimeMethod()
