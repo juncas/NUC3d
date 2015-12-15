@@ -72,12 +72,19 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
+    if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
+    
+    if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     
+    if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
     solveViscousFlux(myModel);
+    
+    if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     
+    if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
     setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
 
