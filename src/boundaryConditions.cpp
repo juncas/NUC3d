@@ -1223,7 +1223,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
             
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[0].BufferSend[2+lr].setValue(i,ibf, k, data);
+                myBf[0].BufferRecv[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
@@ -1236,7 +1236,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
             
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[1].BufferSend[2+lr].setValue(i,ibf, k, data);
+                myBf[1].BufferRecv[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
@@ -1249,7 +1249,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
             
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[2].BufferSend[2+lr].setValue(i,ibf, k, data);
+                myBf[2].BufferRecv[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
@@ -1262,7 +1262,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
             
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[3].BufferSend[2+lr].setValue(i,ibf, k, data);
+                myBf[3].BufferRecv[2+lr].setValue(i,ibf, k, data);
             }
         }
     }
@@ -1291,7 +1291,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             double data=u.getValue(i,j,lr*(nz-1));
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[0].BufferSend[4+lr].setValue(i,j,ibf, data);
+                myBf[0].BufferRecv[4+lr].setValue(i,j,ibf, data);
             }
         }
     }
@@ -1303,7 +1303,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             double data=v.getValue(i,j,lr*(nz-1));
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[1].BufferSend[4+lr].setValue(i,j,ibf, data);
+                myBf[1].BufferRecv[4+lr].setValue(i,j,ibf, data);
             }
         }
     }
@@ -1315,7 +1315,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             double data=w.getValue(i,j,lr*(nz-1));
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[2].BufferSend[4+lr].setValue(i,j,ibf, data);
+                myBf[2].BufferRecv[4+lr].setValue(i,j,ibf, data);
             }
         }
     }
@@ -1327,7 +1327,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
             double data=T.getValue(i,j,lr*(nz-1));
             for(int ibf=0;ibf<bfsize;ibf++)
             {
-                myBf[3].BufferSend[4+lr].setValue(i,j,ibf, data);
+                myBf[3].BufferRecv[4+lr].setValue(i,j,ibf, data);
             }
         }
     }
