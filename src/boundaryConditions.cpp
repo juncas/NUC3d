@@ -326,13 +326,13 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
                 for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
                 {
                     
-                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferSend[lr].setValue(ibf, j, k, fluxl[ibf+2]);
+                    myBf[iter].BufferSend[lr].setValue(ibf, j, k, fluxl[ibf+bfsize-1]);
                 }
             }
         }
@@ -354,13 +354,13 @@ void nuc3d::boundaryCondition::BCsetter_outlet_xi(PDEData3d &myPDE,
                 
                 for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
                 {
-                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferRecv[lr].setValue(ibf, j, k, fluxr[ibf+2]);
+                    myBf[iter].BufferRecv[lr].setValue(ibf, j, k, fluxr[ibf+bfsize-1]);
                 }
                 
             }
@@ -401,12 +401,12 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
                 for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
                 {
                     
-                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferSend[2+lr].setValue(i,ibf, k, fluxl[ibf+2]);
+                    myBf[iter].BufferSend[2+lr].setValue(i,ibf, k, fluxl[ibf+bfsize-1]);
                 }
             }
         }
@@ -428,12 +428,12 @@ void nuc3d::boundaryCondition::BCsetter_outlet_eta(PDEData3d &myPDE,
                 for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
                 {
                     
-                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferRecv[2+lr].setValue(i,ibf, k, fluxr[ibf+2]);
+                    myBf[iter].BufferRecv[2+lr].setValue(i,ibf, k, fluxr[ibf+bfsize-1]);
                 }
             }
         }
@@ -472,11 +472,11 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
                 for(auto iter_tub=(fluxl.begin()+bfsize-1);iter_tub!=(fluxl.end());iter_tub++)
                 {
                     
-                    *iter_tub=4.0*(fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxl[iter_tub-fluxl.begin()-1]-fluxl[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferSend[4+lr].setValue(i,j,ibf, fluxl[ibf+2]);
+                    myBf[iter].BufferSend[4+lr].setValue(i,j,ibf, fluxl[ibf+bfsize-1]);
                 }
             }
         }
@@ -497,12 +497,12 @@ void nuc3d::boundaryCondition::BCsetter_outlet_zeta(PDEData3d &myPDE,
                 for(auto iter_tub=(fluxr.begin()+bfsize-1);iter_tub!=(fluxr.end());iter_tub++)
                 {
                     
-                    *iter_tub=4.0*(fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
+                    *iter_tub=(4.0*fluxr[iter_tub-fluxl.begin()-1]-fluxr[iter_tub-fluxl.begin()-2])/3.0;
                 }
                 
                 for(int ibf=0;ibf<bfsize;ibf++)
                 {
-                    myBf[iter].BufferRecv[4+lr].setValue(i,j,ibf, fluxr[ibf+2]);
+                    myBf[iter].BufferRecv[4+lr].setValue(i,j,ibf, fluxr[ibf+bfsize-1]);
                 }
             }
         }
