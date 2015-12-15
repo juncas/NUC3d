@@ -955,22 +955,22 @@ void nuc3d::boundaryCondition::setVisBC_Inlet(PDEData3d &myPDE,
 {
     switch (iface) {
         case 0:
-            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,0);
+            VisBCsetter_inlet_xi(myPDE,myPhyMod,myFluxes,myBf,0);
             break;
         case 1:
-            VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,1);
+            VisBCsetter_inlet_xi(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
         case 2:
-            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,0);
+            VisBCsetter_inlet_eta(myPDE,myPhyMod,myFluxes,myBf,0);
             break;
         case 3:
-            VisBCsetter_symm_eta(myPDE,myPhyMod,myFluxes,myBf,1);
+            VisBCsetter_inlet_eta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
         case 4:
-            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
+            VisBCsetter_inlet_zeta(myPDE,myPhyMod,myFluxes,myBf,0);
             break;
         case 5:
-            VisBCsetter_symm_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
+            VisBCsetter_inlet_zeta(myPDE,myPhyMod,myFluxes,myBf,1);
             break;
     }
     
@@ -1065,7 +1065,7 @@ void nuc3d::boundaryCondition::VisBCsetter_inlet_zeta(PDEData3d &myPDE,
                                                       VectorBuffer &myBf,
                                                       int lr)
 {
-    std::vector<double> &q0=BCvalue[2+lr];
+    std::vector<double> &q0=BCvalue[4+lr];
     
     double rho=q0[0];
     double u=q0[1];

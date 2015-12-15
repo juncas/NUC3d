@@ -279,7 +279,7 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
     }
-    else if(s=="cd2")
+    else if(s_BND=="cd2")
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
     }
@@ -317,7 +317,7 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
     }
-    else if(s=="cd2")
+    else if(s_BND=="cd2")
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
     }
@@ -353,7 +353,7 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
     }
-    else if(s=="cd2")
+    else if(s_BND=="cd2")
     {
         myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
     }

@@ -26,6 +26,6 @@ OBJS=$(srcs:.cpp=.o)
 	$(cc) -std=c++11 -c $<
 default:$(OBJS)
 	$(cc) -O2 -o a.out $(OBJS)
-	cp ./a.out ../../bin
+	#cp ./a.out ../../bin
 clean:
 	rm -f *.out *.o

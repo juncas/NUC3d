@@ -196,8 +196,8 @@ void nuc3d::physicsModel::getMiu(Field &T,
                                            coeff,
                                            myModelParameters["Reynolds"],
                                            myModelParameters["Mach"],
-                                           myModelParameters["pt"],
-                                           myModelParameters["gamma"],
+                                           myModelParameters["Pt"],
+                                           myModelParameters["Gamma"],
                                            myModelParameters["T_ref"],
                                            myModelParameters["T_inf"]);
 }
@@ -215,12 +215,19 @@ void nuc3d::physicsModel::sutherland(const Field &T,
     int nx=T.getSizeX();
     int ny=T.getSizeX();
     int nz=T.getSizeX();
+//    std::cout<<"solving miu & coeff"<<std::endl;
+//    std::cout<<Reynolds<<std::endl;
+//    std::cout<<Mach<<std::endl;
+//    std::cout<<pt<<std::endl;
+//    std::cout<<gamma<<std::endl;
+//    std::cout<<T_ref<<std::endl;
+//    std::cout<<T_inf<<std::endl;
     
-    for (int k = 0; k < nz; ++k)
+    for (int k = 0; k < nz; k++)
     {
-        for (int j = 0; j < ny; ++j)
+        for (int j = 0; j < ny; j++)
         {
-            for (int i = 0; i < nx; ++i)
+            for (int i = 0; i < nx; i++)
             {
                 double T_local=T.getValue(i, j, k);
                 double non_dim_T_ref=T_ref/T_inf;

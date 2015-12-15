@@ -116,8 +116,8 @@ namespace nuc3d
         
         void getDt();
         
-    private:
         void solveRHS(PDEData3d &);
+    private:
         
         void solveInvicidFluxL(EulerFlux &,
                                fieldOperator3d &myOP,
