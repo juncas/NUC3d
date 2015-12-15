@@ -180,6 +180,7 @@ void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
     myMPI.waitSendRecv(myBf, 1);
     if(0==myMPI.getMyId()) std::cout<<"solving differenceBoundary"<<std::endl;
     myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta,typeL,typeR);
+    if(0==myMPI.getMyId()) std::cout<<"solved solveGradEta"<<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
