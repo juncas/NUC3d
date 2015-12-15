@@ -502,7 +502,6 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                     double rhs=rhs_inv-rhs_vis;
                     iter->setValue(i, j, k, rhs);
                     
-                    max=(rhs_vis>max)?rhs_vis:max;
                 }
             }
         }
