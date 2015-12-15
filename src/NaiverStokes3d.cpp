@@ -52,6 +52,7 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
     //this->EulerData3D::solve(myPDE, myOP, myBf, myModel, myMPI, myBC);
     
     this->EulerData3D::solveCon2Prim(myPDE, myModel);
+    if(0==myMPI.getMyId()) std::cout<<"solved solveCon2Prim"<<std::endl;
     this->EulerData3D::solveRiemann(myPDE, myModel);
     this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
