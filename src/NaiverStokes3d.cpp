@@ -105,14 +105,18 @@ void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
                                            MPIComunicator3d_nonblocking &myMPI,
                                            boundaryCondition &myBC)
 {
-    Field &u=EulerData3D::W_Euler[1];
-    Field &v=EulerData3D::W_Euler[2];
-    Field &w=EulerData3D::W_Euler[3];
-    Field &T=EulerData3D::W0_Euler[0];
+    Field &u=this->EulerData3D::W_Euler[1];
+    Field &v=this->EulerData3D::W_Euler[2];
+    Field &w=this->EulerData3D::W_Euler[3];
+    Field &T=this->EulerData3D::W0_Euler[0];
     
+    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad u"<<std::endl;
     solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
+    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad v"<<std::endl;
     solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
+    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad w"<<std::endl;
     solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
+    if(0==myMPI.getMyId()) std::cout<<"solving solve_grad T"<<std::endl;
     solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
     MPI_Barrier(MPI_COMM_WORLD);
 }
