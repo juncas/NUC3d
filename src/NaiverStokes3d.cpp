@@ -417,9 +417,9 @@ void nuc3d::NaiverStokesData3d::setDerivativeZeta(fieldOperator3d &myOP,
 
 void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
 {
-    VectorField &df_v=this->dfdxi;
-    VectorField &dg_v=this->dgdeta;
-    VectorField &dh_v=this->dhdzeta;
+    VectorField &df_v=this->EulerData3D::dfdxi;
+    VectorField &dg_v=this->EulerData3D::dgdeta;
+    VectorField &dh_v=this->EulerData3D::dhdzeta;
     
     VectorField &dfv_v=this->dfvdxi;
     VectorField &dgv_v=this->dgvdeta;
