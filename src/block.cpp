@@ -563,7 +563,7 @@ void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
     double jacobian;
     
     double gamma=myPhyMod.getGamma();
-    double mach=myIO.getValue("Mach");
+    double mach=myPhyMod.getMach();
     int fp=myIO.getStep("Benchmark");
     
     int nx0=jac.getSizeX();
