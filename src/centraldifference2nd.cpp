@@ -119,6 +119,7 @@ void nuc3d::centraldifference2nd::differentialBoundaryL(const Field & fieldIN,
                     flux_l=fieldIN.getValue(itemp,jtemp,ktemp);
                 }
                 
+                
                 itemp=i+dim0;
                 jtemp=j+dim1;
                 ktemp=k+dim2;

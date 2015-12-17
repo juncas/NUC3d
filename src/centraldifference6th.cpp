@@ -187,7 +187,7 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
                     int itemp=i+stride*dim0;
                     int jtemp=j+stride*dim1;
                     int ktemp=k+stride*dim2;
-                    
+
                     flux_l[z]=fieldIN.getValue(itemp,jtemp,ktemp);
                 }
                 
