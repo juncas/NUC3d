@@ -48,16 +48,35 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
                                       MPIComunicator3d_nonblocking &myMPI,
                                       boundaryCondition &myBC)
 {
-    
+    double t[7];
     //this->EulerData3D::solve(myPDE, myOP, myBf, myModel, myMPI, myBC);
-    
+    t[0]=MPI_Wtime();
     this->EulerData3D::solveCon2Prim(myPDE, myModel);
+    t[1]=MPI_Wtime();
     this->EulerData3D::solveRiemann(myPDE, myModel);
+    t[2]=MPI_Wtime();
     this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
+    t[3]=MPI_Wtime();
+
     this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    t[4]=MPI_Wtime();
+
     NaiverStokesData3d::solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
+    t[5]=MPI_Wtime();
+
     NaiverStokesData3d::solveRHS(myPDE);
-    //if(0==myMPI.getMyId()) std::cout<<"solved"<<std::endl;
+    t[6]=MPI_Wtime();
+    double total=t[6]-t[0];
+    
+    if(0==myMPI.getMyId())
+        std::cout<<"Time ratio:"
+        <<(t[1]-t[0])/total
+        <<(t[2]-t[1])/total
+        <<(t[3]-t[2])/total
+        <<(t[4]-t[3])/total
+        <<(t[5]-t[4])/total
+        <<(t[6]-t[5])/total
+        <<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,

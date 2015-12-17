@@ -213,15 +213,8 @@ void nuc3d::physicsModel::sutherland(const Field &T,
                                      double T_inf)
 {
     int nx=T.getSizeX();
-    int ny=T.getSizeX();
-    int nz=T.getSizeX();
-//    std::cout<<"solving miu & coeff"<<std::endl;
-//    std::cout<<Reynolds<<std::endl;
-//    std::cout<<Mach<<std::endl;
-//    std::cout<<pt<<std::endl;
-//    std::cout<<gamma<<std::endl;
-//    std::cout<<T_ref<<std::endl;
-//    std::cout<<T_inf<<std::endl;
+    int ny=T.getSizeY();
+    int nz=T.getSizeZ();
     
     for (int k = 0; k < nz; k++)
     {
