@@ -16,7 +16,8 @@ myIOController
      {"startStep",0},
      {"endStep",100000},
      {"saveStep",1000},
-     {"currentStep",0}
+     {"currentStep",0},
+     {"Benchmark",0}
  }
  ),
 myTimeController

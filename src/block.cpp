@@ -89,7 +89,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     
     
     if(0==(myIO.getStep("startStep")))
-        initialQ(myPhyMod.getMach());
+        initialQ(myIO);
     else
         inputQ_binary(myMPI.getMyId(),myIO.getStep("startStep"));
     
@@ -552,7 +552,7 @@ void nuc3d::block::printStatus()
     std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
 }
 
-void nuc3d::block::initialQ(double mach)
+void nuc3d::block::initialQ(IOController &myIO)
 {
     Field &jac=myFluxes->getJac();
     VectorField &Q=myPDE.getQ();
@@ -562,11 +562,9 @@ void nuc3d::block::initialQ(double mach)
     double x,y,z;
     double jacobian;
     
-    double x_c=5.0;
-    double y_c=5.0;
-    double gamma=1.4;
-    double b=0.5;
-    double pie=4.0*atan(1.0);
+    double gamma=myIO.getValue("Gamma");
+    double mach=myIO.getValue("Mach");
+    int fp=myIO.getStep("Benchmark");
     
     int nx0=jac.getSizeX();
     int ny0=jac.getSizeY();
@@ -583,12 +581,8 @@ void nuc3d::block::initialQ(double mach)
                 z=xyz_center[2].getValue(i, j, k);
                 jacobian=jac.getValue(i, j, k);
                
-                double r=std::sqrt(std::pow(x-x_c,2)+std::pow(y-y_c,2));
-                rho=std::pow((1-(gamma-1.0)*b*b*std::exp(1-r*r)/(8.0*gamma*pie*pie)),2.5);
-                u=0.5-b/(2.0*pie)*exp((1-r*r)/2)*(y-y_c);
-                v=b/(2.0*pie)*exp((1-r*r)/2)*(x-x_c);
-                w=0.0;
-                p=std::pow(rho,gamma);
+                (this->*myInitial[fp])(rho,u,v,w,p,mach,x,y,z,gamma);
+
 //                
 //                rho=1.0;
 //                u=1.0;
@@ -609,9 +603,41 @@ void nuc3d::block::initialQ(double mach)
             }
         }
     }
-    
 }
 
+void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
+{
+    rho=1.0;
+    u=1.0;
+    v=1.0;
+    w=1.0;
+    p=1.0/(mach*mach*gamma);
+
+}
+
+void nuc3d::block::initial_ivc(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
+{
+    double pie=4.0*atan(1.0);
+    double b=0.5;
+    double x_c=5.0;
+    double y_c=5.0;
+
+    double r=std::sqrt(std::pow(x-x_c,2)+std::pow(y-y_c,2));
+    rho=std::pow((1-(gamma-1.0)*b*b*std::exp(1-r*r)/(8.0*gamma*pie*pie)),2.5);
+    u=0.5-b/(2.0*pie)*exp((1-r*r)/2)*(y-y_c);
+    v=b/(2.0*pie)*exp((1-r*r)/2)*(x-x_c);
+    w=0.0;
+    p=std::pow(rho,gamma);
+
+}
+void nuc3d::block::initial_taylorgreen(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
+{
+    rho=1.0;
+    u=std::sin(x)*std::cos(y)*std::cos(z);
+    v=-std::cos(x)*std::sin(y)*std::cos(z);
+    w=0.0;
+    p=100.0+((std::cos(2.0*z)+2.0)*(std::cos(2.0*x)+std::cos(2.0*y))-2.0)/16.0;
+}
 
 void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
 {

@@ -41,6 +41,7 @@ namespace nuc3d
     
     class block
     {
+        
     protected:
         int nx;
         int ny;
@@ -108,15 +109,62 @@ namespace nuc3d
         &nuc3d::block::interpolation_derlag_center_eta,
         &nuc3d::block::interpolation_derlag_center_zeta
         };
-                           
+        
+        
+        typedef void (nuc3d::block::*pInitial)(double &rho,
+                                        double &u,
+                                        double &v,
+                                        double &w,
+                                        double &p,
+                                        double &mach,
+                                        double &x,
+                                        double &y,
+                                        double &z,
+                                        double &gamma);
+        
+        pInitial myInitial[3]={
+            &nuc3d::block::initial_default,
+            &nuc3d::block::initial_ivc,
+            &nuc3d::block::initial_taylorgreen
+        };
+        
         void initialData(int,int,int,physicsModel &);
         
         void getXYZ_center();
         
         void getJacobians();
         
-        void initialQ(double mach);
+        void initialQ(IOController &myIO);
+        void initial_default(double &rho,
+                             double &u,
+                             double &v,
+                             double &w,
+                             double &p,
+                             double &mach,
+                             double &x,
+                             double &y,
+                             double &z,double &gamma);
         
+        void initial_ivc(double &rho,
+                             double &u,
+                             double &v,
+                             double &w,
+                             double &p,
+                             double &mach,
+                             double &x,
+                             double &y,
+                             double &z,double &gamma);
+        
+        void initial_taylorgreen(double &rho,
+                             double &u,
+                             double &v,
+                             double &w,
+                             double &p,
+                             double &mach,
+                             double &x,
+                             double &y,
+                             double &z,double &gamma);
+
         
         void interpolation_lag(const Field &,Field &);
         
