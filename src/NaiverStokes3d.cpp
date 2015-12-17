@@ -115,14 +115,14 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
 
     double total=t[5]-t[0];
     
-    if(0==myMPI.getMyId())
-        std::cout<<"Time ratio vis:"
-        <<(t[1]-t[0])/total<<", "
-        <<(t[2]-t[1])/total<<", "
-        <<(t[3]-t[2])/total<<", "
-        <<(t[4]-t[3])/total<<", "
-        <<(t[5]-t[4])/total
-        <<std::endl;
+//    if(0==myMPI.getMyId())
+//        std::cout<<"Time ratio vis:"
+//        <<(t[1]-t[0])/total<<", "
+//        <<(t[2]-t[1])/total<<", "
+//        <<(t[3]-t[2])/total<<", "
+//        <<(t[4]-t[3])/total<<", "
+//        <<(t[5]-t[4])/total
+//        <<std::endl;
 
 }
 

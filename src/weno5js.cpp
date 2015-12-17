@@ -53,18 +53,18 @@ void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    for(int z=-2;z<=2;z++)
-                    {
-                        int stride=(1-uw)/2+z*uw;
-                        int itemp=i+stride*dim0;
-                        int jtemp=j+stride*dim1;
-                        int ktemp=k+stride*dim2;
-                        int idx=ktemp*nx*ny+jtemp*nx+itemp;
-                        
-                        //flux[2+z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                        flux[2+z]=pIn[idx];
-                    }
-                    h=nuc3d::weno5jsInterpolation(flux,ss,p);
+//                    for(int z=-2;z<=2;z++)
+                    //{
+//                        int stride=(1-uw)/2+z*uw;
+//                        int itemp=i+stride*dim0;
+//                        int jtemp=j+stride*dim1;
+//                        int ktemp=k+stride*dim2;
+                        int idx=k*nx*ny+j*nx+i;
+//
+//                        //flux[2+z]=fieldIN.getValue(itemp,jtemp,ktemp);
+//                        //flux[2+z]=pIn[idx];
+//                    }
+                    h=nuc3d::weno5jsInterpolation(&pIn[idx],ss,p);
                     
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }

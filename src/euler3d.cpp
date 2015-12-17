@@ -205,7 +205,7 @@ void nuc3d::EulerData3D::solve(PDEData3d &myPDE,
     nuc3d::EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     nuc3d::EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     nuc3d::EulerData3D::solveRHS(myPDE);
-   
+    
 }
 
 void nuc3d::EulerData3D::solveRiemann(PDEData3d &myPDE,
@@ -226,7 +226,7 @@ void nuc3d::EulerData3D::setBoundaryCondition(PDEData3d &myPDE,
                                               boundaryCondition &myBC)
 {
     myBC.setBC(myPDE,myModel,*this,myBf);
-
+    
 }
 
 void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
@@ -238,28 +238,28 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
     double t[8];
     
     t[0]=MPI_Wtime();
-
+    
     solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     t[1]=MPI_Wtime();
-
+    
     solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
     t[2]=MPI_Wtime();
-
+    
     solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
     t[3]=MPI_Wtime();
-
+    
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     t[4]=MPI_Wtime();
-
+    
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
     t[5]=MPI_Wtime();
-
+    
     solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
     t[6]=MPI_Wtime();
-
+    
     this->setDerivativesInv();
     t[7]=MPI_Wtime();
-    double total=t[7]-t[0];   
+    double total=t[7]-t[0];
     
     if(0==myMPI.getMyId())
         std::cout<<"Time ratio inv:"
@@ -271,7 +271,7 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
         <<(t[6]-t[5])/total<<", "
         <<(t[7]-t[6])/total
         <<std::endl;
-
+    
 }
 
 
@@ -286,26 +286,43 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
     VectorField &pReconFlux = myFlux.reconstFluxL;
     int myBCtypeL=myBC.getBCtype(dir*2);
     int myBCtypeR=myBC.getBCtype(dir*2+1);
-
+    
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
+        double t[5];
+        
         bufferData &bf = myBuff[iter - pFlux.begin()];
         Field &rf = pReconFlux[iter - pFlux.begin()];
-
         
+        t[0]=MPI_Wtime();
         myMPI.bufferSendRecv(*iter,bf,dir,static_cast<int>(iter - pFlux.begin()));
+        t[1]=MPI_Wtime();
         myOP.reconstructionInner(*iter, dir, 1, rf);
+        t[2]=MPI_Wtime();
         
         myMPI.waitSendRecv(bf,dir);
         
         Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferSend[dir*2]:bf.BufferRecv[dir*2];
         Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferSend[dir*2+1]:bf.BufferRecv[dir*2+1];
+        t[3]=MPI_Wtime();
         
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf,myBCtypeL,myBCtypeR);
+        t[4]=MPI_Wtime();
+        double total=t[4]-t[0];
+        
+        if(0==myMPI.getMyId())
+            std::cout<<"Time ratio inv:"
+            <<(t[1]-t[0])/total<<", "
+            <<(t[2]-t[1])/total<<", "
+            <<(t[3]-t[2])/total<<", "
+            <<(t[4]-t[3])/total
+            <<std::endl;
+
+        
     }
     MPI_Barrier(MPI_COMM_WORLD);
-
+    
 }
 
 void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
@@ -338,7 +355,7 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, -1, rf,myBCtypeL,myBCtypeR);
     }
     MPI_Barrier(MPI_COMM_WORLD);
-
+    
 }
 
 void nuc3d::EulerData3D::solveRHS(PDEData3d &myPDE)
