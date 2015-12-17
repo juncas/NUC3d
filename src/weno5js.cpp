@@ -68,6 +68,10 @@ void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
             }
         }
     }
+    else
+    {
+        std::cout<<"Error size in interpolationInner"<<dim0<<" "<<dim1<<" "<<dim2<<std::endl;
+    }
 }
 
 
