@@ -54,10 +54,8 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    double hl=fieldIN.getValue(i,j,k);
-                    double hr=fieldIN.getValue(i+dim0,j+dim1,k+dim2);
-                    
-                    h=0.5*(hl+hr);
+                    int stride=(1-uw)/2;
+                    h=fieldIN.getValue(i+stride*dim0,j+stride*dim0,k+stride*dim0);
                     
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
@@ -106,9 +104,10 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    int itemp0=i-dim0;
-                    int jtemp0=j-dim1;
-                    int ktemp0=k-dim2;
+                    int stride=(1-uw)/2-1;
+                    int itemp0=i+stride*dim0;
+                    int jtemp0=j+stride*dim1;
+                    int ktemp0=k+stride*dim2;
                     
                     if(itemp0<0||jtemp0<0||ktemp0<0)
                     {
@@ -116,16 +115,12 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
                         int jtemp1=jtemp0+dim1*boundaryL.getSizeY();
                         int ktemp1=ktemp0+dim2*boundaryL.getSizeZ();
                         
-                        hl=boundaryL.getValue(itemp1,jtemp1,ktemp1);
+                        h=boundaryL.getValue(itemp1,jtemp1,ktemp1);
                     }
                     else
                     {
-                        hl=fieldIN.getValue(itemp0,jtemp0,ktemp0);
+                        h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
                     }
-                    
-                    hr=fieldIN.getValue(i, j, k);
-                    
-                    h=(hl+hr)*0.5;
                     
                     fieldOUT.setValue(i,j,k,h);
                 }
@@ -172,27 +167,23 @@ void nuc3d::upwind1st::interpolationBoundaryR(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    int itemp0=i+dim0;
-                    int jtemp0=j+dim1;
-                    int ktemp0=k+dim2;
-                    
+                    int stride=(1-uw)/2;
+                    int itemp0=i+stride*dim0;
+                    int jtemp0=j+stride*dim1;
+                    int ktemp0=k+stride*dim2;
                     if(itemp0>=nx||jtemp0>=ny||ktemp0>=nz)
                     {
                         int itemp1=itemp0-dim0*nx;
                         int jtemp1=jtemp0-dim1*ny;
                         int ktemp1=ktemp0-dim2*nz;
                         
-                        hr=boundaryR.getValue(itemp1,jtemp1,ktemp1);
+                        h=boundaryR.getValue(itemp1,jtemp1,ktemp1);
                     }
                     else
                     {
-                        hr=fieldIN.getValue(itemp0,jtemp0,ktemp0);
+                        h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
                     }
-                    
-                    hl=fieldIN.getValue(i,j,k);
-                    
-                    h=(hl+hr)*0.5;
-                    
+                                        
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
             }
