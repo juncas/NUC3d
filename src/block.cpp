@@ -583,11 +583,18 @@ void nuc3d::block::initialQ(double mach)
                 z=xyz_center[2].getValue(i, j, k);
                 jacobian=jac.getValue(i, j, k);
                
-                rho=1.0;
-                u=1.0;
-                v=0.0;
+                double r=std::sqrt(std::pow(x-x_c,2)+std::pow(y-y_c,2));
+                rho=std::pow((1-(gamma-1.0)*b*b*std::exp(1-r*r)/(8.0*gamma*pie*pie)),2.5);
+                u=0.5-b/(2.0*pie)*exp((1-r*r)/2)*(y-y_c);
+                v=b/(2.0*pie)*exp((1-r*r)/2)*(x-x_c);
                 w=0.0;
-                p=1.0/(gamma*mach*mach);
+                p=std::pow(rho,gamma);
+//                
+//                rho=1.0;
+//                u=1.0;
+//                v=0.0;
+//                w=0.0;
+//                p=1.0/(gamma*mach*mach);
                 
                 rhou=rho*u;
                 rhov=rho*v;
