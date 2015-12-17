@@ -60,7 +60,11 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
                     int jtemp=j+stride*dim1;
                     int ktemp=k+stride*dim2;
                     
-                    f=fieldIN.getValue(itemp,jtemp,ktemp);
+                    double hl=fieldIN.getValue(i,j,k);
+                    double hr=fieldIN.getValue(i+dim0,j+dim1,k+dim2);
+                    
+                    h=0.5*(hl+hr);
+                    
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
             }
@@ -79,6 +83,8 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
                                               const int tilesize)
 {
     double h;
+    double hl;
+    double hr;
     
     int nx;
     int ny;
@@ -106,10 +112,9 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    int stride=(1-uw)/2-1;
-                    int itemp0=i+stride*dim0;
-                    int jtemp0=j+stride*dim1;
-                    int ktemp0=k+stride*dim2;
+                    int itemp0=i-dim0;
+                    int jtemp0=j-dim1;
+                    int ktemp0=k-dim2;
                     
                     if(itemp0<0||jtemp0<0||ktemp0<0)
                     {
@@ -117,12 +122,16 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
                         int jtemp1=jtemp0+dim1*boundaryL.getSizeY();
                         int ktemp1=ktemp0+dim2*boundaryL.getSizeZ();
                         
-                        h=boundaryL.getValue(itemp1,jtemp1,ktemp1);
+                        hl=boundaryL.getValue(itemp1,jtemp1,ktemp1);
                     }
                     else
                     {
-                        h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
+                        hl=fieldIN.getValue(itemp0,jtemp0,ktemp0);
                     }
+                    
+                    hr=fieldIN.getValue(i, j, k);
+                    
+                    h=(hl+hr)*0.5;
                     
                     fieldOUT.setValue(i,j,k,h);
                 }
@@ -141,6 +150,7 @@ void nuc3d::upwind1st::interpolationBoundaryR(const Field & fieldIN,
                                               const int tilesize)
 {
     double h;
+    double hl,hr;
     
     
     int nx;
@@ -150,7 +160,7 @@ void nuc3d::upwind1st::interpolationBoundaryR(const Field & fieldIN,
     nx=fieldIN.getSizeX();
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
-        
+    
     int ibeg=dim0*(nx-tilesize);
     int iend=nx;
     int jbeg=dim1*(ny-tilesize);
@@ -168,23 +178,26 @@ void nuc3d::upwind1st::interpolationBoundaryR(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                        int stride=(1-uw)/2;
-                        int itemp0=i+stride*dim0;
-                        int jtemp0=j+stride*dim1;
-                        int ktemp0=k+stride*dim2;
+                    int itemp0=i+dim0;
+                    int jtemp0=j+dim1;
+                    int ktemp0=k+dim2;
+                    
+                    if(itemp0>=nx||jtemp0>=ny||ktemp0>=nz)
+                    {
+                        int itemp1=itemp0-dim0*nx;
+                        int jtemp1=jtemp0-dim1*ny;
+                        int ktemp1=ktemp0-dim2*nz;
                         
-                        if(itemp0>=nx||jtemp0>=ny||ktemp0>=nz)
-                        {
-                            int itemp1=itemp0-dim0*nx;
-                            int jtemp1=jtemp0-dim1*ny;
-                            int ktemp1=ktemp0-dim2*nz;
-                            
-                            h=boundaryR.getValue(itemp1,jtemp1,ktemp1);
-                        }
-                        else
-                        {
-                            h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
-                        }
+                        hr=boundaryR.getValue(itemp1,jtemp1,ktemp1);
+                    }
+                    else
+                    {
+                        hr=fieldIN.getValue(itemp0,jtemp0,ktemp0);
+                    }
+                    
+                    hl=fieldIN.getValue(i,j,k);
+                    
+                    h=(hl+hr)*0.5;
                     
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
