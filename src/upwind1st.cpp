@@ -26,7 +26,6 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
                                           Field & fieldOUT,
                                           const int tilesize)
 {
-    double f;
     double h;
     
     
@@ -55,11 +54,6 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
             {
                 for(int i=ibeg;i<iend;i++)
                 {
-                    int stride=(1-uw)/2;
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
                     double hl=fieldIN.getValue(i,j,k);
                     double hr=fieldIN.getValue(i+dim0,j+dim1,k+dim2);
                     
