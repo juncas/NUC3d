@@ -55,7 +55,7 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
                 for(int i=ibeg;i<iend;i++)
                 {
                     int stride=(1-uw)/2;
-                    h=fieldIN.getValue(i+stride*dim0,j+stride*dim0,k+stride*dim0);
+                    h=fieldIN.getValue(i+stride*dim0,j+stride*dim1,k+stride*dim2);
                     
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
                 }
