@@ -51,7 +51,7 @@ namespace nuc3d
 		void setValue(int, int, int, T);
 		int getIndex(int, int, int) const;
 		void resetData(int, int, int);
-		const T* getDataPtr() const{ return field_data; } ;
+		T* getDataPtr() const{ return field_data; } ;
 		static const int fieldDim = 3;
 	public://Operators
 		field3d<T>& operator=(const field3d<T> &);
