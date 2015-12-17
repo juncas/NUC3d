@@ -698,10 +698,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_xi(PDEData3d &myPDE,
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
-    const int bfsize=myBf[0].bufferWidth;
-    
-    std::cout<<bfsize<<std::endl;
-    
+    const int bfsize=myBf[0].bufferWidth;    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
