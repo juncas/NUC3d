@@ -70,11 +70,11 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
     
     if(0==myMPI.getMyId())
         std::cout<<"Time ratio:"
-        <<(t[1]-t[0])/total
-        <<(t[2]-t[1])/total
-        <<(t[3]-t[2])/total
-        <<(t[4]-t[3])/total
-        <<(t[5]-t[4])/total
+        <<(t[1]-t[0])/total<<", "
+        <<(t[2]-t[1])/total<<", "
+        <<(t[3]-t[2])/total<<", "
+        <<(t[4]-t[3])/total<<", "
+        <<(t[5]-t[4])/total<<", "
         <<(t[6]-t[5])/total
         <<std::endl;
 }
