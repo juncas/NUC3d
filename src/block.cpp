@@ -89,7 +89,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     
     
     if(0==(myIO.getStep("startStep")))
-        initialQ(myIO);
+        initialQ(myIO,myPhyMod);
     else
         inputQ_binary(myMPI.getMyId(),myIO.getStep("startStep"));
     
