@@ -234,15 +234,44 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
                                   MPIComunicator3d_nonblocking &myMPI,
                                   boundaryCondition &myBC)
 {
-  
-    solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
-    solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
     
+    double t[8];
+    
+    t[0]=MPI_Wtime();
+
+    solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
+    t[1]=MPI_Wtime();
+
+    solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
+    t[2]=MPI_Wtime();
+
+    solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
+    t[3]=MPI_Wtime();
+
+    solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
+    t[4]=MPI_Wtime();
+
+    solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
+    t[5]=MPI_Wtime();
+
+    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
+    t[6]=MPI_Wtime();
+
     this->setDerivativesInv();
+    t[7]=MPI_Wtime();
+    double total=t[7]-t[0];   
+    
+    if(0==myMPI.getMyId())
+        std::cout<<"Time ratio inv:"
+        <<(t[1]-t[0])/total<<", "
+        <<(t[2]-t[1])/total<<", "
+        <<(t[3]-t[2])/total<<", "
+        <<(t[4]-t[3])/total<<", "
+        <<(t[5]-t[4])/total<<", "
+        <<(t[6]-t[5])/total<<", "
+        <<(t[7]-t[6])/total
+        <<std::endl;
+
 }
 
 

@@ -86,20 +86,44 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
+    double t[6];
+    t[0]=MPI_Wtime();
+
     //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
+    t[1]=MPI_Wtime();
+
     
     //if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
+    t[2]=MPI_Wtime();
+
     
     //if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
     solveViscousFlux(myModel);
+    t[3]=MPI_Wtime();
+
     
     //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
+    t[4]=MPI_Wtime();
+
     
     //if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
     setDerivativesVis(myOP,myBf,myMPI,myBC);
+    t[5]=MPI_Wtime();
+
+    double total=t[5]-t[0];
+    
+    if(0==myMPI.getMyId())
+        std::cout<<"Time ratio vis:"
+        <<(t[1]-t[0])/total<<", "
+        <<(t[2]-t[1])/total<<", "
+        <<(t[3]-t[2])/total<<", "
+        <<(t[4]-t[3])/total<<", "
+        <<(t[5]-t[4])/total
+        <<std::endl;
+
 }
 
 
