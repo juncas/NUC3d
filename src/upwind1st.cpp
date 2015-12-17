@@ -62,6 +62,11 @@ void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
             }
         }
     }
+    else
+    {
+        std::cout<<"Error size in interpolationInner upwind1st"<<dim0<<" "<<dim1<<" "<<dim2<<std::endl;
+    }
+
 }
 
 
