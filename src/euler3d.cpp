@@ -259,18 +259,18 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
     
     this->setDerivativesInv();
     t[7]=MPI_Wtime();
-    double total=t[7]-t[0];
-    
-    if(0==myMPI.getMyId())
-        std::cout<<"Time ratio inv:"
-        <<(t[1]-t[0])/total<<", "
-        <<(t[2]-t[1])/total<<", "
-        <<(t[3]-t[2])/total<<", "
-        <<(t[4]-t[3])/total<<", "
-        <<(t[5]-t[4])/total<<", "
-        <<(t[6]-t[5])/total<<", "
-        <<(t[7]-t[6])/total
-        <<std::endl;
+//    double total=t[7]-t[0];
+//    
+//    if(0==myMPI.getMyId())
+//        std::cout<<"Time ratio inv:"
+//        <<(t[1]-t[0])/total<<", "
+//        <<(t[2]-t[1])/total<<", "
+//        <<(t[3]-t[2])/total<<", "
+//        <<(t[4]-t[3])/total<<", "
+//        <<(t[5]-t[4])/total<<", "
+//        <<(t[6]-t[5])/total<<", "
+//        <<(t[7]-t[6])/total
+//        <<std::endl;
     
 }
 
@@ -312,11 +312,11 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         double total=t[4]-t[0];
         
         if(0==myMPI.getMyId())
-            std::cout<<"Time ratio inv:"
-            <<(t[1]-t[0])/total<<", "
-            <<(t[2]-t[1])/total<<", "
-            <<(t[3]-t[2])/total<<", "
-            <<(t[4]-t[3])/total
+            std::cout<<"Time ratio recon:"
+            <<(t[1]-t[0])<<", "
+            <<(t[2]-t[1])<<", "
+            <<(t[3]-t[2])<<", "
+            <<(t[4]-t[3])
             <<std::endl;
 
         
