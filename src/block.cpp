@@ -552,7 +552,7 @@ void nuc3d::block::printStatus()
     std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
 }
 
-void nuc3d::block::initialQ(IOController &myIO)
+void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
 {
     Field &jac=myFluxes->getJac();
     VectorField &Q=myPDE.getQ();
@@ -562,7 +562,7 @@ void nuc3d::block::initialQ(IOController &myIO)
     double x,y,z;
     double jacobian;
     
-    double gamma=myIO.getValue("Gamma");
+    double gamma=myPhyMod.getGamma();
     double mach=myIO.getValue("Mach");
     int fp=myIO.getStep("Benchmark");
     

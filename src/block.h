@@ -134,7 +134,7 @@ namespace nuc3d
         
         void getJacobians();
         
-        void initialQ(IOController &myIO);
+        void initialQ(IOController &myIO,physicsModel &myPhyMod);
         void initial_default(double &rho,
                              double &u,
                              double &v,
