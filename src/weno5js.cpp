@@ -37,6 +37,10 @@ void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
     nx=fieldIN.getSizeX();
     ny=fieldIN.getSizeY();
     nz=fieldIN.getSizeZ();
+    
+    int nxO=fieldOUT.getSizeX();
+    int nyO=fieldOUT.getSizeX();
+    int nzO=fieldOUT.getSizeX();
         
     int ibeg=(tilesize-1)*dim0;
     int iend=nx-tilesize*dim0;
@@ -67,6 +71,7 @@ void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
                     h=nuc3d::weno5jsInterpolation(flux,ss,p);
                     
                     fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
+                    
                 }
             }
         }

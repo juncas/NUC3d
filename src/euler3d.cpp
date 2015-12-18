@@ -309,15 +309,15 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf,myBCtypeL,myBCtypeR);
         t[4]=MPI_Wtime();
-        double total=t[4]-t[0];
-        
-        if(0==myMPI.getMyId())
-            std::cout<<"Time ratio recon:"
-            <<(t[1]-t[0])<<", "
-            <<(t[2]-t[1])<<", "
-            <<(t[3]-t[2])<<", "
-            <<(t[4]-t[3])
-            <<std::endl;
+//        double total=t[4]-t[0];
+//        
+//        if(0==myMPI.getMyId())
+//            std::cout<<"Time ratio recon:"
+//            <<(t[1]-t[0])<<", "
+//            <<(t[2]-t[1])<<", "
+//            <<(t[3]-t[2])<<", "
+//            <<(t[4]-t[3])
+//            <<std::endl;
 
         
     }
