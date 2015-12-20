@@ -535,22 +535,12 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
             for (int i = 0; i < nx; ++i)
             {
                 int idx_xi=nx*ny*k+nx*j+i;
-                int idx_eta=ny*nz*i+ny*k+j;
-                int idx_zeta=nz*nx*j+nz*i+k;
                 
                 jac0=jac[idx_xi];
                 
                 xi_x0=xi_x[idx_xi];
                 xi_y0=xi_y[idx_xi];
                 xi_z0=xi_z[idx_xi];
-                
-                eta_x0=eta_x[idx_xi];
-                eta_y0=eta_y[idx_xi];
-                eta_z0=eta_z[idx_xi];
-                
-                zeta_x0=zeta_x[idx_xi];
-                zeta_y0=zeta_y[idx_xi];
-                zeta_z0=zeta_z[idx_xi];
                 
                 rho0=rho[idx_xi];
                 u0=u[idx_xi];
@@ -571,24 +561,11 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                               + xi_y0*xi_y0
                               + xi_z0*xi_z0);
                 
-                theta_eta=sqrt(eta_x0*eta_x0
-                               + eta_y0*eta_y0
-                               + eta_z0*eta_z0);
-                
-                theta_zeta=sqrt(zeta_x0*zeta_x0
-                                + zeta_y0*zeta_y0
-                                + zeta_z0*zeta_z0);
-                
                 U0=(xi_x0*u0 + xi_y0*v0 + xi_z0*w0);
-                V0=(eta_x0*u0 + eta_y0*v0 + eta_z0*w0);
-                W0=(zeta_x0*u0 + zeta_y0*v0 + zeta_z0*w0);
                 
                 alpha0 = alpha[idx_xi];
                 
                 alpha_xi = alpha0*theta_xi;
-                alpha_eta = alpha0*theta_eta;
-                alpha_zeta = alpha0*theta_zeta;
-                
                 (this->*myRiemannMap[SolverName])(U0,
                                                   alpha_xi,
                                                   Rho0,
@@ -620,6 +597,51 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 flux_xi_r[3][idx_xi]=fluxn[3];
                 flux_xi_r[4][idx_xi]=fluxn[4];
                 
+                MaxEigen_xi=std::max(std::abs(U0)+alpha_xi ,MaxEigen_xi);
+                
+            }
+        }
+    }
+    
+    for (int k = 0; k < nz; ++k)
+    {
+        for (int j = 0; j < ny; ++j)
+        {
+            for (int i = 0; i < nx; ++i)
+            {
+                int idx_xi=nx*ny*k+nx*j+i;
+                int idx_eta=ny*nz*i+ny*k+j;
+                
+                jac0=jac[idx_xi];
+                eta_x0=eta_x[idx_xi];
+                eta_y0=eta_y[idx_xi];
+                eta_z0=eta_z[idx_xi];
+                
+                rho0=rho[idx_xi];
+                u0=u[idx_xi];
+                v0=v[idx_xi];
+                w0=w[idx_xi];
+                p0=p[idx_xi];
+                T0=T[idx_xi];
+                e0=e[idx_xi];
+                alpha0=alpha[idx_xi];
+                
+                Rho0=Rho[idx_xi];
+                Rhou0=RhoU[idx_xi];
+                Rhov0=RhoV[idx_xi];
+                Rhow0=RhoW[idx_xi];
+                Rhoe0=RhoE[idx_xi];
+                
+                theta_eta=sqrt(eta_x0*eta_x0
+                               + eta_y0*eta_y0
+                               + eta_z0*eta_z0);
+                
+                V0=(eta_x0*u0 + eta_y0*v0 + eta_z0*w0);
+                
+                alpha0 = alpha[idx_xi];
+                
+                alpha_eta = alpha0*theta_eta;
+                
                 (this->*myRiemannMap[SolverName])(V0,
                                                   alpha_eta,
                                                   Rho0,
@@ -650,24 +672,52 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 flux_eta_r[3][idx_eta]=fluxn[3];
                 flux_eta_r[4][idx_eta]=fluxn[4];
                 
-                (this->*myRiemannMap[SolverName])(W0,
-                                                  alpha_zeta,
-                                                  Rho0,
-                                                  Rhou0,
-                                                  Rhov0,
-                                                  Rhow0,
-                                                  Rhoe0,
-                                                  rho0,
-                                                  u0,
-                                                  v0,
-                                                  w0,
-                                                  p0,
-                                                  zeta_x0,
-                                                  zeta_y0,
-                                                  zeta_z0,
-                                                  jac0,
-                                                  fluxp,
-                                                  fluxn);
+                
+                MaxEigen_eta=std::max(std::abs(V0)+alpha_eta,MaxEigen_eta);
+                
+            }
+        }
+    }
+    
+    for (int k = 0; k < nz; ++k)
+    {
+        for (int j = 0; j < ny; ++j)
+        {
+            for (int i = 0; i < nx; ++i)
+            {
+                int idx_xi=nx*ny*k+nx*j+i;
+                int idx_zeta=nz*nx*j+nz*i+k;
+                
+                jac0=jac[idx_xi];
+                
+                zeta_x0=zeta_x[idx_xi];
+                zeta_y0=zeta_y[idx_xi];
+                zeta_z0=zeta_z[idx_xi];
+                
+                rho0=rho[idx_xi];
+                u0=u[idx_xi];
+                v0=v[idx_xi];
+                w0=w[idx_xi];
+                p0=p[idx_xi];
+                T0=T[idx_xi];
+                e0=e[idx_xi];
+                alpha0=alpha[idx_xi];
+                
+                Rho0=Rho[idx_xi];
+                Rhou0=RhoU[idx_xi];
+                Rhov0=RhoV[idx_xi];
+                Rhow0=RhoW[idx_xi];
+                Rhoe0=RhoE[idx_xi];
+                
+                theta_zeta=sqrt(zeta_x0*zeta_x0
+                                + zeta_y0*zeta_y0
+                                + zeta_z0*zeta_z0);
+                
+                
+                W0=(zeta_x0*u0 + zeta_y0*v0 + zeta_z0*w0);
+                
+                alpha0 = alpha[idx_xi];
+                alpha_zeta = alpha0*theta_zeta;
                 
                 flux_zeta_l[0][idx_zeta]=fluxp[0];
                 flux_zeta_l[1][idx_zeta]=fluxp[1];
@@ -681,14 +731,12 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 flux_zeta_r[3][idx_zeta]=fluxn[3];
                 flux_zeta_r[4][idx_zeta]=fluxn[4];
                 
-                MaxEigen_xi=std::max(std::abs(U0)+alpha_xi ,MaxEigen_xi);
-                MaxEigen_eta=std::max(std::abs(V0)+alpha_eta,MaxEigen_eta);
                 MaxEigen_zeta=std::max(std::abs(W0)+alpha_zeta,MaxEigen_zeta);
                 
             }
         }
     }
-    
+
     myFlux_xi.maxEigen=MaxEigen_xi;
     myFlux_eta.maxEigen=MaxEigen_eta;
     myFlux_zeta.maxEigen=MaxEigen_zeta;
