@@ -379,10 +379,36 @@ void nuc3d::EulerData3D::solveRHS(PDEData3d &myPDE)
                 for (int i=0; i<nx; i++)
                 {
                     int idx_xi=nx*ny*k+nx*j+i;
+                    
+                    rhs[idx_xi]=df[idx_xi];
+                }
+            }
+        }
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
                     int idx_eta=ny*nz*i+ny*k+j;
+                    
+                    rhs[idx_xi]+=dg[idx_eta];
+                }
+            }
+        }
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
                     int idx_zeta=nz*nx*j+nz*i+k;
                     
-                    rhs[idx_xi]=df[idx_xi]+dg[idx_eta]+dh[idx_zeta];
+                    rhs[idx_xi]+=dh[idx_zeta];
                 }
             }
         }
