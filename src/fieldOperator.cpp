@@ -384,13 +384,13 @@ void nuc3d::fieldOperator3d::reconstructionInner(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationInner(fieldIN,1,0,0,upwind,fieldOUT,bufferSize_xi);
+            myInteroplators[0]->interpolationInner(fieldIN,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationInner(fieldIN,0,1,0,upwind,fieldOUT,bufferSize_eta);
+            myInteroplators[1]->interpolationInner(fieldIN,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationInner(fieldIN,0,0,1,upwind,fieldOUT,bufferSize_zeta);
+            myInteroplators[2]->interpolationInner(fieldIN,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -427,13 +427,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorL(
     switch(direction)
     {
         case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT,bufferSize_xi);
+            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT,bufferSize_eta);
+            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT,bufferSize_zeta);
+            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -449,13 +449,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerL(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationBoundaryL(fieldIN,boundaryL,1,0,0,upwind,fieldOUT,bufferSize_xi);
+            myInteroplators[0]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationBoundaryL(fieldIN,boundaryL,0,1,0,upwind,fieldOUT,bufferSize_eta);
+            myInteroplators[1]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationBoundaryL(fieldIN,boundaryL,0,0,1,upwind,fieldOUT,bufferSize_zeta);
+            myInteroplators[2]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -472,13 +472,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorR(
     switch(direction)
     {
         case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT,bufferSize_xi);
+            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT,bufferSize_eta);
+            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT,bufferSize_zeta);
+            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -494,13 +494,13 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerR(
     switch(direction)
     {
         case 0:
-            myInteroplators[0]->interpolationBoundaryR(fieldIN,boundaryR,1,0,0,upwind,fieldOUT,bufferSize_xi);
+            myInteroplators[0]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myInteroplators[1]->interpolationBoundaryR(fieldIN,boundaryR,0,1,0,upwind,fieldOUT,bufferSize_eta);
+            myInteroplators[1]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,0,0,1,upwind,fieldOUT,bufferSize_zeta);
+            myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     

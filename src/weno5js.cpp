@@ -16,138 +16,390 @@ nuc3d::weno5js::~weno5js()
 }
 
 void nuc3d::weno5js::interpolationInner(const Field & fieldIN,
-                                        const int dim0,
-                                        const int dim1,
-                                        const int dim2,
                                         const int uw,//uw=(1,-1)
                                         Field & fieldOUT,
                                         const int tilesize)
 {
-    double flux[5];
-    double h;
-    const double *pIn = nullptr;
-    pIn=fieldIN.getDataPtr();
-    double *pOut = nullptr;
-    pOut=fieldOUT.getDataPtr();
-    
-    int nx;
-    int ny;
-    int nz;
-    
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
-    
-    int nxO=fieldOUT.getSizeX();
-    int nyO=fieldOUT.getSizeX();
-    int nzO=fieldOUT.getSizeX();
-        
-    int ibeg=(tilesize-1)*dim0;
-    int iend=nx-tilesize*dim0;
-    int jbeg=(tilesize-1)*dim1;
-    int jend=ny-tilesize*dim1;
-    int kbeg=(tilesize-1)*dim2;
-    int kend=nz-tilesize*dim2;
-    
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    switch(uw)
     {
-        for(int k=kbeg;k<kend;k++)
+        case 1:
+            weno5jsp(fieldIN, fieldOUT, tilesize);
+            break;
+        case -1:
+            weno5jsn(fieldIN, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
+    
+}
+
+void nuc3d::weno5js::weno5jsp(const Field & fieldIN,
+                              Field & fieldOUT,
+                              const int tilesize)
+{
+    
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int ibeg=(tilesize-1);
+    int iend=nx-tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
-                {
-                    for(int z=-2;z<=2;z++)
-                    {
-                        int stride=(1-uw)/2+z*uw;
-                        int itemp=i+stride*dim0;
-                        int jtemp=j+stride*dim1;
-                        int ktemp=k+stride*dim2;
-                        
-                        flux[2+z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                    }
-                    h=nuc3d::weno5jsInterpolation(flux,ss,p);
-                    
-                    fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
-                    
-                }
+                int idx_f=nx*ny*k+nx*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                
+                is0= coeff_weno5_gamma0*pow((pIn[idx_f-2]-2.0*pIn[idx_f-1]+pIn[idx_f]),2)
+                +coeff_weno5_gamma1*pow((pIn[idx_f-2]-4.0*pIn[idx_f-1]+3.0*pIn[idx_f]),2);
+                
+                is1= coeff_weno5_gamma0*pow((pIn[idx_f-1]-2.0*pIn[idx_f]+pIn[idx_f+1]),2)
+                +coeff_weno5_gamma1*pow((pIn[idx_f-1]-pIn[idx_f+1]),2);
+                
+                is2= coeff_weno5_gamma0*pow((pIn[idx_f]-2.0*pIn[idx_f+1]+pIn[idx_f+2]),2)
+                +coeff_weno5_gamma1*pow((3.0*pIn[idx_f]-4.0*pIn[idx_f+1]+pIn[idx_f+2]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*pIn[idx_f-2]
+                +coeff_weno5_alpha[0][1]*pIn[idx_f-1]
+                +coeff_weno5_alpha[0][2]*pIn[idx_f];
+                
+                q31= coeff_weno5_alpha[1][0]*pIn[idx_f-1]
+                +coeff_weno5_alpha[1][1]*pIn[idx_f]
+                +coeff_weno5_alpha[1][2]*pIn[idx_f+1];
+                
+                q32= coeff_weno5_alpha[2][0]*pIn[idx_f]
+                +coeff_weno5_alpha[2][1]*pIn[idx_f+1]
+                +coeff_weno5_alpha[2][2]*pIn[idx_f+2];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
             }
         }
     }
-    else
+}
+
+void nuc3d::weno5js::weno5jsn(const Field & fieldIN,
+                              Field & fieldOUT,
+                              const int tilesize)
+{
+    
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int ibeg=(tilesize-1);
+    int iend=nx-tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
     {
-        std::cout<<"Error size in interpolationInner"<<dim0<<" "<<dim1<<" "<<dim2<<std::endl;
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_f=nx*ny*k+nx*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                
+                is0= coeff_weno5_gamma0*pow((pIn[idx_f+3]-2.0*pIn[idx_f+2]+pIn[idx_f+1]),2)
+                +coeff_weno5_gamma1*pow((pIn[idx_f+3]-4.0*pIn[idx_f+2]+3.0*pIn[idx_f+1]),2);
+                
+                is1= coeff_weno5_gamma0*pow((pIn[idx_f+2]-2.0*pIn[idx_f+1]+pIn[idx_f]),2)
+                +coeff_weno5_gamma1*pow((pIn[idx_f+2]-pIn[idx_f]),2);
+                
+                is2= coeff_weno5_gamma0*pow((pIn[idx_f+1]-2.0*pIn[idx_f]+pIn[idx_f-1]),2)
+                +coeff_weno5_gamma1*pow((3.0*pIn[idx_f+1]-4.0*pIn[idx_f]+pIn[idx_f-1]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*pIn[idx_f+3]
+                +coeff_weno5_alpha[0][1]*pIn[idx_f+2]
+                +coeff_weno5_alpha[0][2]*pIn[idx_f+1];
+                
+                q31= coeff_weno5_alpha[1][0]*pIn[idx_f+2]
+                +coeff_weno5_alpha[1][1]*pIn[idx_f+1]
+                +coeff_weno5_alpha[1][2]*pIn[idx_f];
+                
+                q32= coeff_weno5_alpha[2][0]*pIn[idx_f+1]
+                +coeff_weno5_alpha[2][1]*pIn[idx_f]
+                +coeff_weno5_alpha[2][2]*pIn[idx_f-1];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
+            }
+        }
     }
 }
 
-
 void nuc3d::weno5js::interpolationBoundaryL(const Field & fieldIN,
                                             const Field & boundaryL,
-                                            const int dim0,
-                                            const int dim1,
-                                            const int dim2,
                                             const int uw,//uw=(1,-1)
                                             Field & fieldOUT,
                                             const int tilesize)
 {
-    double flux[5];
-    double h;
+    switch(uw)
+    {
+        case 1:
+            weno5jspBL(fieldIN,boundaryL, fieldOUT, tilesize);
+            break;
+        case -1:
+            weno5jsnBL(fieldIN,boundaryL, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
     
+}
+
+void nuc3d::weno5js::weno5jspBL(const Field & fieldIN,
+                                const Field & boundaryL,
+                                Field & fieldOUT,
+                                const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryL.getDataPtr();
     
-    int nx;
-    int ny;
-    int nz;
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
     
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryL.getSizeX();
+    int nyBND=boundaryL.getSizeY();
+    int nzBND=boundaryL.getSizeZ();
     
     int ibeg=0;
-    int iend=dim0*(tilesize-nx)+nx;
+    int iend=tilesize;
     int jbeg=0;
-    int jend=dim1*(tilesize-ny)+ny;
+    int jend=ny;
     int kbeg=0;
-    int kend=dim2*(tilesize-nz)+nz;
+    int kend=nz;
+    
+    double f[5];
     
     
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    for(int k=kbeg;k<kend;k++)
     {
-        for(int k=kbeg;k<kend;k++)
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                for(int z=-2;z<=2;z++)
                 {
-                    for(int z=-2;z<=2;z++)
+                    if((i+z-1)<0)
                     {
-                        int stride=(1-uw)/2+z*uw-1;
-                        int itemp0=i+stride*dim0;
-                        int jtemp0=j+stride*dim1;
-                        int ktemp0=k+stride*dim2;
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+(i+z-1+nxBND);
                         
-                        if(itemp0<0||jtemp0<0||ktemp0<0)
-                        {
-                            int itemp1=itemp0+dim0*boundaryL.getSizeX();
-                            int jtemp1=jtemp0+dim1*boundaryL.getSizeY();
-                            int ktemp1=ktemp0+dim2*boundaryL.getSizeZ();
-                            
-                            flux[2+z]=boundaryL.getValue(itemp1,jtemp1,ktemp1);
-                        }
-                        else
-                        {
-                            flux[2+z]=fieldIN.getValue(itemp0,jtemp0,ktemp0);
-                        }
-                        
+                        f[2+z]=pBND[idx_BND];
                     }
-                    
-                    h=nuc3d::weno5jsInterpolation(flux,ss,p);
-                    
-                    fieldOUT.setValue(i,j,k,h);
+                    else
+                    {
+                        int idx_f=nx*ny*k+nx*j+i+z-1;
+                        f[2+z]=pIn[idx_f];
+                    }
                 }
+                
+                
+                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
+                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+                
+                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2)
+                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+                
+                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2)
+                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*f[0]
+                +coeff_weno5_alpha[0][1]*f[1]
+                +coeff_weno5_alpha[0][2]*f[2];
+                
+                q31= coeff_weno5_alpha[1][0]*f[1]
+                +coeff_weno5_alpha[1][1]*f[2]
+                +coeff_weno5_alpha[1][2]*f[3];
+                
+                q32= coeff_weno5_alpha[2][0]*f[2]
+                +coeff_weno5_alpha[2][1]*f[3]
+                +coeff_weno5_alpha[2][2]*f[4];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
+            }
+        }
+    }
+}
+
+void nuc3d::weno5js::weno5jsnBL(const Field & fieldIN,
+                                const Field & boundaryL,
+                                Field & fieldOUT,
+                                const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryL.getDataPtr();
+    
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryL.getSizeX();
+    int nyBND=boundaryL.getSizeY();
+    int nzBND=boundaryL.getSizeZ();
+    
+    int ibeg=0;
+    int iend=tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    double f[5];
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                
+                for(int z=-2;z<=2;z++)
+                {
+                    if((i-z)<0)
+                    {
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+(i-z+nxBND);
+                        
+                        f[2+z]=pBND[idx_BND];
+                    }
+                    else
+                    {
+                        int idx_f=nx*ny*k+nx*j+i-z;
+                        f[2+z]=pIn[idx_f];
+                    }
+                }
+                
+                
+                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
+                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+                
+                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2)
+                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+                
+                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2)
+                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*f[0]
+                +coeff_weno5_alpha[0][1]*f[1]
+                +coeff_weno5_alpha[0][2]*f[2];
+                
+                q31= coeff_weno5_alpha[1][0]*f[1]
+                +coeff_weno5_alpha[1][1]*f[2]
+                +coeff_weno5_alpha[1][2]*f[3];
+                
+                q32= coeff_weno5_alpha[2][0]*f[2]
+                +coeff_weno5_alpha[2][1]*f[3]
+                +coeff_weno5_alpha[2][2]*f[4];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
             }
         }
     }
@@ -155,69 +407,217 @@ void nuc3d::weno5js::interpolationBoundaryL(const Field & fieldIN,
 
 void nuc3d::weno5js::interpolationBoundaryR(const Field & fieldIN,
                                             const Field & boundaryR,
-                                            const int dim0,
-                                            const int dim1,
-                                            const int dim2,
                                             const int uw,//uw=(1,-1)
                                             Field & fieldOUT,
                                             const int tilesize)
 {
-    double flux[5];
-    double h;
+    switch(uw)
+    {
+        case 1:
+            weno5jspBR(fieldIN,boundaryR, fieldOUT, tilesize);
+            break;
+        case -1:
+            weno5jsnBR(fieldIN,boundaryR, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
     
+}
+
+
+void nuc3d::weno5js::weno5jspBR(const Field & fieldIN,
+                                const Field & boundaryR,
+                                Field & fieldOUT,
+                                const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryR.getDataPtr();
     
-    int nx;
-    int ny;
-    int nz;
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
     
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
-        
-    int ibeg=dim0*(nx-tilesize);
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryR.getSizeX();
+    int nyBND=boundaryR.getSizeY();
+    int nzBND=boundaryR.getSizeZ();
+    
+    int ibeg=nx-tilesize;
     int iend=nx;
-    int jbeg=dim1*(ny-tilesize);
+    int jbeg=0;
     int jend=ny;
-    int kbeg=dim2*(nz-tilesize);
+    int kbeg=0;
     int kend=nz;
     
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    double f[5];
+    
+    
+    for(int k=kbeg;k<kend;k++)
     {
-        for(int k=kbeg;k<kend;k++)
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                for(int z=-2;z<=2;z++)
                 {
-                    for(int z=-2;z<=2;z++)
+                    if((i+z)>=nx)
                     {
-                        int stride=(1-uw)/2+z*uw;
-                        int itemp0=i+stride*dim0;
-                        int jtemp0=j+stride*dim1;
-                        int ktemp0=k+stride*dim2;
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+i+z-nx;
                         
-                        if(itemp0>=nx||jtemp0>=ny||ktemp0>=nz)
-                        {
-                            int itemp1=itemp0-dim0*nx;
-                            int jtemp1=jtemp0-dim1*ny;
-                            int ktemp1=ktemp0-dim2*nz;
-                            
-                            flux[2+z]=boundaryR.getValue(itemp1,jtemp1,ktemp1);
-                        }
-                        else
-                        {
-                            flux[2+z]=fieldIN.getValue(itemp0,jtemp0,ktemp0);
-                        }
-                        
+                        f[2+z]=pBND[idx_BND];
                     }
-                    
-                    
-                    h=nuc3d::weno5jsInterpolation(flux,ss,p);
-                    
-                    fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
+                    else
+                    {
+                        int idx_f=nx*ny*k+nx*j+i+z;
+                        f[2+z]=pIn[idx_f];
+                    }
                 }
+                
+                
+                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
+                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+                
+                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2)
+                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+                
+                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2)
+                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*f[0]
+                +coeff_weno5_alpha[0][1]*f[1]
+                +coeff_weno5_alpha[0][2]*f[2];
+                
+                q31= coeff_weno5_alpha[1][0]*f[1]
+                +coeff_weno5_alpha[1][1]*f[2]
+                +coeff_weno5_alpha[1][2]*f[3];
+                
+                q32= coeff_weno5_alpha[2][0]*f[2]
+                +coeff_weno5_alpha[2][1]*f[3]
+                +coeff_weno5_alpha[2][2]*f[4];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
+            }
+        }
+    }
+}
+
+void nuc3d::weno5js::weno5jsnBR(const Field & fieldIN,
+                                const Field & boundaryR,
+                                Field & fieldOUT,
+                                const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryR.getDataPtr();
+    
+    double omega0,omega1,omega2;
+    double alpha0,alpha1,alpha2,alphaSum;
+    double is0,is1,is2;
+    double q30,q31,q32;
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryR.getSizeX();
+    int nyBND=boundaryR.getSizeY();
+    int nzBND=boundaryR.getSizeZ();
+    
+    int ibeg=nx-tilesize;
+    int iend=nx;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    double f[5];
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                
+                for(int z=-2;z<=2;z++)
+                {
+                    if((i-z+1)>=nx)
+                    {
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+i-z+1-nx;
+                        
+                        f[2+z]=pBND[idx_BND];
+                    }
+                    else
+                    {
+                        int idx_f=nx*ny*k+nx*j+i-z+1;
+                        f[2+z]=pIn[idx_f];
+                    }
+                }
+                
+                
+                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
+                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+                
+                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2)
+                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+                
+                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2)
+                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+                
+                
+                q30= coeff_weno5_alpha[0][0]*f[0]
+                +coeff_weno5_alpha[0][1]*f[1]
+                +coeff_weno5_alpha[0][2]*f[2];
+                
+                q31= coeff_weno5_alpha[1][0]*f[1]
+                +coeff_weno5_alpha[1][1]*f[2]
+                +coeff_weno5_alpha[1][2]*f[3];
+                
+                q32= coeff_weno5_alpha[2][0]*f[2]
+                +coeff_weno5_alpha[2][1]*f[3]
+                +coeff_weno5_alpha[2][2]*f[4];
+                
+                alpha0=coeff_weno5_c[0]/pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/pow((ss+is2),p);
+                
+                
+                alphaSum=alpha0+alpha1+alpha2;
+                
+                omega0=alpha0/alphaSum;
+                omega1=alpha1/alphaSum;
+                omega2=alpha2/alphaSum;
+                
+                pOut[idx_rf]=omega0*q30+omega1*q31+omega2*q32;
             }
         }
     }

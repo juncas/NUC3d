@@ -24,8 +24,7 @@ namespace nuc3d
         VectorField reconstFlux;
         double maxEigen;
     public:
-        EulerFlux(int,int,int,int,
-                  int,int,int);
+        EulerFlux(int,int,int,int);
         ~EulerFlux();
         
     public:
@@ -35,7 +34,7 @@ namespace nuc3d
     class EulerData3D
     {
         friend class physicsModel;
-    protected:
+    public:
         Field jacobian;
         
         VectorField xi_xyz;

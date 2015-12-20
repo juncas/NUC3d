@@ -66,11 +66,11 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
         if(myMPI.getMyId()==0) std::cout<<"Start reading mesh data..."<<std::endl;
         for(auto iter=xyz.begin();iter!=xyz.end();iter++)
             readField(myFile,*iter);
-         if(myMPI.getMyId()==0) std::cout<<"Mesh data has been read!"<<std::endl;
+        if(myMPI.getMyId()==0) std::cout<<"Mesh data has been read!"<<std::endl;
         
-         if(myMPI.getMyId()==0) std::cout<<"Start calculating mesh data..."<<std::endl;
+        if(myMPI.getMyId()==0) std::cout<<"Start calculating mesh data..."<<std::endl;
         getXYZ_center();
-         if(myMPI.getMyId()==0) std::cout<<"Center data has been calculated..."<<std::endl;
+        if(myMPI.getMyId()==0) std::cout<<"Center data has been calculated..."<<std::endl;
         //writeField(myFile_o,*iter);
     }
     else
@@ -84,8 +84,8 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
     
-//    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
-//      writeField(myFile_o, *iter);
+    //    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+    //      writeField(myFile_o, *iter);
     
     
     if(0==(myIO.getStep("startStep")))
@@ -141,7 +141,7 @@ void nuc3d::block::readField(std::ifstream &myFile, nuc3d::Field &myField)
                 myField.setValue(i,j,k,value);
             }
         }
-    }    
+    }
 }
 
 void nuc3d::block::getXYZ_center()
@@ -580,15 +580,15 @@ void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
                 y=xyz_center[1].getValue(i, j, k);
                 z=xyz_center[2].getValue(i, j, k);
                 jacobian=jac.getValue(i, j, k);
-               
+                
                 (this->*myInitial[fp])(rho,u,v,w,p,mach,x,y,z,gamma);
-
-//                
-//                rho=1.0;
-//                u=1.0;
-//                v=0.0;
-//                w=0.0;
-//                p=1.0/(gamma*mach*mach);
+                
+                //
+                //                rho=1.0;
+                //                u=1.0;
+                //                v=0.0;
+                //                w=0.0;
+                //                p=1.0/(gamma*mach*mach);
                 
                 rhou=rho*u;
                 rhov=rho*v;
@@ -612,7 +612,7 @@ void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,dou
     v=1.0;
     w=1.0;
     p=1.0/(mach*mach*gamma);
-
+    
 }
 
 void nuc3d::block::initial_ivc(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
@@ -621,14 +621,14 @@ void nuc3d::block::initial_ivc(double &rho,double &u,double &v,double &w,double 
     double b=0.5;
     double x_c=5.0;
     double y_c=5.0;
-
+    
     double r=std::sqrt(std::pow(x-x_c,2)+std::pow(y-y_c,2));
     rho=std::pow((1-(gamma-1.0)*b*b*std::exp(1-r*r)/(8.0*gamma*pie*pie)),2.5);
     u=0.5-b/(2.0*pie)*exp((1-r*r)/2)*(y-y_c);
     v=b/(2.0*pie)*exp((1-r*r)/2)*(x-x_c);
     w=0.0;
     p=std::pow(rho,gamma);
-
+    
 }
 void nuc3d::block::initial_taylorgreen(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
 {
@@ -636,7 +636,7 @@ void nuc3d::block::initial_taylorgreen(double &rho,double &u,double &v,double &w
     u=std::sin(x)*std::cos(y)*std::cos(z);
     v=-std::cos(x)*std::sin(y)*std::cos(z);
     w=0.0;
-    p=100.0+((std::cos(2.0*z)+2.0)*(std::cos(2.0*x)+std::cos(2.0*y))-2.0)/16.0;
+    p=1.0/(gamma*mach*mach)+((std::cos(2.0*z)+2.0)*(std::cos(2.0*x)+std::cos(2.0*y))-2.0)/16.0;
 }
 
 void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
@@ -673,6 +673,7 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     <<TECplotHeader[1];
     
     for(int i=0;i<(OutPutValue_prim.size()+OutPutValue_acoust.size());i++)
+    //for(int i=0;i<(myFluxes->Flux_xi.FluxL.size()+myFluxes->Flux_eta.FluxL.size()+myFluxes->Flux_zeta.FluxL.size());i++)
     {
         std::string head("Val_");
         std::string temp;
@@ -685,6 +686,7 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     
     myIOfile<<"\n Zone I = "<<nx0+1<<", J= "<<ny0+1<<", K="<<nz0+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
+    //<<xyz.size()+myFluxes->Flux_xi.FluxL.size()+myFluxes->Flux_eta.FluxL.size()+myFluxes->Flux_zeta.FluxL.size()
     <<xyz.size()+OutPutValue_prim.size()+OutPutValue_acoust.size()
     <<"]=CELLCENTERED)\n";
     
@@ -693,17 +695,31 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
         writeField(myIOfile, *iter);
     }
     
+//    for(auto iter=myPDE.RHS.begin();iter!=myPDE.RHS.end();iter++)
+//    {
+//        writeField(myIOfile, *iter);
+//    }
+//    
+//    for(auto iter=myFluxes->dgdeta.begin();iter!=myFluxes->dgdeta.end();iter++)
+//    {
+//        writeField(myIOfile, *iter);
+//    }
+//    
+//    for(auto iter=myFluxes->dhdzeta.begin();iter!=myFluxes->dhdzeta.end();iter++)
+//    {
+//        writeField(myIOfile, *iter);
+//    }
     
-    for(auto iter=OutPutValue_prim.begin();iter!=OutPutValue_prim.end();iter++)
-    {
-        writeField(myIOfile, *iter);
-    }
+        for(auto iter=OutPutValue_prim.begin();iter!=OutPutValue_prim.end();iter++)
+        {
+            writeField(myIOfile, *iter);
+        }
     
-    for(auto iter=OutPutValue_acoust.begin();iter!=OutPutValue_acoust.end();iter++)
-    {
-        writeField(myIOfile, *iter);
-    }
-    
+        for(auto iter=OutPutValue_acoust.begin();iter!=OutPutValue_acoust.end();iter++)
+        {
+            writeField(myIOfile, *iter);
+        }
+
 }
 
 void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
@@ -732,7 +748,7 @@ void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
     {
         writeField_binary(myIOfile,*iter);
     }
-        
+    
 }
 
 void nuc3d::block::inputQ_binary(int myID,int step0)

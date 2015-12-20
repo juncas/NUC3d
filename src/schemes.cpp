@@ -8,7 +8,8 @@
 
 #include "schemes.hpp"
 
-double nuc3d::weno5jsInterpolation(const double *f,const double &ss,const double &p)
+void nuc3d::weno5jsInterpolation(double &rf,
+                                   const double *f,const double &ss,const double &p)
 {
     double omega0,omega1,omega2;
     double alpha0,alpha1,alpha2,alphaSum;
@@ -48,7 +49,7 @@ double nuc3d::weno5jsInterpolation(const double *f,const double &ss,const double
     omega1=alpha1/alphaSum;
     omega2=alpha2/alphaSum;
     
-    return omega0*q30+omega1*q31+omega2*q32;
+    rf=omega0*q30+omega1*q31+omega2*q32;
 }
 
 double nuc3d::weno5zInterpolation(const double *f,const double &ss,const double &p)

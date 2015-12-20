@@ -20,32 +20,51 @@ namespace nuc3d
         ~upwind1st();
         //WENO5-JS functions
         
-        void interpolationInner(
-                                const Field &,
-                                const int,
-                                const int,
-                                const int,
+        void interpolationInner(const Field &,
                                 const int,
                                 Field &,
-                                const int tilesize);
-        void interpolationBoundaryL(
+                                const int);
+        
+        void interpolationBoundaryL(const Field &,
                                     const Field &,
-                                    const Field &,
-                                    const int,
-                                    const int,
-                                    const int,
                                     const int,
                                     Field &,
-                                    const int tilesize);
-        void interpolationBoundaryR(
+                                    const int);
+        
+        void interpolationBoundaryR(const Field &,
                                     const Field &,
-                                    const Field &,
-                                    const int,
-                                    const int,
-                                    const int,
                                     const int,
                                     Field &,
-                                    const int tilesize);
+                                    const int);
+    private:
+        void upwind1stp(const Field & fieldIN,
+                      Field & fieldOUT,
+                      const int tilesize);
+        
+        void upwind1stn(const Field & fieldIN,
+                      Field & fieldOUT,
+                      const int tilesize);
+        
+        void upwind1stpBL(const Field & fieldIN,
+                        const Field &boundaryL,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void upwind1stnBL(const Field & fieldIN,
+                        const Field &boundaryL,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void upwind1stpBR(const Field & fieldIN,
+                        const Field &boundaryR,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void upwind1stnBR(const Field & fieldIN,
+                        const Field &boundaryR,
+                        Field & fieldOUT,
+                        const int tilesize);
+
 
     };
 }

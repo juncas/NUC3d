@@ -6,7 +6,7 @@
 namespace nuc3d
 {
     class weno5js : public interoplation
-    {        
+    {
         double ss;
         double p;
         
@@ -15,32 +15,52 @@ namespace nuc3d
         ~weno5js();
         //WENO5-JS functions
         
-        void interpolationInner(
-                                const Field &,
-                                const int,
-                                const int,
-                                const int,
+        void interpolationInner(const Field &,
                                 const int,
                                 Field &,
                                 const int);
-        void interpolationBoundaryL(
+        
+        void interpolationBoundaryL(const Field &,
                                     const Field &,
-                                    const Field &,
-                                    const int,
-                                    const int,
-                                    const int,
                                     const int,
                                     Field &,
                                     const int);
-        void interpolationBoundaryR(
+        
+        void interpolationBoundaryR(const Field &,
                                     const Field &,
-                                    const Field &,
-                                    const int,
-                                    const int,
-                                    const int,
                                     const int,
                                     Field &,
                                     const int);
+    private:
+        void weno5jsp(const Field & fieldIN,
+                      Field & fieldOUT,
+                      const int tilesize);
+        
+        void weno5jsn(const Field & fieldIN,
+                      Field & fieldOUT,
+                      const int tilesize);
+        
+        void weno5jspBL(const Field & fieldIN,
+                        const Field &boundaryL,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void weno5jsnBL(const Field & fieldIN,
+                        const Field &boundaryL,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void weno5jspBR(const Field & fieldIN,
+                        const Field &boundaryR,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        void weno5jsnBR(const Field & fieldIN,
+                        const Field &boundaryR,
+                        Field & fieldOUT,
+                        const int tilesize);
+        
+        
     };
 }
 

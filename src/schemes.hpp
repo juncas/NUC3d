@@ -14,7 +14,8 @@
 
 namespace nuc3d
 {
-    double weno5jsInterpolation(const double *f,
+    void weno5jsInterpolation(double &rf,
+                              const double *f,
                                  const double &ss,
                                  const double &p);
     double weno5zInterpolation(const double *f,

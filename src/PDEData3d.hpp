@@ -19,6 +19,7 @@ namespace nuc3d
     
     class PDEData3d
     {
+    public:
         int nEquations;
         
         //a PDE is consist of such four vectors

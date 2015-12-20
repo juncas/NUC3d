@@ -20,11 +20,7 @@ namespace nuc3d
         ~interoplation(){};
         
     private:
-        virtual void interpolationInner(
-                                        const Field &,
-                                        const int,
-                                        const int,
-                                        const int,
+        virtual void interpolationInner(const Field &,
                                         const int,
                                         Field &,
                                         const int)=0;
@@ -32,16 +28,11 @@ namespace nuc3d
                                             const Field &,
                                             const Field &,
                                             const int,
-                                            const int,
-                                            const int,
-                                            const int,
                                             Field &,
                                             const int)=0;
         virtual void interpolationBoundaryR(
                                             const Field &,
-                                            const Field &,                                           const int,
-                                            const int,
-                                            const int,
+                                            const Field &,
                                             const int,
                                             Field &,
                                             const int)=0;

@@ -42,14 +42,33 @@ namespace nuc3d
                                               double &,
                                               double &);
         
-        typedef void (physicsModel::*pRiemann)(const Field &,
-                                               const VectorField &,
-                                               const VectorField &,
-                                               const VectorField &,
-                                               const VectorField &,
-                                               VectorField &,
-                                               VectorField &,
-                                               double &);
+        //        typedef void (physicsModel::*pRiemann)(const Field &,
+        //                                               const VectorField &,
+        //                                               const VectorField &,
+        //                                               const VectorField &,
+        //                                               const VectorField &,
+        //                                               VectorField &,
+        //                                               VectorField &,
+        //                                               double &);
+        
+        typedef void (physicsModel::*pRiemann)(const double &U0,
+                                               const double &alpha0,
+                                               const double &Rho,
+                                               const double &RhoU,
+                                               const double &RhoV,
+                                               const double &RhoW,
+                                               const double &RhoE,
+                                               const double &rho,
+                                               const double &u,
+                                               const double &v,
+                                               const double &w,
+                                               const double &p,
+                                               const double &xx_x,
+                                               const double &xx_y,
+                                               const double &xx_z,
+                                               const double &jac,
+                                               double *fluxp,
+                                               double *fluxn);
         
         typedef void (physicsModel::*pRiemannPoint)(const std::vector<double> &,
                                                     const double ,
@@ -123,13 +142,25 @@ namespace nuc3d
         
         void getPrim(Field &jac,VectorField &Q,VectorField &Prim, VectorField &Acoust);
     private:
-        void RiemannSolver(const std::string &,
-                           const Field &,
-                           const VectorField &,
-                           const VectorField &,
-                           const VectorField &,
-                           const VectorField &,
-                           EulerFlux&);
+//        void RiemannSolver(const std::string &,
+//                           const Field &,
+//                           const VectorField &,
+//                           const VectorField &,
+//                           const VectorField &,
+//                           const VectorField &,
+//                           EulerFlux&);
+        
+        void RiemannSolver(const std::string &SolverName,
+                           const Field &Jacobian,
+                           const VectorField &xi_xyz,
+                           const VectorField &eta_xyz,
+                           const VectorField &zeta_xyz,
+                           const VectorField &W_vec,
+                           const VectorField &W0_vec,
+                           const VectorField &Q_vec,
+                           EulerFlux& myFlux_xi,
+                           EulerFlux& myFlux_eta,
+                           EulerFlux& myFlux_zeta);
         
         void con2prim(const std::string &,
                       const Field &,
@@ -142,23 +173,61 @@ namespace nuc3d
                       const VectorField &,
                       VectorField &);
         
-        void RiemannAUSM(const Field &,
-                         const VectorField &,
-                         const VectorField &,
-                         const VectorField &,
-                         const VectorField &,
-                         VectorField &,
-                         VectorField &,
-                         double &);
+        void RiemannAUSM(const double &U0,
+                         const double &alpha0,
+                         const double &Rho,
+                         const double &RhoU,
+                         const double &RhoV,
+                         const double &RhoW,
+                         const double &RhoE,
+                         const double &rho,
+                         const double &u,
+                         const double &v,
+                         const double &w,
+                         const double &p,
+                         const double &xx_x,
+                         const double &xx_y,
+                         const double &xx_z,
+                         const double &jac,
+                         double *fluxp,
+                         double *fluxn);
         
-        void RiemannLF(const Field &,
-                       const VectorField &,
-                       const VectorField &,
-                       const VectorField &,
-                       const VectorField &,
-                       VectorField &,
-                       VectorField &,
-                       double &);
+        void RiemannLF(const double &U0,
+                         const double &alpha0,
+                         const double &Rho,
+                         const double &RhoU,
+                         const double &RhoV,
+                         const double &RhoW,
+                         const double &RhoE,
+                         const double &rho,
+                         const double &u,
+                         const double &v,
+                         const double &w,
+                         const double &p,
+                         const double &xx_x,
+                         const double &xx_y,
+                         const double &xx_z,
+                         const double &jac,
+                         double *fluxp,
+                         double *fluxn);
+        
+//        void RiemannAUSM(const Field &,
+//                         const VectorField &,
+//                         const VectorField &,
+//                         const VectorField &,
+//                         const VectorField &,
+//                         VectorField &,
+//                         VectorField &,
+//                         double &);
+//        
+//        void RiemannLF(const Field &,
+//                       const VectorField &,
+//                       const VectorField &,
+//                       const VectorField &,
+//                       const VectorField &,
+//                       VectorField &,
+//                       VectorField &,
+//                       double &);
         
         void EoSIdealGasFWD(const double &,
                             const double &,
@@ -273,12 +342,12 @@ namespace nuc3d
                                    std::vector<double> &fluxr);
         
         void solveRiemannPointLF(const std::vector<double> &prim,
-                                   const double jac,
-                                   const double xx_x,
-                                   const double xx_y,
-                                   const double xx_z,
-                                   std::vector<double> &fluxl,
-                                   std::vector<double> &fluxr);
+                                 const double jac,
+                                 const double xx_x,
+                                 const double xx_y,
+                                 const double xx_z,
+                                 std::vector<double> &fluxl,
+                                 std::vector<double> &fluxr);
         
         
     };

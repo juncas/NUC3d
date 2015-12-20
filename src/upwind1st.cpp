@@ -19,115 +19,220 @@ nuc3d::upwind1st::~upwind1st()
 
 
 void nuc3d::upwind1st::interpolationInner(const Field & fieldIN,
-                                          const int dim0,
-                                          const int dim1,
-                                          const int dim2,
                                           const int uw,//uw=(1,-1)
                                           Field & fieldOUT,
                                           const int tilesize)
 {
-    double h;
-    
-    
-    int nx;
-    int ny;
-    int nz;
-    
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
-    
-    int ibeg=(tilesize-1)*dim0;
-    int iend=nx-tilesize*dim0;
-    int jbeg=(tilesize-1)*dim1;
-    int jend=ny-tilesize*dim1;
-    int kbeg=(tilesize-1)*dim2;
-    int kend=nz-tilesize*dim2;
-    
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    switch(uw)
     {
-        for(int k=kbeg;k<kend;k++)
+        case 1:
+            upwind1stp(fieldIN, fieldOUT, tilesize);
+            break;
+        case -1:
+            upwind1stn(fieldIN, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
+    
+}
+
+void nuc3d::upwind1st::upwind1stp(const Field & fieldIN,
+                                  Field & fieldOUT,
+                                  const int tilesize)
+{
+    
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeX();
+    int nz0=fieldOUT.getSizeX();
+    
+    int ibeg=(tilesize-1);
+    int iend=nx-tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
-                {
-                    int stride=(1-uw)/2;
-                    h=fieldIN.getValue(i+stride*dim0,j+stride*dim1,k+stride*dim2);
-                    
-                    fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
-                }
+                int idx_f=nx*ny*k+nx*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                
+                pOut[idx_rf]=pIn[idx_f];
+                
             }
         }
     }
-    else
-    {
-        std::cout<<"Error size in interpolationInner upwind1st"<<dim0<<" "<<dim1<<" "<<dim2<<std::endl;
-    }
-
 }
 
+void nuc3d::upwind1st::upwind1stn(const Field & fieldIN,
+                                  Field & fieldOUT,
+                                  const int tilesize)
+{
+    
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeX();
+    int nz0=fieldOUT.getSizeX();
+    
+    int ibeg=(tilesize-1);
+    int iend=nx-tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_f=nx*ny*k+nx*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                
+                pOut[idx_rf]=pIn[idx_f+1];
+                
+            }
+        }
+    }
+}
 
 void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
                                               const Field & boundaryL,
-                                              const int dim0,
-                                              const int dim1,
-                                              const int dim2,
                                               const int uw,//uw=(1,-1)
                                               Field & fieldOUT,
                                               const int tilesize)
 {
-    double h;
-    double hl;
-    double hr;
+    switch(uw)
+    {
+        case 1:
+            upwind1stpBL(fieldIN,boundaryL, fieldOUT, tilesize);
+            break;
+        case -1:
+            upwind1stnBL(fieldIN,boundaryL, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
     
-    int nx;
-    int ny;
-    int nz;
+}
+
+void nuc3d::upwind1st::upwind1stpBL(const Field & fieldIN,
+                                    const Field & boundaryL,
+                                    Field & fieldOUT,
+                                    const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryL.getDataPtr();
     
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryL.getSizeX();
+    int nyBND=boundaryL.getSizeY();
+    int nzBND=boundaryL.getSizeZ();
     
     int ibeg=0;
-    int iend=dim0*(tilesize-nx)+nx;
+    int iend=tilesize;
     int jbeg=0;
-    int jend=dim1*(tilesize-ny)+ny;
+    int jend=ny;
     int kbeg=0;
-    int kend=dim2*(tilesize-nz)+nz;
+    int kend=nz;
     
-    
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    for(int k=kbeg;k<kend;k++)
     {
-        for(int k=kbeg;k<kend;k++)
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                if((i-1)<0)
                 {
-                    int stride=(1-uw)/2-1;
-                    int itemp0=i+stride*dim0;
-                    int jtemp0=j+stride*dim1;
-                    int ktemp0=k+stride*dim2;
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+(i-1+nxBND);
                     
-                    if(itemp0<0||jtemp0<0||ktemp0<0)
-                    {
-                        int itemp1=itemp0+dim0*boundaryL.getSizeX();
-                        int jtemp1=jtemp0+dim1*boundaryL.getSizeY();
-                        int ktemp1=ktemp0+dim2*boundaryL.getSizeZ();
-                        
-                        h=boundaryL.getValue(itemp1,jtemp1,ktemp1);
-                    }
-                    else
-                    {
-                        h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
-                    }
+                    pOut[idx_rf]=pBND[idx_BND];
+                }
+                else
+                {
+                    int idx_f=nx*ny*k+nx*j+i-1;
+                    pOut[idx_rf]=pIn[idx_f];
+                }
+            }
+        }
+    }
+}
+
+void nuc3d::upwind1st::upwind1stnBL(const Field & fieldIN,
+                                    const Field & boundaryL,
+                                    Field & fieldOUT,
+                                    const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryL.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryL.getSizeX();
+    int nyBND=boundaryL.getSizeY();
+    int nzBND=boundaryL.getSizeZ();
+    
+    int ibeg=0;
+    int iend=tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                if(i<0)
+                {
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+i+nxBND;
                     
-                    fieldOUT.setValue(i,j,k,h);
+                    pOut[idx_rf]=pBND[idx_BND];
+                }
+                else
+                {
+                    int idx_f=nx*ny*k+nx*j+i;
+                    pOut[idx_rf]=pIn[idx_f];
                 }
             }
         }
@@ -136,61 +241,127 @@ void nuc3d::upwind1st::interpolationBoundaryL(const Field & fieldIN,
 
 void nuc3d::upwind1st::interpolationBoundaryR(const Field & fieldIN,
                                               const Field & boundaryR,
-                                              const int dim0,
-                                              const int dim1,
-                                              const int dim2,
                                               const int uw,//uw=(1,-1)
                                               Field & fieldOUT,
                                               const int tilesize)
 {
-    double h;
-    double hl,hr;
+    switch(uw)
+    {
+        case 1:
+            upwind1stpBR(fieldIN,boundaryR, fieldOUT, tilesize);
+            break;
+        case -1:
+            upwind1stnBR(fieldIN,boundaryR, fieldOUT, tilesize);
+            break;
+        default:
+            std::cout<<"weno error: no such direction"<<std::endl;
+            exit(-1);
+    }
     
+}
+
+
+void nuc3d::upwind1st::upwind1stpBR(const Field & fieldIN,
+                                    const Field & boundaryR,
+                                    Field & fieldOUT,
+                                    const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryR.getDataPtr();
     
-    int nx;
-    int ny;
-    int nz;
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
     
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
     
-    int ibeg=dim0*(nx-tilesize);
+    int nxBND=boundaryR.getSizeX();
+    int nyBND=boundaryR.getSizeY();
+    int nzBND=boundaryR.getSizeZ();
+    
+    int ibeg=nx-tilesize;
     int iend=nx;
-    int jbeg=dim1*(ny-tilesize);
+    int jbeg=0;
     int jend=ny;
-    int kbeg=dim2*(nz-tilesize);
+    int kbeg=0;
     int kend=nz;
     
-    if( ((nx+dim0)==(fieldOUT.getSizeX()))&&
-       ((ny+dim1)==(fieldOUT.getSizeY()))&&
-       ((nz+dim2)==(fieldOUT.getSizeZ())) )
+    
+    for(int k=kbeg;k<kend;k++)
     {
-        for(int k=kbeg;k<kend;k++)
+        for(int j=jbeg;j<jend;j++)
         {
-            for(int j=jbeg;j<jend;j++)
+            for(int i=ibeg;i<iend;i++)
             {
-                for(int i=ibeg;i<iend;i++)
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                
+                if(i>=nx)
                 {
-                    int stride=(1-uw)/2;
-                    int itemp0=i+stride*dim0;
-                    int jtemp0=j+stride*dim1;
-                    int ktemp0=k+stride*dim2;
-                    if(itemp0>=nx||jtemp0>=ny||ktemp0>=nz)
-                    {
-                        int itemp1=itemp0-dim0*nx;
-                        int jtemp1=jtemp0-dim1*ny;
-                        int ktemp1=ktemp0-dim2*nz;
-                        
-                        h=boundaryR.getValue(itemp1,jtemp1,ktemp1);
-                    }
-                    else
-                    {
-                        h=fieldIN.getValue(itemp0,jtemp0,ktemp0);
-                    }
-                                        
-                    fieldOUT.setValue(i+dim0,j+dim1,k+dim2,h);
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+i;
+                    
+                    pOut[idx_rf]=pBND[idx_BND];
                 }
+                else
+                {
+                    int idx_f=nx*ny*k+nx*j+i;
+                    pOut[idx_rf]=pIn[idx_f];
+                }
+                
+            }
+        }
+    }
+}
+
+void nuc3d::upwind1st::upwind1stnBR(const Field & fieldIN,
+                                    const Field & boundaryR,
+                                    Field & fieldOUT,
+                                    const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryR.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nx0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
+    
+    int nxBND=boundaryR.getSizeX();
+    int nyBND=boundaryR.getSizeY();
+    int nzBND=boundaryR.getSizeZ();
+    
+    int ibeg=nx-tilesize;
+    int iend=nx;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                int idx_rf=nx0*ny0*k+nx0*j+i;
+                if((i+1)<0)
+                {
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+i+1;
+                    
+                    pOut[idx_rf]=pBND[idx_BND];
+                }
+                else
+                {
+                    int idx_f=nx*ny*k+nx*j+i+1;
+                    pOut[idx_rf]=pIn[idx_f];
+                }
+                
             }
         }
     }

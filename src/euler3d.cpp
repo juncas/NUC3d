@@ -9,13 +9,12 @@
 /**************************************************************************************
  Member functions of class: EulerFlux
  **************************************************************************************/
-nuc3d::EulerFlux::EulerFlux(int nx0,int ny0,int nz0,int neqs,
-                            int xdir,int ydir,int zdir):
+nuc3d::EulerFlux::EulerFlux(int nx0,int ny0,int nz0,int neqs):
 FluxL(neqs,Field(nx0,ny0,nz0)),
 FluxR(neqs,Field(nx0,ny0,nz0)),
-reconstFluxL(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
-reconstFluxR(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
-reconstFlux(neqs,Field(nx0+xdir,ny0+ydir,nz0+zdir)),
+reconstFluxL(neqs,Field(nx0+1,ny0,nz0)),
+reconstFluxR(neqs,Field(nx0+1,ny0,nz0)),
+reconstFlux(neqs,Field(nx0+1,ny0,nz0)),
 maxEigen(1.0)
 {
     
@@ -24,8 +23,7 @@ maxEigen(1.0)
 void nuc3d::EulerFlux::combineFluxLR()
 {
     for(auto iter=reconstFlux.begin();iter!=reconstFlux.end();iter++)
-        *iter=reconstFluxL[iter-reconstFlux.begin()]
-        +reconstFluxR[iter-reconstFlux.begin()];
+        *iter=reconstFluxL[iter-reconstFlux.begin()]+reconstFluxR[iter-reconstFlux.begin()];
 }
 
 nuc3d::EulerFlux::~EulerFlux()
@@ -47,12 +45,12 @@ dy(3,Field(nx0,ny0,nz0)),
 dz(3,Field(nx0,ny0,nz0)),
 W0_Euler(3,Field(nx0,ny0,nz0)),
 W_Euler(neqs,Field(nx0,ny0,nz0)),
-Flux_xi(nx0,ny0,nz0,neqs,1,0,0),
-Flux_eta(nx0,ny0,nz0,neqs,0,1,0),
-Flux_zeta(nx0,ny0,nz0,neqs,0,0,1),
+Flux_xi(nx0,ny0,nz0,neqs),
+Flux_eta(ny0,nz0,nx0,neqs),
+Flux_zeta(nz0,nx0,ny0,neqs),
 dfdxi(neqs,Field(nx0,ny0,nz0)),
-dgdeta(neqs,Field(nx0,ny0,nz0)),
-dhdzeta(neqs,Field(nx0,ny0,nz0)),
+dgdeta(neqs,Field(ny0,nz0,nx0)),
+dhdzeta(neqs,Field(nz0,nx0,ny0)),
 dt(0.0)
 {
 }
@@ -120,9 +118,16 @@ void nuc3d::EulerData3D::setDerivativesXiInv()
     VectorField &flux=Flux_xi.reconstFlux;
     for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
     {
+        double *f=iter->getDataPtr();
+        double *df=dfdxi[iter-flux.begin()].getDataPtr();
+        
         int nx0=iter->getSizeX();
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
+        
+        int nx1=dfdxi[iter-flux.begin()].getSizeX();
+        int ny1=dfdxi[iter-flux.begin()].getSizeY();
+        int nz1=dfdxi[iter-flux.begin()].getSizeZ();
         
         for (int k=0; k<nz0; k++)
         {
@@ -130,9 +135,11 @@ void nuc3d::EulerData3D::setDerivativesXiInv()
             {
                 for (int i=1; i<nx0; i++)
                 {
-                    double df=iter->getValue(i, j, k)-iter->getValue(i-1, j, k);
+                    int idx=nx0*ny0*k+nx0*j+i;
+                    int idx1=nx1*ny1*k+nx1*j+i;
+                    double df_loc=f[idx]-f[idx-1];
                     
-                    dfdxi[iter-flux.begin()].setValue(i-1, j, k, df);
+                    df[idx1-1]=df_loc;
                 }
             }
         }
@@ -142,21 +149,30 @@ void nuc3d::EulerData3D::setDerivativesXiInv()
 void nuc3d::EulerData3D::setDerivativesEtaInv()
 {
     VectorField &flux=Flux_eta.reconstFlux;
+    
     for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
     {
+        double *f=iter->getDataPtr();
         int nx0=iter->getSizeX();
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
+
+        double *dg=dgdeta[iter-flux.begin()].getDataPtr();
+        int nx1=dgdeta[iter-flux.begin()].getSizeX();
+        int ny1=dgdeta[iter-flux.begin()].getSizeY();
+        int nz1=dgdeta[iter-flux.begin()].getSizeZ();
         
         for (int k=0; k<nz0; k++)
         {
-            for (int j=1; j<ny0; j++)
+            for (int j=0; j<ny0; j++)
             {
-                for (int i=0; i<nx0; i++)
+                for (int i=1; i<nx0; i++)
                 {
-                    double df=iter->getValue(i, j, k)-iter->getValue(i, j-1, k);
+                    int idx=nx0*ny0*k+nx0*j+i;
+                    int idx1=nx1*ny1*k+nx1*j+i;
+                    double df_loc=f[idx]-f[idx-1];
                     
-                    dgdeta[iter-flux.begin()].setValue(i, j-1, k, df);
+                    dg[idx1-1]=df_loc;
                 }
             }
         }
@@ -166,25 +182,35 @@ void nuc3d::EulerData3D::setDerivativesEtaInv()
 void nuc3d::EulerData3D::setDerivativesZetaInv()
 {
     VectorField &flux=Flux_zeta.reconstFlux;
+    
     for (auto iter=flux.begin() ; iter!=flux.end(); iter++)
     {
+        double *f=iter->getDataPtr();
         int nx0=iter->getSizeX();
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
+
+        double *dh=dhdzeta[iter-flux.begin()].getDataPtr();
+        int nx1=dhdzeta[iter-flux.begin()].getSizeX();
+        int ny1=dhdzeta[iter-flux.begin()].getSizeY();
+        int nz1=dhdzeta[iter-flux.begin()].getSizeZ();
         
-        for (int k=1; k<nz0; k++)
+        for (int k=0; k<nz0; k++)
         {
             for (int j=0; j<ny0; j++)
             {
-                for (int i=0; i<nx0; i++)
+                for (int i=1; i<nx0; i++)
                 {
-                    double df=iter->getValue(i, j, k)-iter->getValue(i, j, k-1);
+                    int idx=nx0*ny0*k+nx0*j+i;
+                    int idx1=nx1*ny1*k+nx1*j+i;
+                    double df_loc=f[idx]-f[idx-1];
                     
-                    dhdzeta[iter-flux.begin()].setValue(i, j, k-1, df);
+                    dh[idx1-1]=df_loc;
                 }
             }
         }
     }
+    
 }
 
 nuc3d::EulerData3D::~EulerData3D()
@@ -240,37 +266,25 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
     t[0]=MPI_Wtime();
     
     solveInvicidFluxL(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    t[1]=MPI_Wtime();
-    
     solveInvicidFluxL(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    t[2]=MPI_Wtime();
-    
     solveInvicidFluxL(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
-    t[3]=MPI_Wtime();
-    
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
-    t[4]=MPI_Wtime();
-    
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
-    t[5]=MPI_Wtime();
-    
-    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC, 2);
-    t[6]=MPI_Wtime();
-    
+    solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC,2);
     this->setDerivativesInv();
-    t[7]=MPI_Wtime();
-//    double total=t[7]-t[0];
-//    
-//    if(0==myMPI.getMyId())
-//        std::cout<<"Time ratio inv:"
-//        <<(t[1]-t[0])/total<<", "
-//        <<(t[2]-t[1])/total<<", "
-//        <<(t[3]-t[2])/total<<", "
-//        <<(t[4]-t[3])/total<<", "
-//        <<(t[5]-t[4])/total<<", "
-//        <<(t[6]-t[5])/total<<", "
-//        <<(t[7]-t[6])/total
-//        <<std::endl;
+    
+    //    double total=t[7]-t[0];
+    //
+    //    if(0==myMPI.getMyId())
+    //        std::cout<<"Time ratio inv:"
+    //        <<(t[1]-t[0])/total<<", "
+    //        <<(t[2]-t[1])/total<<", "
+    //        <<(t[3]-t[2])/total<<", "
+    //        <<(t[4]-t[3])/total<<", "
+    //        <<(t[5]-t[4])/total<<", "
+    //        <<(t[6]-t[5])/total<<", "
+    //        <<(t[7]-t[6])/total
+    //        <<std::endl;
     
 }
 
@@ -295,12 +309,8 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         bufferData &bf = myBuff[iter - pFlux.begin()];
         Field &rf = pReconFlux[iter - pFlux.begin()];
         
-        t[0]=MPI_Wtime();
         myMPI.bufferSendRecv(*iter,bf,dir,static_cast<int>(iter - pFlux.begin()));
-        t[1]=MPI_Wtime();
         myOP.reconstructionInner(*iter, dir, 1, rf);
-        t[2]=MPI_Wtime();
-        
         myMPI.waitSendRecv(bf,dir);
         
         Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferSend[dir*2]:bf.BufferRecv[dir*2];
@@ -309,17 +319,6 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf,myBCtypeL,myBCtypeR);
         t[4]=MPI_Wtime();
-//        double total=t[4]-t[0];
-//        
-//        if(0==myMPI.getMyId())
-//            std::cout<<"Time ratio recon:"
-//            <<(t[1]-t[0])<<", "
-//            <<(t[2]-t[1])<<", "
-//            <<(t[3]-t[2])<<", "
-//            <<(t[4]-t[3])
-//            <<std::endl;
-
-        
     }
     MPI_Barrier(MPI_COMM_WORLD);
     
@@ -368,23 +367,22 @@ void nuc3d::EulerData3D::solveRHS(PDEData3d &myPDE)
     
     for (auto iter=beg ; iter!=end ; iter++)
     {
-        int nx0=iter->getSizeX();
-        int ny0=iter->getSizeY();
-        int nz0=iter->getSizeZ();
+        double *df=df_v[iter-beg].getDataPtr();
+        double *dg=dg_v[iter-beg].getDataPtr();
+        double *dh=dh_v[iter-beg].getDataPtr();
+        double *rhs=iter->getDataPtr();
         
-        for (int k=0; k<nz0; k++)
+        for (int k=0; k<nz; k++)
         {
-            for (int j=0; j<ny0; j++)
+            for (int j=0; j<ny; j++)
             {
-                for (int i=0; i<nx0; i++)
+                for (int i=0; i<nx; i++)
                 {
-                    double df=df_v[iter-beg].getValue(i, j, k);
-                    double dg=dg_v[iter-beg].getValue(i, j, k);
-                    double dh=dh_v[iter-beg].getValue(i, j, k);
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    int idx_eta=ny*nz*i+ny*k+j;
+                    int idx_zeta=nz*nx*j+nz*i+k;
                     
-                    double rhs=df+dg+dh;
-                    
-                    iter->setValue(i, j, k, rhs);
+                    rhs[idx_xi]=df[idx_xi]+dg[idx_eta]+dh[idx_zeta];
                 }
             }
         }

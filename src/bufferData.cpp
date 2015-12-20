@@ -28,21 +28,21 @@ nx(il), ny(jl), nz(kl), bufferWidth(bfwidth)
     bufferSize[1] = mySize;
     
     mySize = nx*bfwidth*nz;
-    BufferSend.push_back(Field(nx, bfwidth, nz));
-    BufferRecv.push_back(Field(nx, bfwidth, nz));
+    BufferSend.push_back(Field(bfwidth, nz, nx));
+    BufferRecv.push_back(Field(bfwidth, nz, nx));
     bufferSize[2] = mySize;
     
-    BufferSend.push_back(Field(nx, bfwidth, nz));
-    BufferRecv.push_back(Field(nx, bfwidth, nz));
+    BufferSend.push_back(Field(bfwidth, nz, nx));
+    BufferRecv.push_back(Field(bfwidth, nz, nx));
     bufferSize[3] = mySize;
     
     mySize = nx*ny*bfwidth;
-    BufferSend.push_back(Field(nx, ny, bfwidth));
-    BufferRecv.push_back(Field(nx, ny, bfwidth));
+    BufferSend.push_back(Field(bfwidth, nx, ny));
+    BufferRecv.push_back(Field(bfwidth, nx, ny));
     bufferSize[4] = mySize;
     
-    BufferSend.push_back(Field(nx, ny, bfwidth));
-    BufferRecv.push_back(Field(nx, ny, bfwidth));
+    BufferSend.push_back(Field(bfwidth, nx, ny));
+    BufferRecv.push_back(Field(bfwidth, nx, ny));
     bufferSize[5] = mySize;
 };
 
@@ -55,72 +55,109 @@ nuc3d::bufferData::~bufferData()
  **************************************************************************************/
 void nuc3d::bufferData::setBufferSend(Field& myField,int faceID)
 {
+    
+    double *f=myField.getDataPtr();
+    double *bf;
+    int nx0,ny0,nz0;
+    
     switch (faceID) {
         case 0:
-            for (int k = 0; k < nz; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+            bf=BufferSend[0].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < ny; j++)
+                for (int j = 0; j < ny0; j++)
                 {
                     for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[0].setValue(i,j,k,myField.getValue(i, j, k));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
                     
                 }
             }
-            
             break;
         case 1:
-            for (int k = 0; k < nz; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+            bf=BufferSend[1].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < ny; j++)
+                for (int j = 0; j < ny0; j++)
                 {
                     for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[1].setValue(i, j, k, myField.getValue(i + (nx - bufferWidth), j, k));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i+nx0-bufferWidth;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
-                    
                 }
             }
-            
             break;
         case 2:
-            for (int k = 0; k < nz; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+
+            bf=BufferSend[2].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < bufferWidth; j++)
+                for (int j = 0; j < ny0; j++)
                 {
-                    for (int i = 0; i < nx; i++)
+                    for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[2].setValue(i,j,k, myField.getValue(i, j, k));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
                     
                 }
             }
-            
             break;
             
         case 3:
-            for (int k = 0; k < nz; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+
+            bf=BufferSend[3].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < bufferWidth; j++)
+                for (int j = 0; j < ny0; j++)
                 {
-                    for (int i = 0; i < nx; i++)
+                    for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[3].setValue(i, j, k, myField.getValue(i, j + (ny - bufferWidth), k));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i+nx0-bufferWidth;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
-                    
                 }
             }
-            
             break;
         case 4:
-            for (int k = 0; k < bufferWidth; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+
+            bf=BufferSend[4].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < ny; j++)
+                for (int j = 0; j < ny0; j++)
                 {
-                    for (int i = 0; i < nx; i++)
+                    for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[4].setValue(i, j, k, myField.getValue(i, j, k));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
                     
                 }
@@ -128,15 +165,22 @@ void nuc3d::bufferData::setBufferSend(Field& myField,int faceID)
             
             break;
         case 5:
-            for (int k = 0; k < bufferWidth; k++)
+            nx0=myField.getSizeX();
+            ny0=myField.getSizeY();
+            nz0=myField.getSizeZ();
+
+            bf=BufferSend[5].getDataPtr();
+            for (int k = 0; k < nz0; k++)
             {
-                for (int j = 0; j < ny; j++)
+                for (int j = 0; j < ny0; j++)
                 {
-                    for (int i = 0; i < nx; i++)
+                    for (int i = 0; i < bufferWidth; i++)
                     {
-                        BufferSend[5].setValue(i, j, k, myField.getValue(i, j, k + (nz - bufferWidth)));
+                        int idx_bf=bufferWidth*ny0*k+bufferWidth*j+i;
+                        int idx_f=nx0*ny0*k+nx0*j+i+nx0-bufferWidth;
+                        
+                        bf[idx_bf]=f[idx_f];
                     }
-                    
                 }
             }
             
