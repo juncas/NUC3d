@@ -88,11 +88,11 @@ miu(nx0,ny0,nz0),
 coeff(nx0,ny0,nz0),
 tau(9,Field(nx0,ny0,nz0)),
 Flux_xi_vis(neqs,Field(nx0,ny0,nz0)),
-Flux_eta_vis(neqs,Field(nx0,ny0,nz0)),
-Flux_zeta_vis(neqs,Field(nx0,ny0,nz0)),
+Flux_eta_vis(neqs,Field(ny0,nz0,nx0)),
+Flux_zeta_vis(neqs,Field(nz0,nx0,ny0)),
 dfvdxi(neqs,Field(nx0,ny0,nz0)),
-dgvdeta(neqs,Field(nx0,ny0,nz0)),
-dhvdzeta(neqs,Field(nx0,ny0,nz0))
+dgvdeta(neqs,Field(ny0,nz0,nx0)),
+dhvdzeta(neqs,Field(nz0,nx0,ny0))
 {
     
 }
@@ -104,35 +104,12 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
                                       MPIComunicator3d_nonblocking &myMPI,
                                       boundaryCondition &myBC)
 {
-    double t[7];
-    //this->EulerData3D::solve(myPDE, myOP, myBf, myModel, myMPI, myBC);
-    t[0]=MPI_Wtime();
     this->EulerData3D::solveCon2Prim(myPDE, myModel);
-    t[1]=MPI_Wtime();
     this->EulerData3D::solveRiemann(myPDE, myModel);
-    t[2]=MPI_Wtime();
     this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
-    t[3]=MPI_Wtime();
-    
     this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
-    t[4]=MPI_Wtime();
-    
     NaiverStokesData3d::solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
-    t[5]=MPI_Wtime();
-    
     NaiverStokesData3d::solveRHS(myPDE);
-    t[6]=MPI_Wtime();
-    //    double total=t[6]-t[0];
-    //
-    //    if(0==myMPI.getMyId())
-    //        std::cout<<"Time ratio:"
-    //        <<(t[1]-t[0])/total<<", "
-    //        <<(t[2]-t[1])/total<<", "
-    //        <<(t[3]-t[2])/total<<", "
-    //        <<(t[4]-t[3])/total<<", "
-    //        <<(t[5]-t[4])/total<<", "
-    //        <<(t[6]-t[5])/total
-    //        <<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
@@ -142,44 +119,13 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
-    double t[6];
-    t[0]=MPI_Wtime();
     
-    //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
-    t[1]=MPI_Wtime();
-    
-    
-    //if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
-    t[2]=MPI_Wtime();
-    
-    
-    //if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
     solveViscousFlux(myModel);
-    t[3]=MPI_Wtime();
-    
-    
-    //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
-    t[4]=MPI_Wtime();
-    
-    
-    //if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
     setDerivativesVis(myOP,myBf,myMPI,myBC);
-    t[5]=MPI_Wtime();
-    
-    double total=t[5]-t[0];
-    
-    //    if(0==myMPI.getMyId())
-    //        std::cout<<"Time ratio vis:"
-    //        <<(t[1]-t[0])/total<<", "
-    //        <<(t[2]-t[1])/total<<", "
-    //        <<(t[3]-t[2])/total<<", "
-    //        <<(t[4]-t[3])/total<<", "
-    //        <<(t[5]-t[4])/total
-    //        <<std::endl;
-    
+    if(myMPI.getMyId()==0) std::cout<<"Vis solved"<<std::endl;
 }
 
 
@@ -257,6 +203,7 @@ void nuc3d::NaiverStokesData3d::solveGradXi(Field &myField,
     myOP.differenceInner(myField, 0, dxi);
     myMPI.waitSendRecv(myBf, 0);
     myOP.differenceBoundary(myField, myBf.BufferRecv[0], myBf.BufferRecv[1], 0, dxi,typeL,typeR);
+    MPI_Barrier(MPI_COMM_WORLD);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
@@ -272,6 +219,7 @@ void nuc3d::NaiverStokesData3d::solveGradEta(Field &myField,
     myOP.differenceInner(myField, 1, deta);
     myMPI.waitSendRecv(myBf, 1);
     myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta,typeL,typeR);
+    MPI_Barrier(MPI_COMM_WORLD);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
@@ -287,6 +235,7 @@ void nuc3d::NaiverStokesData3d::solveGradZeta(Field &myField,
     myOP.differenceInner(myField, 2, dzeta);
     myMPI.waitSendRecv(myBf, 2);
     myOP.differenceBoundary(myField, myBf.BufferRecv[4], myBf.BufferRecv[5], 2, dzeta,typeL,typeR);
+    MPI_Barrier(MPI_COMM_WORLD);
 }
 
 void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
@@ -297,28 +246,30 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
     double *pv=this->EulerData3D::W_Euler[2].getDataPtr();
     double *pw=this->EulerData3D::W_Euler[3].getDataPtr();
     
-    double *uxi=du.getf_xi().getDataPtr();
-    double *vxi=dv.getf_xi().getDataPtr();
-    double *wxi=dw.getf_xi().getDataPtr();
-    double *txi=dT.getf_xi().getDataPtr();
+    double *uxi=du.getdxi().getDataPtr();
+    double *vxi=dv.getdxi().getDataPtr();
+    double *wxi=dw.getdxi().getDataPtr();
+    double *txi=dT.getdxi().getDataPtr();
     
-    double *ueta=du.getf_eta().getDataPtr();
-    double *veta=dv.getf_eta().getDataPtr();
-    double *weta=dw.getf_eta().getDataPtr();
-    double *teta=dT.getf_eta().getDataPtr();
+    double *ueta=du.getdeta().getDataPtr();
+    double *veta=dv.getdeta().getDataPtr();
+    double *weta=dw.getdeta().getDataPtr();
+    double *teta=dT.getdeta().getDataPtr();
     
-    double *uzeta=du.getf_zeta().getDataPtr();
-    double *vzeta=dv.getf_zeta().getDataPtr();
-    double *wzeta=dw.getf_zeta().getDataPtr();
-    double *tzeta=dT.getf_zeta().getDataPtr();
+    double *uzeta=du.getdzeta().getDataPtr();
+    double *vzeta=dv.getdzeta().getDataPtr();
+    double *wzeta=dw.getdzeta().getDataPtr();
+    double *tzeta=dT.getdzeta().getDataPtr();
     
     double *pjac=jacobian.getDataPtr();
     double *pxi_x=xi_xyz[0].getDataPtr();
     double *pxi_y=xi_xyz[1].getDataPtr();
     double *pxi_z=xi_xyz[2].getDataPtr();
+    
     double *peta_x=eta_xyz[0].getDataPtr();
     double *peta_y=eta_xyz[1].getDataPtr();
     double *peta_z=eta_xyz[2].getDataPtr();
+    
     double *pzeta_x=zeta_xyz[0].getDataPtr();
     double *pzeta_y=zeta_xyz[1].getDataPtr();
     double *pzeta_z=zeta_xyz[2].getDataPtr();
@@ -499,9 +450,7 @@ void nuc3d::NaiverStokesData3d::setDerivativeEta(fieldOperator3d &myOP,
         myMPI.waitSendRecv(myBf[iter-beg], 1);
         myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[2], myBf[iter-beg].BufferRecv[3], 1, dgvdeta[iter-beg],typeL,typeR);
     }
-    
     MPI_Barrier(MPI_COMM_WORLD);
-    
     
 }
 
@@ -522,9 +471,7 @@ void nuc3d::NaiverStokesData3d::setDerivativeZeta(fieldOperator3d &myOP,
         myOP.differenceBoundary(*iter, myBf[iter-beg].BufferRecv[4], myBf[iter-beg].BufferRecv[5], 2, dhvdzeta[iter-beg],typeL,typeR);
     }
     
-    MPI_Barrier(MPI_COMM_WORLD);
-    
-    
+    MPI_Barrier(MPI_COMM_WORLD);    
 }
 
 
@@ -636,7 +583,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                 }
             }
         }
-
+        
     }
     
     this->EulerData3D::getDt();
