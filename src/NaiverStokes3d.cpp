@@ -11,10 +11,66 @@
 #include "PDEData3d.hpp"
 #include "bufferData.hpp"
 nuc3d::gradvector::gradvector(int nx0,int ny0,int nz0):
+f_xi(nx0,ny0,nz0),
+f_eta(ny0,nz0,nx0),
+f_zeta(nz0,nx0,ny0),
 dxi(nx0,ny0,nz0),
-deta(nx0,ny0,nz0),
-dzeta(nx0,ny0,nz0)
+deta(ny0,nz0,nx0),
+dzeta(nz0,nx0,ny0)
 {
+    
+}
+
+void nuc3d::gradvector::setGrad(Field &myField)
+{
+    double *pField=myField.getDataPtr();
+    double *pf_xi=f_xi.getDataPtr();
+    double *pf_eta=f_eta.getDataPtr();
+    double *pf_zeta=f_zeta.getDataPtr();
+    
+    int nx0=myField.getSizeX();
+    int ny0=myField.getSizeY();
+    int nz0=myField.getSizeZ();
+    
+    for (int k=0; k<nz0; k++)
+    {
+        for (int j=0; j<ny0; j++)
+        {
+            for (int i=0; i<nx0; i++)
+            {
+                int idx=nx0*ny0*k+nx0*j+i;
+                pf_xi[idx]=pField[idx];
+            }
+        }
+    }
+    
+    for (int k=0; k<nz0; k++)
+    {
+        for (int j=0; j<ny0; j++)
+        {
+            for (int i=0; i<nx0; i++)
+            {
+                int idx=nx0*ny0*k+nx0*j+i;
+                int idx_eta=ny0*nz0*i+ny0*k+j;
+                
+                pf_eta[idx_eta]=pField[idx];
+            }
+        }
+    }
+    
+    for (int k=0; k<nz0; k++)
+    {
+        for (int j=0; j<ny0; j++)
+        {
+            for (int i=0; i<nx0; i++)
+            {
+                int idx=nx0*ny0*k+nx0*j+i;
+                int idx_zeta=nz0*nx0*j+nz0*i+k;
+                
+                pf_zeta[idx_zeta]=pField[idx];
+            }
+        }
+    }
     
 }
 nuc3d::gradvector::~gradvector()
@@ -57,26 +113,26 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
     t[2]=MPI_Wtime();
     this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
     t[3]=MPI_Wtime();
-
+    
     this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     t[4]=MPI_Wtime();
-
+    
     NaiverStokesData3d::solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
     t[5]=MPI_Wtime();
-
+    
     NaiverStokesData3d::solveRHS(myPDE);
     t[6]=MPI_Wtime();
-//    double total=t[6]-t[0];
-//    
-//    if(0==myMPI.getMyId())
-//        std::cout<<"Time ratio:"
-//        <<(t[1]-t[0])/total<<", "
-//        <<(t[2]-t[1])/total<<", "
-//        <<(t[3]-t[2])/total<<", "
-//        <<(t[4]-t[3])/total<<", "
-//        <<(t[5]-t[4])/total<<", "
-//        <<(t[6]-t[5])/total
-//        <<std::endl;
+    //    double total=t[6]-t[0];
+    //
+    //    if(0==myMPI.getMyId())
+    //        std::cout<<"Time ratio:"
+    //        <<(t[1]-t[0])/total<<", "
+    //        <<(t[2]-t[1])/total<<", "
+    //        <<(t[3]-t[2])/total<<", "
+    //        <<(t[4]-t[3])/total<<", "
+    //        <<(t[5]-t[4])/total<<", "
+    //        <<(t[6]-t[5])/total
+    //        <<std::endl;
 }
 
 void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
@@ -88,42 +144,42 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
 {
     double t[6];
     t[0]=MPI_Wtime();
-
+    
     //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryGrad"<<std::endl;
     setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
     t[1]=MPI_Wtime();
-
+    
     
     //if(0==myMPI.getMyId()) std::cout<<"solving solveGrads"<<std::endl;
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     t[2]=MPI_Wtime();
-
+    
     
     //if(0==myMPI.getMyId()) std::cout<<"solving solveViscousFlux"<<std::endl;
     solveViscousFlux(myModel);
     t[3]=MPI_Wtime();
-
+    
     
     //if(0==myMPI.getMyId()) std::cout<<"solving setBoundaryViscousFlux"<<std::endl;
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     t[4]=MPI_Wtime();
-
+    
     
     //if(0==myMPI.getMyId()) std::cout<<"solving setDerivativesVis"<<std::endl;
     setDerivativesVis(myOP,myBf,myMPI,myBC);
     t[5]=MPI_Wtime();
-
+    
     double total=t[5]-t[0];
     
-//    if(0==myMPI.getMyId())
-//        std::cout<<"Time ratio vis:"
-//        <<(t[1]-t[0])/total<<", "
-//        <<(t[2]-t[1])/total<<", "
-//        <<(t[3]-t[2])/total<<", "
-//        <<(t[4]-t[3])/total<<", "
-//        <<(t[5]-t[4])/total
-//        <<std::endl;
-
+    //    if(0==myMPI.getMyId())
+    //        std::cout<<"Time ratio vis:"
+    //        <<(t[1]-t[0])/total<<", "
+    //        <<(t[2]-t[1])/total<<", "
+    //        <<(t[3]-t[2])/total<<", "
+    //        <<(t[4]-t[3])/total<<", "
+    //        <<(t[5]-t[4])/total
+    //        <<std::endl;
+    
 }
 
 
@@ -172,18 +228,20 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
     
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradXi"<<std::endl;
-    solveGradXi(myField,myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
+    
+    myGrad.setGrad(myField);
+    
+    solveGradXi(myGrad.getf_xi(),myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(2);
     typeR=myBC.getBCtype(3);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradEta"<<std::endl;
-    solveGradEta(myField,myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
+    
+    solveGradEta(myGrad.getf_eta(),myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(4);
     typeR=myBC.getBCtype(5);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solveGradZeta"<<std::endl;
-    solveGradZeta(myField,myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
+    
+    solveGradZeta(myGrad.getf_zeta(),myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradXi(Field &myField,
@@ -235,6 +293,60 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
 {
     
     myPhyMod.getMiu(this->EulerData3D::W0_Euler[0], miu, coeff);
+    double *pu=this->EulerData3D::W_Euler[1].getDataPtr();
+    double *pv=this->EulerData3D::W_Euler[2].getDataPtr();
+    double *pw=this->EulerData3D::W_Euler[3].getDataPtr();
+    
+    double *uxi=du.getf_xi().getDataPtr();
+    double *vxi=dv.getf_xi().getDataPtr();
+    double *wxi=dw.getf_xi().getDataPtr();
+    double *txi=dT.getf_xi().getDataPtr();
+    
+    double *ueta=du.getf_eta().getDataPtr();
+    double *veta=dv.getf_eta().getDataPtr();
+    double *weta=dw.getf_eta().getDataPtr();
+    double *teta=dT.getf_eta().getDataPtr();
+    
+    double *uzeta=du.getf_zeta().getDataPtr();
+    double *vzeta=dv.getf_zeta().getDataPtr();
+    double *wzeta=dw.getf_zeta().getDataPtr();
+    double *tzeta=dT.getf_zeta().getDataPtr();
+    
+    double *pjac=jacobian.getDataPtr();
+    double *pxi_x=xi_xyz[0].getDataPtr();
+    double *pxi_y=xi_xyz[1].getDataPtr();
+    double *pxi_z=xi_xyz[2].getDataPtr();
+    double *peta_x=eta_xyz[0].getDataPtr();
+    double *peta_y=eta_xyz[1].getDataPtr();
+    double *peta_z=eta_xyz[2].getDataPtr();
+    double *pzeta_x=zeta_xyz[0].getDataPtr();
+    double *pzeta_y=zeta_xyz[1].getDataPtr();
+    double *pzeta_z=zeta_xyz[2].getDataPtr();
+    
+    double *pMiu=miu.getDataPtr();
+    double *pCoeff=coeff.getDataPtr();
+    
+    double *flux_xi[5];
+    double *flux_eta[5];
+    double *flux_zeta[5];
+    
+    flux_xi[0]=Flux_xi_vis[0].getDataPtr();
+    flux_xi[1]=Flux_xi_vis[1].getDataPtr();
+    flux_xi[2]=Flux_xi_vis[2].getDataPtr();
+    flux_xi[3]=Flux_xi_vis[3].getDataPtr();
+    flux_xi[4]=Flux_xi_vis[4].getDataPtr();
+    
+    flux_eta[0]=Flux_eta_vis[0].getDataPtr();
+    flux_eta[1]=Flux_eta_vis[1].getDataPtr();
+    flux_eta[2]=Flux_eta_vis[2].getDataPtr();
+    flux_eta[3]=Flux_eta_vis[3].getDataPtr();
+    flux_eta[4]=Flux_eta_vis[4].getDataPtr();
+    
+    flux_zeta[0]=Flux_zeta_vis[0].getDataPtr();
+    flux_zeta[1]=Flux_zeta_vis[1].getDataPtr();
+    flux_zeta[2]=Flux_zeta_vis[2].getDataPtr();
+    flux_zeta[3]=Flux_zeta_vis[3].getDataPtr();
+    flux_zeta[4]=Flux_zeta_vis[4].getDataPtr();
     
     for (int k=0; k<nz; k++)
     {
@@ -242,65 +354,42 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
         {
             for (int i=0; i<nx; i++)
             {
-                //u,v,w,T
-                double u=this->EulerData3D::W_Euler[1].getValue(i, j, k);
-                double v=this->EulerData3D::W_Euler[2].getValue(i, j, k);
-                double w=this->EulerData3D::W_Euler[3].getValue(i, j, k);
+                int idx_xi=nx*ny*k+nx*j+i;
+                int idx_eta=ny*nz*i+ny*k+j;
+                int idx_zeta=nz*nx*j+nz*i+k;
                 
-                //Grads of u,v,w,T
-                double uxi=du.getdxi().getValue(i, j, k);
-                double ueta=du.getdeta().getValue(i, j, k);
-                double uzeta=du.getdzeta().getValue(i, j, k);
+                double jac=pjac[idx_xi];
+                double xi_x=pxi_x[idx_xi];
+                double xi_y=pxi_y[idx_xi];
+                double xi_z=pxi_z[idx_xi];
                 
-                double vxi=dv.getdxi().getValue(i, j, k);
-                double veta=dv.getdeta().getValue(i, j, k);
-                double vzeta=dv.getdzeta().getValue(i, j, k);
+                double eta_x=peta_x[idx_xi];
+                double eta_y=peta_y[idx_xi];
+                double eta_z=peta_z[idx_xi];
                 
-                double wxi=dw.getdxi().getValue(i, j, k);
-                double weta=dw.getdeta().getValue(i, j, k);
-                double wzeta=dw.getdzeta().getValue(i, j, k);
-                
-                double txi=dT.getdxi().getValue(i, j, k);
-                double teta=dT.getdeta().getValue(i, j, k);
-                double tzeta=dT.getdzeta().getValue(i, j, k);
-                
-                //Jacobians
-                double xi_x=xi_xyz[0].getValue(i, j, k);
-                double eta_x=eta_xyz[0].getValue(i, j, k);
-                double zeta_x=zeta_xyz[0].getValue(i, j, k);
-                
-                double xi_y=xi_xyz[1].getValue(i, j, k);
-                double eta_y=eta_xyz[1].getValue(i, j, k);
-                double zeta_y=zeta_xyz[1].getValue(i, j, k);
-                
-                double xi_z=xi_xyz[2].getValue(i, j, k);
-                double eta_z=eta_xyz[2].getValue(i, j, k);
-                double zeta_z=zeta_xyz[2].getValue(i, j, k);
-                
-                double jac=jacobian.getValue(i, j, k);
-                
-                //Miu and Coeff
-                double miu0=miu.getValue(i, j, k);
-                double coeff0=coeff.getValue(i, j, k);
+                double zeta_x=pzeta_x[idx_xi];
+                double zeta_y=pzeta_y[idx_xi];
+                double zeta_z=pzeta_z[idx_xi];
                 
                 //d(u,v,w,T)/d(x,y,z)
-                double ux=uxi*xi_x+ueta*eta_x+uzeta*zeta_x;
-                double uy=uxi*xi_y+ueta*eta_y+uzeta*zeta_y;
-                double uz=uxi*xi_z+ueta*eta_z+uzeta*zeta_z;
+                double ux=uxi[idx_xi]*xi_x+ueta[idx_eta]*eta_x+uzeta[idx_zeta]*zeta_x;
+                double uy=uxi[idx_xi]*xi_y+ueta[idx_eta]*eta_y+uzeta[idx_zeta]*zeta_y;
+                double uz=uxi[idx_xi]*xi_z+ueta[idx_eta]*eta_z+uzeta[idx_zeta]*zeta_z;
                 
-                double vx=vxi*xi_x+veta*eta_x+vzeta*zeta_x;
-                double vy=vxi*xi_y+veta*eta_y+vzeta*zeta_y;
-                double vz=vxi*xi_z+veta*eta_z+vzeta*zeta_z;
+                double vx=vxi[idx_xi]*xi_x+veta[idx_eta]*eta_x+vzeta[idx_zeta]*zeta_x;
+                double vy=vxi[idx_xi]*xi_y+veta[idx_eta]*eta_y+vzeta[idx_zeta]*zeta_y;
+                double vz=vxi[idx_xi]*xi_z+veta[idx_eta]*eta_z+vzeta[idx_zeta]*zeta_z;
                 
-                double wx=wxi*xi_x+weta*eta_x+wzeta*zeta_x;
-                double wy=wxi*xi_y+weta*eta_y+wzeta*zeta_y;
-                double wz=wxi*xi_z+weta*eta_z+wzeta*zeta_z;
+                double wx=wxi[idx_xi]*xi_x+weta[idx_eta]*eta_x+wzeta[idx_zeta]*zeta_x;
+                double wy=wxi[idx_xi]*xi_y+weta[idx_eta]*eta_y+wzeta[idx_zeta]*zeta_y;
+                double wz=wxi[idx_xi]*xi_z+weta[idx_eta]*eta_z+wzeta[idx_zeta]*zeta_z;
                 
-                double tx=txi*xi_x+teta*eta_x+tzeta*zeta_x;
-                double ty=txi*xi_y+teta*eta_y+tzeta*zeta_y;
-                double tz=txi*xi_z+teta*eta_z+tzeta*zeta_z;
+                double tx=txi[idx_xi]*xi_x+teta[idx_eta]*eta_x+tzeta[idx_zeta]*zeta_x;
+                double ty=txi[idx_xi]*xi_y+teta[idx_eta]*eta_y+tzeta[idx_zeta]*zeta_y;
+                double tz=txi[idx_xi]*xi_z+teta[idx_eta]*eta_z+tzeta[idx_zeta]*zeta_z;
                 
                 double grad=ux+vy+wz;
+                double miu0=pMiu[idx_xi];
                 
                 double tau_xx=miu0*(2.0*ux-2.0/3.0*grad);
                 double tau_xy=miu0*(uy+vx-2.0/3.0*grad);
@@ -309,6 +398,7 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 double tau_yz=miu0*(vz+wy-2.0/3.0*grad);
                 double tau_zz=miu0*(2.0*wz-2.0/3.0*grad);
                 
+                double coeff0=pCoeff[idx_xi];
                 double tau_tx=coeff0*tx;
                 double tau_ty=coeff0*ty;
                 double tau_tz=coeff0*tz;
@@ -318,9 +408,9 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 double gv[5];
                 double hv[5];
                 
-                double fv_xi[5];
-                double fv_eta[5];
-                double fv_zeta[5];
+                double u=pu[idx_xi];
+                double v=pv[idx_xi];
+                double w=pw[idx_xi];
                 
                 fv[0]=0.0;
                 fv[1]=tau_xx;
@@ -342,32 +432,15 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 
                 for(int iter=0;iter<5;iter++)
                 {
-                    fv_xi[iter]=(xi_x*fv[iter]+xi_y*gv[iter]+xi_z*hv[iter])/jac;
-                    fv_eta[iter]=(eta_x*fv[iter]+eta_y*gv[iter]+eta_z*hv[iter])/jac;
-                    fv_zeta[iter]=(zeta_x*fv[iter]+zeta_y*gv[iter]+zeta_z*hv[iter])/jac;
+                    flux_xi[iter][idx_xi]=(xi_x*fv[iter]+xi_y*gv[iter]+xi_z*hv[iter])/jac;
+                    flux_eta[iter][idx_eta]=(eta_x*fv[iter]+eta_y*gv[iter]+eta_z*hv[iter])/jac;
+                    flux_zeta[iter][idx_zeta]=(zeta_x*fv[iter]+zeta_y*gv[iter]+zeta_z*hv[iter])/jac;
                 }
                 
-                Flux_xi_vis[0].setValue(i, j, k,fv_xi[0]);
-                Flux_xi_vis[1].setValue(i, j, k,fv_xi[1]);
-                Flux_xi_vis[2].setValue(i, j, k,fv_xi[2]);
-                Flux_xi_vis[3].setValue(i, j, k,fv_xi[3]);
-                Flux_xi_vis[4].setValue(i, j, k,fv_xi[4]);
-                
-                Flux_eta_vis[0].setValue(i, j, k,fv_eta[0]);
-                Flux_eta_vis[1].setValue(i, j, k,fv_eta[1]);
-                Flux_eta_vis[2].setValue(i, j, k,fv_eta[2]);
-                Flux_eta_vis[3].setValue(i, j, k,fv_eta[3]);
-                Flux_eta_vis[4].setValue(i, j, k,fv_eta[4]);
-                
-                Flux_zeta_vis[0].setValue(i, j, k,fv_zeta[0]);
-                Flux_zeta_vis[1].setValue(i, j, k,fv_zeta[1]);
-                Flux_zeta_vis[2].setValue(i, j, k,fv_zeta[2]);
-                Flux_zeta_vis[3].setValue(i, j, k,fv_zeta[3]);
-                Flux_zeta_vis[4].setValue(i, j, k,fv_zeta[4]);
             }
         }
     }
-
+    
 }
 
 void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
@@ -407,7 +480,7 @@ void nuc3d::NaiverStokesData3d::setDerivativeXi(fieldOperator3d &myOP,
     }
     
     MPI_Barrier(MPI_COMM_WORLD);
-
+    
 }
 
 void nuc3d::NaiverStokesData3d::setDerivativeEta(fieldOperator3d &myOP,
@@ -428,7 +501,7 @@ void nuc3d::NaiverStokesData3d::setDerivativeEta(fieldOperator3d &myOP,
     }
     
     MPI_Barrier(MPI_COMM_WORLD);
-
+    
     
 }
 
@@ -450,7 +523,7 @@ void nuc3d::NaiverStokesData3d::setDerivativeZeta(fieldOperator3d &myOP,
     }
     
     MPI_Barrier(MPI_COMM_WORLD);
-
+    
     
 }
 
@@ -470,36 +543,100 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
     
     for (auto iter=beg ; iter!=end ; iter++)
     {
-        int nx0=iter->getSizeX();
-        int ny0=iter->getSizeY();
-        int nz0=iter->getSizeZ();
+        double *df=df_v[iter-beg].getDataPtr();
+        double *dg=dg_v[iter-beg].getDataPtr();
+        double *dh=dh_v[iter-beg].getDataPtr();
         
-        for (int k=0; k<nz0; k++)
+        double *dfv=dfv_v[iter-beg].getDataPtr();
+        double *dgv=dgv_v[iter-beg].getDataPtr();
+        double *dhv=dhv_v[iter-beg].getDataPtr();
+        
+        double *rhs=iter->getDataPtr();
+        
+        for (int k=0; k<nz; k++)
         {
-            for (int j=0; j<ny0; j++)
+            for (int j=0; j<ny; j++)
             {
-                for (int i=0; i<nx0; i++)
+                for (int i=0; i<nx; i++)
                 {
-                    double df=df_v[iter-beg].getValue(i, j, k);
-                    double dg=dg_v[iter-beg].getValue(i, j, k);
-                    double dh=dh_v[iter-beg].getValue(i, j, k);
+                    int idx_xi=nx*ny*k+nx*j+i;
                     
-                    double rhs_inv=df+dg+dh;
-                    
-                    double dfv=dfv_v[iter-beg].getValue(i, j, k);
-                    double dgv=dgv_v[iter-beg].getValue(i, j, k);
-                    double dhv=dhv_v[iter-beg].getValue(i, j, k);
-                    
-                    double rhs_vis=dfv+dgv+dhv;
-
-                    //std::cout<<dfv<<" "<<dgv<<" "<<dhv<<" "<<std::endl;
-                    double rhs=rhs_inv-rhs_vis;
-                    iter->setValue(i, j, k, rhs);
-                    
+                    rhs[idx_xi]=df[idx_xi];
                 }
             }
         }
-        //std::cout<<max<<std::endl;
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    int idx_eta=ny*nz*i+ny*k+j;
+                    
+                    rhs[idx_xi]+=dg[idx_eta];
+                }
+            }
+        }
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    int idx_zeta=nz*nx*j+nz*i+k;
+                    
+                    rhs[idx_xi]+=dh[idx_zeta];
+                }
+            }
+        }
+        
+        
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    
+                    rhs[idx_xi]+=dfv[idx_xi];
+                }
+            }
+        }
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    int idx_eta=ny*nz*i+ny*k+j;
+                    
+                    rhs[idx_xi]+=dgv[idx_eta];
+                }
+            }
+        }
+        
+        for (int k=0; k<nz; k++)
+        {
+            for (int j=0; j<ny; j++)
+            {
+                for (int i=0; i<nx; i++)
+                {
+                    int idx_xi=nx*ny*k+nx*j+i;
+                    int idx_zeta=nz*nx*j+nz*i+k;
+                    
+                    rhs[idx_xi]+=dhv[idx_zeta];
+                }
+            }
+        }
+
     }
     
     this->EulerData3D::getDt();

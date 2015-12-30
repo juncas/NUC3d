@@ -12,27 +12,16 @@ namespace nuc3d
         ~centraldifference2nd();
         // 6th order central difference functions
         
-        void differentialInner(
-                               const Field &,
-                               const int,
-                               const int,
-                               const int,
+        void differentialInner(const Field &,
                                Field &,
                                const int tilesize);
-        void differentialBoundaryL(
+        void differentialBoundaryL(const Field &,
                                    const Field &,
-                                   const Field &,
-                                   const int,
-                                   const int,
-                                   const int,
                                    Field &,
                                    const int tilesize);
-        void differentialBoundaryR(
+        
+        void differentialBoundaryR(const Field &,
                                    const Field &,
-                                   const Field &,
-                                   const int,
-                                   const int,
-                                   const int,
                                    Field &,
                                    const int tilesize);
         

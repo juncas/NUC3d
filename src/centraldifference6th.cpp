@@ -14,165 +14,22 @@ nuc3d::centraldifference6th::~centraldifference6th()
 }
 
 void nuc3d::centraldifference6th::differentialInner(const Field & fieldIN,
-                                                    const int dim0,
-                                                    const int dim1,
-                                                    const int dim2,
                                                     Field & fieldOUT,
                                                     const int tilesize)
 {
-    double flux_l[3];
-    double flux_r[3];
-    double h;
     
-    int nx;
-    int ny;
-    int nz;
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
     
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
     
-    int ibeg=tilesize*dim0;
-    int iend=nx-tilesize*dim0;
-    int jbeg=tilesize*dim1;
-    int jend=ny-tilesize*dim1;
-    int kbeg=tilesize*dim2;
-    int kend=nz-tilesize*dim2;
-    
-    for(int k=kbeg;k<kend;k++)
-    {
-        for(int j=jbeg;j<jend;j++)
-        {
-            for(int i=ibeg;i<iend;i++)
-            {
-                for(int z=0;z<3;z++)
-                {
-                    int stride=-(z+1);
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
-                    flux_l[z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                }
-                
-                for(int z=0;z<3;z++)
-                {
-                    int stride=z+1;
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
-                    flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                }
-                
-                h= nuc3d::cd6differential(flux_l,flux_r);                
-                fieldOUT.setValue(i,j,k,h);
-            }
-        }
-    }
-}
-
-
-void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
-                                                        const Field & boundaryL,
-                                                        const int dim0,
-                                                        const int dim1,
-                                                        const int dim2,
-                                                        Field & fieldOUT,
-                                                        const int tilesize)
-{
-    double flux_l[3];
-    double flux_r[3];
-    double h;
-    
-    int nx;
-    int ny;
-    int nz;
-    
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
-    
-    int ibeg=0;
-    int iend=dim0*(tilesize-nx)+nx;
+    int ibeg=tilesize;
+    int iend=nx-tilesize;
     int jbeg=0;
-    int jend=dim1*(tilesize-ny)+ny;
-    int kbeg=0;
-    int kend=dim2*(tilesize-nz)+nz;
-    
-    
-    for(int k=kbeg;k<kend;k++)
-    {
-        for(int j=jbeg;j<jend;j++)
-        {
-            for(int i=ibeg;i<iend;i++)
-            {
-                for(int z=0;z<3;z++)
-                {
-                    int stride=-(z+1);
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
-                    if(itemp<0||jtemp<0||ktemp<0)
-                    {
-                        int itemp1=itemp+dim0*boundaryL.getSizeX();
-                        int jtemp1=jtemp+dim1*boundaryL.getSizeY();
-                        int ktemp1=ktemp+dim2*boundaryL.getSizeZ();
-                        
-                        flux_l[z]=boundaryL.getValue(itemp1,jtemp1,ktemp1);
-                    }
-                    else
-                    {
-                        flux_l[z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                    }
-                }
-                
-                for(int z=0;z<3;z++)
-                {
-                    int stride=z+1;
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
-                    flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                }
-                
-                h= nuc3d::cd6differential(flux_l,flux_r);
-                
-                fieldOUT.setValue(i,j,k,h);
-            }
-        }
-    }
-}
-
-
-void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
-                                                        const Field & boundaryR,
-                                                        const int dim0,
-                                                        const int dim1,
-                                                        const int dim2,
-                                                        Field & fieldOUT,
-                                                        const int tilesize)
-{
-    double flux_l[3];
-    double flux_r[3];
-    double h;
-    
-    int nx;
-    int ny;
-    int nz;
-    
-    nx=fieldIN.getSizeX();
-    ny=fieldIN.getSizeY();
-    nz=fieldIN.getSizeZ();
-    
-    
-    int ibeg=dim0*(nx-tilesize);
-    int iend=nx;
-    int jbeg=dim1*(ny-tilesize);
     int jend=ny;
-    int kbeg=dim2*(nz-tilesize);
+    int kbeg=0;
     int kend=nz;
     
     for(int k=kbeg;k<kend;k++)
@@ -181,42 +38,145 @@ void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
         {
             for(int i=ibeg;i<iend;i++)
             {
-                for(int z=0;z<3;z++)
-                {
-                    int stride=-(z+1);
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-
-                    flux_l[z]=fieldIN.getValue(itemp,jtemp,ktemp);
-                }
+                int idx_f=nx*ny*k+nx*j+i;
                 
-                for(int z=0;z<3;z++)
+                pOut[idx_f]=coeff_cd6_alpha[2]*(pIn[idx_f+3]-pIn[idx_f-3])
+                +coeff_cd6_alpha[1]*(pIn[idx_f+2]-pIn[idx_f-2])
+                +coeff_cd6_alpha[0]*(pIn[idx_f+1]-pIn[idx_f-1]);
+            }
+        }
+    }
+}
+
+
+void nuc3d::centraldifference6th::differentialBoundaryL(const Field & fieldIN,
+                                                        const Field & boundaryL,
+                                                        Field & fieldOUT,
+                                                        const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryL.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nxBND=boundaryL.getSizeX();
+    int nyBND=boundaryL.getSizeY();
+    int nzBND=boundaryL.getSizeZ();
+    
+    int ibeg=0;
+    int iend=tilesize;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    double f[6];
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                for(int z=-3;z<0;z++)
                 {
-                    int stride=z+1;
-                    int itemp=i+stride*dim0;
-                    int jtemp=j+stride*dim1;
-                    int ktemp=k+stride*dim2;
-                    
-                    if(itemp>=nx||jtemp>=ny||ktemp>=nz)
+                    if((i+z)<0)
                     {
-                        int itemp1=itemp-dim0*nx;
-                        int jtemp1=jtemp-dim1*ny;
-                        int ktemp1=ktemp-dim2*nz;
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+(i+z+nxBND);
                         
-                        flux_r[z]=boundaryR.getValue(itemp1,jtemp1,ktemp1);
+                        f[3+z]=pBND[idx_BND];
                     }
                     else
                     {
-                        flux_r[z]=fieldIN.getValue(itemp,jtemp,ktemp);
+                        int idx_f=nx*ny*k+nx*j+i+z;
+                        
+                        f[3+z]=pIn[idx_f];
                     }
-                    
                 }
                 
+                for(int z=1;z<=3;z++)
+                {
+                    int idx_f=nx*ny*k+nx*j+i+z;
+                    
+                    f[2+z]=pIn[idx_f];
+                }
                 
-                h= nuc3d::cd6differential(flux_l,flux_r);
+                int idx_f_out=nx*ny*k+nx*j+i;
                 
-                fieldOUT.setValue(i,j,k,h);
+                pOut[idx_f_out]=coeff_cd6_alpha[2]*(f[5]-f[0])
+                +coeff_cd6_alpha[1]*(f[4]-f[1])
+                +coeff_cd6_alpha[0]*(f[3]-f[2]);
+                
+            }
+        }
+    }
+}
+
+
+void nuc3d::centraldifference6th::differentialBoundaryR(const Field & fieldIN,
+                                                        const Field & boundaryR,
+                                                        Field & fieldOUT,
+                                                        const int tilesize)
+{
+    double *pIn=fieldIN.getDataPtr();
+    double *pOut=fieldOUT.getDataPtr();
+    double *pBND=boundaryR.getDataPtr();
+    
+    int nx=fieldIN.getSizeX();
+    int ny=fieldIN.getSizeY();
+    int nz=fieldIN.getSizeZ();
+    
+    int nxBND=boundaryR.getSizeX();
+    int nyBND=boundaryR.getSizeY();
+    int nzBND=boundaryR.getSizeZ();
+    
+    int ibeg=nx-tilesize;
+    int iend=nx;
+    int jbeg=0;
+    int jend=ny;
+    int kbeg=0;
+    int kend=nz;
+    
+    double f[6];
+    
+    for(int k=kbeg;k<kend;k++)
+    {
+        for(int j=jbeg;j<jend;j++)
+        {
+            for(int i=ibeg;i<iend;i++)
+            {
+                for(int z=-3;z<0;z++)
+                {
+                    int idx_f=nx*ny*k+nx*j+i+z;
+                    
+                    f[3+z]=pIn[idx_f];
+                }
+
+                for(int z=1;z<=3;z++)
+                {
+                    if((i+z)>=nx)
+                    {
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+(i+z-nx);
+                        
+                        f[2+z]=pBND[idx_BND];
+                    }
+                    else
+                    {
+                        int idx_f=nx*ny*k+nx*j+i+z;
+                        
+                        f[2+z]=pIn[idx_f];
+                    }
+                }
+                
+                int idx_f_out=nx*ny*k+nx*j+i;
+                
+                pOut[idx_f_out]=coeff_cd6_alpha[2]*(f[5]-f[0])
+                +coeff_cd6_alpha[1]*(f[4]-f[1])
+                +coeff_cd6_alpha[0]*(f[3]-f[2]);
+                
             }
         }
     }

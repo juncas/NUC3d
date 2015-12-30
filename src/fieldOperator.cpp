@@ -513,13 +513,13 @@ void nuc3d::fieldOperator3d::differenceInner(const Field& fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialInner(fieldIN,1,0,0,fieldOUT,bufferSize_xi);
+            myDifferenters[0]->differentialInner(fieldIN,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialInner(fieldIN,0,1,0,fieldOUT,bufferSize_eta);
+            myDifferenters[1]->differentialInner(fieldIN,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialInner(fieldIN,0,0,1,fieldOUT,bufferSize_zeta);
+            myDifferenters[2]->differentialInner(fieldIN,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -554,13 +554,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT,bufferSize_xi);
+            myDifferenters[0]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT,bufferSize_eta);
+            myDifferenters[1]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT,bufferSize_zeta);
+            myDifferenters[2]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_zeta);
             break;
     }
 }
@@ -572,13 +572,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferentersBND[0]->differentialBoundaryL(fieldIN,boundaryL,1,0,0,fieldOUT,bufferSize_xi);
+            myDifferentersBND[0]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferentersBND[1]->differentialBoundaryL(fieldIN,boundaryL,0,1,0,fieldOUT,bufferSize_eta);
+            myDifferentersBND[1]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferentersBND[2]->differentialBoundaryL(fieldIN,boundaryL,0,0,1,fieldOUT,bufferSize_zeta);
+            myDifferentersBND[2]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_zeta);
             break;
     }
 
@@ -593,13 +593,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerR(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferenters[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT,bufferSize_xi);
+            myDifferenters[0]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferenters[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT,bufferSize_eta);
+            myDifferenters[1]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferenters[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT,bufferSize_zeta);
+            myDifferenters[2]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_zeta);
             break;
     }
     
@@ -613,13 +613,13 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorR(const Field &fieldIN,
     switch(direction)
     {
         case 0:
-            myDifferentersBND[0]->differentialBoundaryR(fieldIN,boundaryR,1,0,0,fieldOUT,bufferSize_xi);
+            myDifferentersBND[0]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_xi);
             break;
         case 1:
-            myDifferentersBND[1]->differentialBoundaryR(fieldIN,boundaryR,0,1,0,fieldOUT,bufferSize_eta);
+            myDifferentersBND[1]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_eta);
             break;
         case 2:
-            myDifferentersBND[2]->differentialBoundaryR(fieldIN,boundaryR,0,0,1,fieldOUT,bufferSize_zeta);
+            myDifferentersBND[2]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_zeta);
             break;
     }
 

@@ -65,28 +65,16 @@ namespace nuc3d
         inline ~differential(){};
         
     private:
-        virtual void differentialInner(
-                                       const Field &,
-                                       const int,
-                                       const int,
-                                       const int,
+        virtual void differentialInner(const Field &,
                                        Field &,
                                        const int)=0;
         
-        virtual void differentialBoundaryL(
+        virtual void differentialBoundaryL(const Field &,
                                            const Field &,
-                                           const Field &,
-                                           const int,
-                                           const int,
-                                           const int,
                                            Field &,
                                            const int)=0;
-        virtual void differentialBoundaryR(
+        virtual void differentialBoundaryR(const Field &,
                                            const Field &,
-                                           const Field &,
-                                           const int,
-                                           const int,
-                                           const int,
                                            Field &,
                                            const int)=0;
     };
