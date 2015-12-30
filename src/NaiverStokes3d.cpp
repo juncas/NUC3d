@@ -125,7 +125,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
     solveViscousFlux(myModel);
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     setDerivativesVis(myOP,myBf,myMPI,myBC);
-    if(myMPI.getMyId()==0) std::cout<<"Vis solved"<<std::endl;
+    //if(myMPI.getMyId()==0) std::cout<<"Vis solved"<<std::endl;
 }
 
 
