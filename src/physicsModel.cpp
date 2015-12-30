@@ -719,6 +719,25 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 alpha0 = alpha[idx_xi];
                 alpha_zeta = alpha0*theta_zeta;
                 
+                (this->*myRiemannMap[SolverName])(W0,
+                                                  alpha_zeta,
+                                                  Rho0,
+                                                  Rhou0,
+                                                  Rhov0,
+                                                  Rhow0,
+                                                  Rhoe0,
+                                                  rho0,
+                                                  u0,
+                                                  v0,
+                                                  w0,
+                                                  p0,
+                                                  zeta_x0,
+                                                  zeta_y0,
+                                                  zeta_z0,
+                                                  jac0,
+                                                  fluxp,
+                                                  fluxn);
+                
                 flux_zeta_l[0][idx_zeta]=fluxp[0];
                 flux_zeta_l[1][idx_zeta]=fluxp[1];
                 flux_zeta_l[2][idx_zeta]=fluxp[2];

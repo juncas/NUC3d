@@ -271,21 +271,7 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
     solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC,2);
-    this->setDerivativesInv();
-    
-    //    double total=t[7]-t[0];
-    //
-    //    if(0==myMPI.getMyId())
-    //        std::cout<<"Time ratio inv:"
-    //        <<(t[1]-t[0])/total<<", "
-    //        <<(t[2]-t[1])/total<<", "
-    //        <<(t[3]-t[2])/total<<", "
-    //        <<(t[4]-t[3])/total<<", "
-    //        <<(t[5]-t[4])/total<<", "
-    //        <<(t[6]-t[5])/total<<", "
-    //        <<(t[7]-t[6])/total
-    //        <<std::endl;
-    
+    this->setDerivativesInv();    
 }
 
 
@@ -304,8 +290,6 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
     
     for (auto iter = pFlux.begin(); iter != pFlux.end(); iter++)
     {
-        double t[5];
-        
         bufferData &bf = myBuff[iter - pFlux.begin()];
         Field &rf = pReconFlux[iter - pFlux.begin()];
         
@@ -315,12 +299,9 @@ void nuc3d::EulerData3D::solveInvicidFluxL(EulerFlux &myFlux,
         
         Field &bfField_L=(myMPI.getFaceType(dir*2)==MPI_PROC_NULL)?bf.BufferSend[dir*2]:bf.BufferRecv[dir*2];
         Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferSend[dir*2+1]:bf.BufferRecv[dir*2+1];
-        t[3]=MPI_Wtime();
-        
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, 1, rf,myBCtypeL,myBCtypeR);
-        t[4]=MPI_Wtime();
+        MPI_Barrier(MPI_COMM_WORLD);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
     
 }
 
@@ -352,8 +333,8 @@ void nuc3d::EulerData3D::solveInvicidFluxR(EulerFlux &myFlux,
         Field &bfField_R=(myMPI.getFaceType(dir*2+1)==MPI_PROC_NULL)?bf.BufferRecv[dir*2+1]:bf.BufferRecv[dir*2+1];
         
         myOP.reconstructionBoundary(*iter, bfField_L, bfField_R, dir, -1, rf,myBCtypeL,myBCtypeR);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
     
 }
 
