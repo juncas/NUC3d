@@ -551,7 +551,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                 {
                     int idx_xi=nx*ny*k+nx*j+i;
                     
-                    rhs[idx_xi]+=dfv[idx_xi];
+                    rhs[idx_xi]-=dfv[idx_xi];
                 }
             }
         }
@@ -565,7 +565,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                     int idx_xi=nx*ny*k+nx*j+i;
                     int idx_eta=ny*nz*i+ny*k+j;
                     
-                    rhs[idx_xi]+=dgv[idx_eta];
+                    rhs[idx_xi]-=dgv[idx_eta];
                 }
             }
         }
@@ -579,7 +579,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                     int idx_xi=nx*ny*k+nx*j+i;
                     int idx_zeta=nz*nx*j+nz*i+k;
                     
-                    rhs[idx_xi]+=dhv[idx_zeta];
+                    rhs[idx_xi]-=dhv[idx_zeta];
                 }
             }
         }
