@@ -64,7 +64,9 @@ namespace nuc3d
                        VectorBuffer &myBf,
                        MPIComunicator3d_nonblocking &myMPI,
                        boundaryCondition &myBC,
-                       IOController &myIO);
+                       IOController &myIO,
+                       int istep,
+                       double time);
         
         void OutputPost(VectorField &prims,
                         VectorField &acous,
@@ -76,7 +78,9 @@ namespace nuc3d
                         VectorBuffer &myBf,
                         MPIComunicator3d_nonblocking &myMPI,
                         boundaryCondition &myBC,
-                        IOController &myIO);
+                        IOController &myIO,
+                        int istep,
+                        double time);
     private:
         void solveGrad(Field &myField,
                        fieldOperator3d &myOP,

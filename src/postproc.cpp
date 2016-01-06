@@ -63,7 +63,9 @@ void nuc3d::postproc::solvePost(VectorField &prims,
                                 VectorBuffer &myBf,
                                 MPIComunicator3d_nonblocking &myMPI,
                                 boundaryCondition &myBC,
-                                IOController &myIO)
+                                IOController &myIO,
+                                int istep,
+                                double time)
 {
     solveQ(prims, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC);
     
@@ -73,7 +75,7 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     if(0==myMPI.getMyId())
     {
         myIOfile.open("enstrophy.dat",std::ios::out|std::ios::app);
-        myIOfile<<myIO.getValue("currentTime")
+        myIOfile<<time
         <<" "
         <<enstrophy_glb<<"\n";
         myIOfile.close();
@@ -91,7 +93,9 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
                                  VectorBuffer &myBf,
                                  MPIComunicator3d_nonblocking &myMPI,
                                  boundaryCondition &myBC,
-                                 IOController &myIO)
+                                 IOController &myIO,
+                                 int istep,
+                                 double time)
 {
     std::string forename_flow = ("flowData/Q_step_");
     std::string step;
@@ -101,7 +105,7 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     int myID=myMPI.getMyId();
     
     std::stringstream ss_step,ss_id;
-    ss_step << myIO.getStep("currentStep");
+    ss_step << istep;
     ss_step >> step;
     
     ss_id<<myID;
@@ -113,10 +117,10 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     
     myIOfile.open(filename_flow);
     
-    std::string TECplotHeader[2]={"title=NUC3d\n",
+    std::string TECplotHeader[2]={"title=time_",
         "variables=x,y,z"};
     
-    myIOfile<<TECplotHeader[0]
+    myIOfile<<TECplotHeader[0]<<time<<"\n"
     <<TECplotHeader[1];
     
     for(int i=0;i<postSize;i++)
