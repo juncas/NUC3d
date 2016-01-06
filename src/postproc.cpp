@@ -133,6 +133,11 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     <<xyz.size()+postSize
     <<"]=CELLCENTERED)\n";
     
+    for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+
     writeField(myIOfile, Q);
     writeField(myIOfile, omega0);
     writeField(myIOfile, omega1);
