@@ -51,18 +51,18 @@ void nuc3d::singleBlock::initialBlock()
 void nuc3d::singleBlock::solvePDE()
 {
     if(myMPI.getMyId()==0) std::cout<<"Start solving......\n";
-    while (myIO.ifsolve())
+    while (myIO.ifsolve(myBlock.getTime(),myBlock.getStep()))
     {
         myBlock.solve(myOperator, myPhys, myMPI, myBC, myIO);
         
         if(0==myMPI.getMyId()) myBlock.printStatus();
         
-        if(myIO.ifpost())
+        if(myIO.ifpost(myBlock.getStep()))
         {
             postprocess();
         }
         
-        if(myIO.ifsave())
+        if(myIO.ifsave(myBlock.getStep()))
         {
             output();
         }
@@ -76,16 +76,13 @@ void nuc3d::singleBlock::solvePDE()
 
 void nuc3d::singleBlock::postprocess()
 {
-    if(0==myMPI.getMyId()) std::cout<<"Post Processing..."<<std::endl;
-    if(0==myMPI.getMyId()) std::cout<<myIO.getStep("postStep")<<std::endl;
-    myBlock.Post(myOperator, myPhys, myMPI, myBC, myIO);
+    if(0==myMPI.getMyId()) std::cout<<"Post Processing..."<<std::endl;    myBlock.Post(myOperator, myPhys, myMPI, myBC, myIO);
     myIO.renewIOcontroller();
 }
 
 void nuc3d::singleBlock::output()
 {
     if(0==myMPI.getMyId()) std::cout<<"Saving..."<<std::endl;
-    if(0==myMPI.getMyId()) std::cout<<myIO.getStep("currentStep")<<std::endl;
     myBlock.Output(myOperator, myPhys, myMPI, myBC, myIO);
     myIO.renewIOcontroller();
 }

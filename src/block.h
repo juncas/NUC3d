@@ -99,7 +99,9 @@ namespace nuc3d
                   physicsModel &,
                   MPIComunicator3d_nonblocking &,
                   boundaryCondition &,
-                  IOController &);
+                    IOController &);
+        int getStep(){return istep;};
+        double getTime(){return time;};
         
         
     private:

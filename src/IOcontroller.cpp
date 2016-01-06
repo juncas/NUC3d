@@ -17,7 +17,6 @@ myIOController
      {"endStep",100000},
      {"saveStep",1000},
      {"postStep",1},
-     {"currentStep",0},
      {"Benchmark",0}
  }
  ),
@@ -26,8 +25,7 @@ myTimeController
  {
      {"cfl",0.5},
      {"tl",0.0},
-     {"dt",0.01},
-     {"currentTime",0.0}
+     {"dt",0.01}
  }
  ),
 myIOFileType
@@ -180,12 +178,10 @@ std::string nuc3d::IOController::getType(std::string s)
     }
 };
 
-bool nuc3d::IOController::ifsolve()
+bool nuc3d::IOController::ifsolve(double currentTime,int currentStep)
 {
-    double currentTime=myTimeController["currentTime"];
     double tl=myTimeController["tl"];
     
-    int currentStep=myIOController["currentStep"];
     int endStep=myIOController["endStep"];
     
     if((currentTime<=tl)&&(currentStep<endStep))
@@ -194,10 +190,9 @@ bool nuc3d::IOController::ifsolve()
         return false;
 }
 
-bool nuc3d::IOController::ifsave()
+bool nuc3d::IOController::ifsave(int currentStep)
 {
     int saveStep=myIOController["saveStep"];
-    int currentStep=myIOController["currentStep"];
     
     if(currentStep%saveStep==0)
         return true;
@@ -205,10 +200,9 @@ bool nuc3d::IOController::ifsave()
         return false;
 }
 
-bool nuc3d::IOController::ifpost()
+bool nuc3d::IOController::ifpost(int currentStep)
 {
     int postStep=myIOController["postStep"];
-    int currentStep=myIOController["currentStep"];
     
     if(currentStep%postStep==0)
         return true;

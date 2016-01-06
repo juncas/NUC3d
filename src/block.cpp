@@ -589,13 +589,11 @@ void nuc3d::block::solve(fieldOperator3d &myOP,
     
     wall_time=t1-t0;
     istep++;
-    myIO.myIOController["currentStep"]=istep;
     
     dt=myPDE.getDt();
     time+=dt;
     
     myIO.myTimeController["dt"]=dt;
-    myIO.myTimeController["currentTime"]=time;
     
     
     RES=myPDE.getRes();

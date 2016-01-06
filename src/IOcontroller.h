@@ -21,9 +21,9 @@ namespace nuc3d
         
 		IOController();
 		~IOController();
-        bool ifsolve();
-        bool ifsave();
-        bool ifpost();
+        bool ifsolve(double currentTime,int currentStep);
+        bool ifsave(int currentStep);
+        bool ifpost(int currentStep);
         
 	public:
         int getStep(std::string);
