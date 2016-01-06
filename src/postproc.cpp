@@ -73,7 +73,9 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     if(0==myMPI.getMyId())
     {
         myIOfile.open("enstrophy.dat",std::ios::out|std::ios::app);
-        myIOfile<<myIO.getValue("currentTime")<<" "<<enstrophy_glb;
+        myIOfile<<myIO.getValue("currentTime")
+        <<" "
+        <<enstrophy_glb<<"\n";
         myIOfile.close();
     }
     
@@ -205,7 +207,7 @@ void nuc3d::postproc::solveQ(VectorField &prims,
                 
                 w0=wy[idx_xi]-vz[idx_xi];
                 w1=uz[idx_xi]-wx[idx_xi];
-                w2=vx[idx_xi]-vy[idx_xi];
+                w2=vx[idx_xi]-uy[idx_xi];
                 
                 q0=ux[idx_xi]*vy[idx_xi]
                 +ux[idx_xi]*wz[idx_xi]
