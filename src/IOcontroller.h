@@ -23,6 +23,7 @@ namespace nuc3d
 		~IOController();
         bool ifsolve();
         bool ifsave();
+        bool ifpost();
         
 	public:
         int getStep(std::string);

@@ -615,43 +615,50 @@ void nuc3d::block::Post(fieldOperator3d &myOp,
     Field &jac=myFluxes->getJac();
     myPhys.getPrim(jac, myPDE.getQ(), OutPutValue_prim, OutPutValue_acoust);
     
+    myPost->solvePost(OutPutValue_prim,
+                      OutPutValue_acoust,
+                      xyz,
+                      myFluxes->getXi_xyz(),
+                      myFluxes->getEta_xyz(),
+                      myFluxes->getZeta_xyz(),
+                      myOp, mybuffer, myMPI, myBC,myIO);
+    
     if(("yes")==(myIO.getType("PostProc")))
     {
-        myPost->solvePost(OutPutValue_prim,
-                          OutPutValue_acoust,
-                          xyz,
-                          myFluxes->getXi_xyz(),
-                          myFluxes->getEta_xyz(),
-                          myFluxes->getZeta_xyz(),
-                          myOp, mybuffer, myMPI, myBC,myIO);
+        myPost->OutputPost(OutPutValue_prim,
+                           OutPutValue_acoust,
+                           xyz,
+                           myFluxes->getXi_xyz(),
+                           myFluxes->getEta_xyz(),
+                           myFluxes->getZeta_xyz(),
+                           myOp, mybuffer, myMPI, myBC,myIO);
+        
     }
     
-    if (myIO.ifsave())
+    
+}
+
+void nuc3d::block::Output(fieldOperator3d &myOp,
+                          physicsModel &myPhys,
+                          MPIComunicator3d_nonblocking &myMPI,
+                          boundaryCondition &myBC,
+                          IOController &myIO)
+{
+    Field &jac=myFluxes->getJac();
+    myPhys.getPrim(jac, myPDE.getQ(), OutPutValue_prim, OutPutValue_acoust);
+    
+    if(("yes")==(myIO.getType("Binary")))
+        outputQ_binary(myMPI.getMyId(),myPhys);
+    
+    if(("yes")==(myIO.getType("Tecplot")))
     {
-        if(("yes")==(myIO.getType("Binary")))
-            outputQ_binary(myMPI.getMyId(),myPhys);
-        
-        if(("yes")==(myIO.getType("Tecplot")))
-        {
-            outputQ_tecplot(myMPI.getMyId(),myPhys);
-            
-        }
-        
-        if(("yes")==(myIO.getType("PostProc")))
-        {
-            myPost->OutputPost(OutPutValue_prim,
-                               OutPutValue_acoust,
-                               xyz,
-                               myFluxes->getXi_xyz(),
-                               myFluxes->getEta_xyz(),
-                               myFluxes->getZeta_xyz(),
-                               myOp, mybuffer, myMPI, myBC,myIO);
-            
-        }
+        outputQ_tecplot(myMPI.getMyId(),myPhys);
         
     }
     
 }
+
+
 void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
 {
     rho=1.0;

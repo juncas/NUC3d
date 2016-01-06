@@ -95,39 +95,43 @@ namespace nuc3d
                   boundaryCondition &,
                   IOController &);
         
-        void outputQ_tecplot(int,physicsModel&);
-        void outputQ_binary(int,physicsModel&);
-        void inputQ_binary(int,int);
+        void Output(fieldOperator3d &,
+                  physicsModel &,
+                  MPIComunicator3d_nonblocking &,
+                  boundaryCondition &,
+                  IOController &);
+        
+        
     private:
         
-       typedef double (block::*pDer_lag)(const int ,
-                            const int ,
-                            const int ,
-                            const int ,
-                            const int ,
-                            const int ,
-                            const Field &,
-                            int,
-                            int,
-                            int);
+        typedef double (block::*pDer_lag)(const int ,
+                                          const int ,
+                                          const int ,
+                                          const int ,
+                                          const int ,
+                                          const int ,
+                                          const Field &,
+                                          int,
+                                          int,
+                                          int);
         
         pDer_lag der_lag[3]={
-        &nuc3d::block::interpolation_derlag_center_xi,
-        &nuc3d::block::interpolation_derlag_center_eta,
-        &nuc3d::block::interpolation_derlag_center_zeta
+            &nuc3d::block::interpolation_derlag_center_xi,
+            &nuc3d::block::interpolation_derlag_center_eta,
+            &nuc3d::block::interpolation_derlag_center_zeta
         };
         
         
         typedef void (nuc3d::block::*pInitial)(double &rho,
-                                        double &u,
-                                        double &v,
-                                        double &w,
-                                        double &p,
-                                        double &mach,
-                                        double &x,
-                                        double &y,
-                                        double &z,
-                                        double &gamma);
+                                               double &u,
+                                               double &v,
+                                               double &w,
+                                               double &p,
+                                               double &mach,
+                                               double &x,
+                                               double &y,
+                                               double &z,
+                                               double &gamma);
         
         pInitial myInitial[3]={
             &nuc3d::block::initial_default,
@@ -153,25 +157,25 @@ namespace nuc3d
                              double &z,double &gamma);
         
         void initial_ivc(double &rho,
-                             double &u,
-                             double &v,
-                             double &w,
-                             double &p,
-                             double &mach,
-                             double &x,
-                             double &y,
-                             double &z,double &gamma);
+                         double &u,
+                         double &v,
+                         double &w,
+                         double &p,
+                         double &mach,
+                         double &x,
+                         double &y,
+                         double &z,double &gamma);
         
         void initial_taylorgreen(double &rho,
-                             double &u,
-                             double &v,
-                             double &w,
-                             double &p,
-                             double &mach,
-                             double &x,
-                             double &y,
-                             double &z,double &gamma);
-
+                                 double &u,
+                                 double &v,
+                                 double &w,
+                                 double &p,
+                                 double &mach,
+                                 double &x,
+                                 double &y,
+                                 double &z,double &gamma);
+        
         
         void interpolation_lag(const Field &,Field &);
         
@@ -200,31 +204,34 @@ namespace nuc3d
                                               int);
         
         double interpolation_derlag_center_eta(const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const Field &,
-                                              int,
-                                              int,
-                                              int);
+                                               const int ,
+                                               const int ,
+                                               const int ,
+                                               const int ,
+                                               const int ,
+                                               const Field &,
+                                               int,
+                                               int,
+                                               int);
         
         double interpolation_derlag_center_zeta(const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const int ,
-                                              const Field &,
-                                              int,
-                                              int,
-                                              int);
+                                                const int ,
+                                                const int ,
+                                                const int ,
+                                                const int ,
+                                                const int ,
+                                                const Field &,
+                                                int,
+                                                int,
+                                                int);
         
         void readField(std::ifstream &, Field &);
         void writeField(std::ofstream &myFile, Field &myField);
         void readField_binary(std::ifstream &, Field &);
         void writeField_binary(std::ofstream &myFile, Field &myField);
+        void outputQ_tecplot(int,physicsModel&);
+        void outputQ_binary(int,physicsModel&);
+        void inputQ_binary(int,int);
     };
     
 }

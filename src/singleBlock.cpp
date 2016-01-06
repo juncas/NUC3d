@@ -57,20 +57,28 @@ void nuc3d::singleBlock::solvePDE()
         
         if(0==myMPI.getMyId()) myBlock.printStatus();
         
-        postprocess();
+        if (myIO.ifpost()) postprocess();
+        
+        if (myIO.ifsave()) output();
     }
     
     postprocess();
+    output();
+    
     if(0==myMPI.getMyId()) std::cout<<"Calculation finished!!"<<std::endl;
 }
 
 void nuc3d::singleBlock::postprocess()
 {
-    //if(myMPI.getMyId()==0) std::cout<<"Saving data......"<<std::endl;
-    
     myBlock.Post(myOperator, myPhys, myMPI, myBC, myIO);
-    
-    if (myIO.ifsave()) myIO.renewIOcontroller();
+
+    myIO.renewIOcontroller();
+}
+
+void nuc3d::singleBlock::output()
+{
+    myBlock.Output(myOperator, myPhys, myMPI, myBC, myIO);
+    myIO.renewIOcontroller();
 }
 
 

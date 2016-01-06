@@ -16,6 +16,7 @@ myIOController
      {"startStep",0},
      {"endStep",100000},
      {"saveStep",1000},
+     {"postStep",1},
      {"currentStep",0},
      {"Benchmark",0}
  }
@@ -199,6 +200,17 @@ bool nuc3d::IOController::ifsave()
     int currentStep=myIOController["currentStep"];
     
     if(currentStep%saveStep==0)
+        return true;
+    else
+        return false;
+}
+
+bool nuc3d::IOController::ifpost()
+{
+    int postStep=myIOController["postStep"];
+    int currentStep=myIOController["currentStep"];
+    
+    if(currentStep%postStep==0)
         return true;
     else
         return false;
