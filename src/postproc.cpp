@@ -75,7 +75,8 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     if(0==myMPI.getMyId())
     {
         myIOfile.open("enstrophy.dat",std::ios::out|std::ios::app);
-        myIOfile<<time
+        myIOfile<<std::setprecision(12)
+        <<time
         <<" "
         <<enstrophy_glb<<"\n";
         myIOfile.close();
@@ -143,7 +144,7 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     {
         writeField(myIOfile, *iter);
     }
-
+    
     writeField(myIOfile, Q);
     writeField(myIOfile, omega0);
     writeField(myIOfile, omega1);
