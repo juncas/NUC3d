@@ -67,25 +67,29 @@ void nuc3d::postproc::solvePost(VectorField &prims,
 {
     solveQ(prims, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC);
     
-    std::ofstream myIOfile;
+    MPI_Allreduce(&enstrophy, &enstrophy_glb, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     
-    myIOfile.open("enstrophy.dat",std::ios::out|std::ios::app);
-    myIOfile<<myIO.getValue("currentTime")<<" "<<enstrophy;
-    myIOfile.close();
-
+    std::ofstream myIOfile;
+    if(0==myMPI.getMyId())
+    {
+        myIOfile.open("enstrophy.dat",std::ios::out|std::ios::app);
+        myIOfile<<myIO.getValue("currentTime")<<" "<<enstrophy_glb;
+        myIOfile.close();
+    }
+    
 }
 
 void nuc3d::postproc::OutputPost(VectorField &prims,
-                         VectorField &acous,
-                         VectorField &xyz,
-                         VectorField &xi_xyz,
-                         VectorField &eta_xyz,
-                         VectorField &zeta_xyz,
-                         fieldOperator3d &myOP,
-                         VectorBuffer &myBf,
-                         MPIComunicator3d_nonblocking &myMPI,
-                         boundaryCondition &myBC,
-                         IOController &myIO)
+                                 VectorField &acous,
+                                 VectorField &xyz,
+                                 VectorField &xi_xyz,
+                                 VectorField &eta_xyz,
+                                 VectorField &zeta_xyz,
+                                 fieldOperator3d &myOP,
+                                 VectorBuffer &myBf,
+                                 MPIComunicator3d_nonblocking &myMPI,
+                                 boundaryCondition &myBC,
+                                 IOController &myIO)
 {
     std::string forename_flow = ("flowData/Q_step_");
     std::string step;
@@ -137,7 +141,7 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     /* ADD arbitrary number of post values
      writeField(myIOfile, omega2);
      */
-
+    
     
     myIOfile.close();
 }
