@@ -15,6 +15,7 @@
 #include "MPICommunicator.h"
 #include "IOcontroller.h"
 #include "boundaryConditions.hpp"
+#include "postproc.hpp"
 
 #define TILE_SIZE 4;
 
@@ -514,43 +515,9 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
         OutPutValue_acoust.push_back(Field(nx,ny,nz));
     }
     
-    //std::cout<<"Field data has been allocated!"<<std::endl;
+    myPost=std::make_shared<postproc>(nx0,ny0,nz0);
 }
 
-
-void nuc3d::block::solve(fieldOperator3d &myOP,
-                         physicsModel &myPhyMod,
-                         MPIComunicator3d_nonblocking &myMPI,
-                         boundaryCondition &myBC,
-                         IOController &myIO)
-{
-    int step=0;
-    double t0=MPI_Wtime();
-    while (myOP.getSteps()!=step)
-    {
-        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
-        myPDE.solve(myOP, myIO.myTimeController["cfl"],step++);
-    }
-    double t1=MPI_Wtime();
-    
-    wall_time=t1-t0;
-    istep++;
-    myIO.myIOController["currentStep"]=istep;
-    
-    dt=myPDE.getDt();
-    time+=dt;
-    
-    myIO.myTimeController["dt"]=dt;
-    myIO.myTimeController["currentTime"]=time;
-    
-    
-    RES=myPDE.getRes();
-}
-
-void nuc3d::block::printStatus()
-{
-    std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
-}
 
 void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
 {
@@ -605,6 +572,86 @@ void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
     }
 }
 
+void nuc3d::block::solve(fieldOperator3d &myOP,
+                         physicsModel &myPhyMod,
+                         MPIComunicator3d_nonblocking &myMPI,
+                         boundaryCondition &myBC,
+                         IOController &myIO)
+{
+    int step=0;
+    double t0=MPI_Wtime();
+    while (myOP.getSteps()!=step)
+    {
+        myFluxes->solve(myPDE, myOP, mybuffer, myPhyMod, myMPI, myBC);
+        myPDE.solve(myOP, myIO.myTimeController["cfl"],step++);
+    }
+    double t1=MPI_Wtime();
+    
+    wall_time=t1-t0;
+    istep++;
+    myIO.myIOController["currentStep"]=istep;
+    
+    dt=myPDE.getDt();
+    time+=dt;
+    
+    myIO.myTimeController["dt"]=dt;
+    myIO.myTimeController["currentTime"]=time;
+    
+    
+    RES=myPDE.getRes();
+}
+
+void nuc3d::block::printStatus()
+{
+    std::cout<<std::setprecision(6)<<"========step = "<<istep<< "\n time = "<<time<<", dt = "<<dt<<", residual = "<<RES<<", CPU time = "<<wall_time<<"(s) "<<std::endl;
+}
+
+void nuc3d::block::Post(fieldOperator3d &myOp,
+                        physicsModel &myPhys,
+                        MPIComunicator3d_nonblocking &myMPI,
+                        boundaryCondition &myBC,
+                        IOController &myIO)
+{
+    Field &jac=myFluxes->getJac();
+    myPhys.getPrim(jac, myPDE.getQ(), OutPutValue_prim, OutPutValue_acoust);
+    
+    if(("yes")==(myIO.getType("PostProc")))
+    {
+        myPost->solvePost(OutPutValue_prim,
+                          OutPutValue_acoust,
+                          xyz,
+                          myFluxes->getXi_xyz(),
+                          myFluxes->getEta_xyz(),
+                          myFluxes->getZeta_xyz(),
+                          myOp, mybuffer, myMPI, myBC,myIO);
+    }
+    
+    if (myIO.ifsave())
+    {
+        if(("yes")==(myIO.getType("Binary")))
+            outputQ_binary(myMPI.getMyId(),myPhys);
+        
+        if(("yes")==(myIO.getType("Tecplot")))
+        {
+            outputQ_tecplot(myMPI.getMyId(),myPhys);
+            
+        }
+        
+        if(("yes")==(myIO.getType("PostProc")))
+        {
+            myPost->OutputPost(OutPutValue_prim,
+                               OutPutValue_acoust,
+                               xyz,
+                               myFluxes->getXi_xyz(),
+                               myFluxes->getEta_xyz(),
+                               myFluxes->getZeta_xyz(),
+                               myOp, mybuffer, myMPI, myBC,myIO);
+            
+        }
+        
+    }
+    
+}
 void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
 {
     rho=1.0;
@@ -660,12 +707,6 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     
     myIOfile.open(filename_flow);
     
-    Field &jac=myFluxes->getJac();
-    int nx0=jac.getSizeX();
-    int ny0=jac.getSizeY();
-    int nz0=jac.getSizeZ();
-    myPhys.getPrim(jac, myPDE.getQ(), OutPutValue_prim, OutPutValue_acoust);
-    
     std::string TECplotHeader[2]={"title=NUC3d\n",
         "variables=x,y,z"};
     
@@ -673,7 +714,6 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
     <<TECplotHeader[1];
     
     for(int i=0;i<(OutPutValue_prim.size()+OutPutValue_acoust.size());i++)
-    //for(int i=0;i<(myFluxes->Flux_xi.FluxL.size()+myFluxes->Flux_eta.FluxL.size()+myFluxes->Flux_zeta.FluxL.size());i++)
     {
         std::string head("Val_");
         std::string temp;
@@ -684,9 +724,8 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
         myIOfile<<","<<head+temp;
     }
     
-    myIOfile<<"\n Zone I = "<<nx0+1<<", J= "<<ny0+1<<", K="<<nz0+1
+    myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
-    //<<xyz.size()+myFluxes->Flux_xi.FluxL.size()+myFluxes->Flux_eta.FluxL.size()+myFluxes->Flux_zeta.FluxL.size()
     <<xyz.size()+OutPutValue_prim.size()+OutPutValue_acoust.size()
     <<"]=CELLCENTERED)\n";
     
@@ -695,31 +734,18 @@ void nuc3d::block::outputQ_tecplot(int myID,physicsModel &myPhys)
         writeField(myIOfile, *iter);
     }
     
-//    for(auto iter=myPDE.RHS.begin();iter!=myPDE.RHS.end();iter++)
-//    {
-//        writeField(myIOfile, *iter);
-//    }
-//    
-//    for(auto iter=myFluxes->dgdeta.begin();iter!=myFluxes->dgdeta.end();iter++)
-//    {
-//        writeField(myIOfile, *iter);
-//    }
-//    
-//    for(auto iter=myFluxes->dhdzeta.begin();iter!=myFluxes->dhdzeta.end();iter++)
-//    {
-//        writeField(myIOfile, *iter);
-//    }
+    for(auto iter=OutPutValue_prim.begin();iter!=OutPutValue_prim.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
     
-        for(auto iter=OutPutValue_prim.begin();iter!=OutPutValue_prim.end();iter++)
-        {
-            writeField(myIOfile, *iter);
-        }
+    for(auto iter=OutPutValue_acoust.begin();iter!=OutPutValue_acoust.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
     
-        for(auto iter=OutPutValue_acoust.begin();iter!=OutPutValue_acoust.end();iter++)
-        {
-            writeField(myIOfile, *iter);
-        }
-
+    myIOfile.close();
+    
 }
 
 void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
@@ -748,6 +774,8 @@ void nuc3d::block::outputQ_binary(int myID,physicsModel &myPhys)
     {
         writeField_binary(myIOfile,*iter);
     }
+    
+    myIOfile.close();
     
 }
 
@@ -779,6 +807,8 @@ void nuc3d::block::inputQ_binary(int myID,int step0)
     {
         readField_binary(myIOfile,*iter);
     }
+    
+    myIOfile.close();
     
 }
 
@@ -820,6 +850,4 @@ void nuc3d::block::readField_binary(std::ifstream &myFile, nuc3d::Field &myField
         }
     }
 }
-
-
 

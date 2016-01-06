@@ -53,8 +53,6 @@ namespace nuc3d
         
         void postprocess();
         
-        void output();
-                    
     private:
         void readData(std::ifstream &, VectorField &);
         void writeData(std::ofstream &, VectorField &);

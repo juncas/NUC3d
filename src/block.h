@@ -22,7 +22,7 @@ namespace nuc3d
     class MPIComunicator3d_nonblocking;
     class boundaryCondition;
     class IOController;
-    
+    class postproc;
     
     static double lag_coeff[4][5]={
         {35.0/128.0,35.0/32.0,-35.0/64.0,7.0/32.0,-5.0/128.0},
@@ -54,7 +54,6 @@ namespace nuc3d
         VectorField OutPutValue_acoust;
         
         PDEData3d myPDE;
-        
         /*
          this shared point could be:
          - EulerData3D;
@@ -63,6 +62,7 @@ namespace nuc3d
          - NaiverStokesReactiveData3d;
          */
         std::shared_ptr<EulerData3D> myFluxes;
+        std::shared_ptr<postproc> myPost;
         
         VectorBuffer mybuffer;
         
@@ -88,6 +88,13 @@ namespace nuc3d
                    IOController &);
         
         void printStatus();
+        
+        void Post(fieldOperator3d &,
+                  physicsModel &,
+                  MPIComunicator3d_nonblocking &,
+                  boundaryCondition &,
+                  IOController &);
+        
         void outputQ_tecplot(int,physicsModel&);
         void outputQ_binary(int,physicsModel&);
         void inputQ_binary(int,int);

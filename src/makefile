@@ -19,7 +19,8 @@ TVD-RK3.cpp\
  	weno5z.cpp\
 	upwind1st.cpp\
 	centraldifference2nd.cpp\
- 	schemes.cpp
+ 	schemes.cpp\
+	postproc.cpp
 OBJS=$(srcs:.cpp=.o)
 
 %.o:%.cpp

@@ -82,6 +82,7 @@ namespace nuc3d
         VectorField& getAcoustics();
         
         void initialxyz(VectorField &);
+        
         Field& getJac(){return jacobian;};
         VectorField& getXi_xyz(){return xi_xyz;};
         VectorField& getEta_xyz(){return eta_xyz;};

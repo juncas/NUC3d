@@ -33,7 +33,8 @@ myIOFileType
 (
 {
     {"Binary","yes"},
-    {"Tecplot","yes"}
+    {"Tecplot","yes"},
+    {"PostProc","yes"}
 }
  )
 {

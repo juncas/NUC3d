@@ -63,7 +63,6 @@ void nuc3d::boundaryCondition::initialBC(VectorBuffer &myBuffer,
     myFile.close();
     myMPI.setTopo(BCTopo);
     
-    
 }
 
 
@@ -107,6 +106,7 @@ void nuc3d::boundaryCondition::setBC(PDEData3d &myPDE,
         }
     }
 }
+
 //Inlet condition
 void nuc3d::boundaryCondition::setBC_Inlet(PDEData3d &myPDE,
                                            physicsModel &myPhyMod,
@@ -698,7 +698,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_xi(PDEData3d &myPDE,
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
-    const int bfsize=myBf[0].bufferWidth;    
+    const int bfsize=myBf[0].bufferWidth;
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1453,7 +1453,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
     
     
     for(auto iter=q.begin();iter!=q.end();iter++)
-    {        
+    {
         for(int k=0;k<bfsize;k++)
         {
             for(int j=0;j<ny;j++)

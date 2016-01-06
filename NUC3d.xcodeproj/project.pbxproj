@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E30F01A11BD646440091F90C /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F019F1BD646440091F90C /* block.cpp */; };
 		E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F01A21BD646F50091F90C /* singleBlock.cpp */; };
+		E3156F2E1C3AC1AD0001B3D2 /* postproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */; };
 		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; };
 		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; };
 		E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642891BD1329B007BB96D /* IOcontroller.cpp */; };
@@ -49,6 +50,8 @@
 		E30F01A01BD646440091F90C /* block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = block.h; path = src/block.h; sourceTree = SOURCE_ROOT; };
 		E30F01A21BD646F50091F90C /* singleBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = singleBlock.cpp; path = src/singleBlock.cpp; sourceTree = SOURCE_ROOT; };
 		E30F01A31BD646F50091F90C /* singleBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = singleBlock.h; path = src/singleBlock.h; sourceTree = SOURCE_ROOT; };
+		E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = postproc.cpp; path = src/postproc.cpp; sourceTree = SOURCE_ROOT; };
+		E3156F2D1C3AC1AD0001B3D2 /* postproc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = postproc.hpp; path = src/postproc.hpp; sourceTree = SOURCE_ROOT; };
 		E346427B1BD131C9007BB96D /* NUC3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NUC3d; sourceTree = BUILT_PRODUCTS_DIR; };
 		E34642861BD1329B007BB96D /* euler3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = euler3d.cpp; path = src/euler3d.cpp; sourceTree = SOURCE_ROOT; };
 		E34642871BD1329B007BB96D /* MPICommunicator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicator.cpp; path = src/MPICommunicator.cpp; sourceTree = SOURCE_ROOT; };
@@ -105,6 +108,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E3156F2B1C3AC18F0001B3D2 /* post */ = {
+			isa = PBXGroup;
+			children = (
+				E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */,
+				E3156F2D1C3AC1AD0001B3D2 /* postproc.hpp */,
+			);
+			name = post;
+			sourceTree = "<group>";
+		};
 		E34642721BD131C9007BB96D = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +136,7 @@
 		E346427D1BD131C9007BB96D /* NUC3d */ = {
 			isa = PBXGroup;
 			children = (
+				E3156F2B1C3AC18F0001B3D2 /* post */,
 				E34642B41BD13418007BB96D /* BoundaryConditions */,
 				E34642AE1BD133BF007BB96D /* Field */,
 				E34642B01BD133CD007BB96D /* FieldOperator */,
@@ -293,6 +306,7 @@
 				E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */,
 				E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */,
 				E30F01A11BD646440091F90C /* block.cpp in Sources */,
+				E3156F2E1C3AC1AD0001B3D2 /* postproc.cpp in Sources */,
 				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
 				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */,
 				E38279D51C1DC79D00CBAB14 /* centraldifference2nd.cpp in Sources */,
