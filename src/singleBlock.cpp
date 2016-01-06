@@ -85,7 +85,7 @@ void nuc3d::singleBlock::postprocess()
 void nuc3d::singleBlock::output()
 {
     if(0==myMPI.getMyId()) std::cout<<"Saving..."<<std::endl;
-    if(0==myMPI.getMyId()) std::cout<<myIO.getStep("saveStep")<<std::endl;
+    if(0==myMPI.getMyId()) std::cout<<myIO.getStep("currentStep")<<std::endl;
     myBlock.Output(myOperator, myPhys, myMPI, myBC, myIO);
     myIO.renewIOcontroller();
 }
