@@ -70,8 +70,10 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     solveQ(prims, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC);
     
     MPI_Allreduce(&enstrophy, &enstrophy_glb, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     
     MPI_Allreduce(&kinetic, &kinetic_glb, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     
     std::ofstream myIOfile;
     if(0==myMPI.getMyId())
@@ -80,7 +82,9 @@ void nuc3d::postproc::solvePost(VectorField &prims,
         myIOfile<<std::setprecision(12)
         <<time
         <<" "
-        <<enstrophy_glb<<"\n";
+        <<enstrophy_glb
+        <<" "
+        <<kinetic_glb<<"\n";
         myIOfile.close();
     }
     
