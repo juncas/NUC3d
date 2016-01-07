@@ -661,8 +661,8 @@ void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,dou
 {
     rho=1.0;
     u=1.0;
-    v=1.0;
-    w=1.0;
+    v=0.0;
+    w=0.0;
     p=1.0/(mach*mach*gamma);
     
 }
