@@ -71,6 +71,8 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     
     MPI_Allreduce(&enstrophy, &enstrophy_glb, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     
+    MPI_Allreduce(&kinetic, &kinetic_glb, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    
     std::ofstream myIOfile;
     if(0==myMPI.getMyId())
     {
@@ -166,7 +168,7 @@ void nuc3d::postproc::solveQ(VectorField &prims,
                              MPIComunicator3d_nonblocking &myMPI,
                              boundaryCondition &myBC)
 {
-    
+    Field &rho=prims[0];
     Field &u=prims[1];
     Field &v=prims[2];
     Field &w=prims[3];
@@ -180,6 +182,11 @@ void nuc3d::postproc::solveQ(VectorField &prims,
     int nx=Q.getSizeX();
     int ny=Q.getSizeY();
     int nz=Q.getSizeZ();
+    
+    double *prho=rho.getDataPtr();
+    double *pu=u.getDataPtr();
+    double *pv=v.getDataPtr();
+    double *pw=w.getDataPtr();
     
     double *ux=u_x.getDataPtr();
     double *uy=u_y.getDataPtr();
@@ -199,6 +206,7 @@ void nuc3d::postproc::solveQ(VectorField &prims,
     double *pQ=Q.getDataPtr();
     
     enstrophy=0.0;
+    kinetic=0.0;
     
     for (int k=0; k<nz; k++)
     {
@@ -226,6 +234,9 @@ void nuc3d::postproc::solveQ(VectorField &prims,
                 pOmega2[idx_xi]=w2;
                 pQ[idx_xi]=q0;
                 enstrophy+=0.5*(w0*w0+w1*w1+w2*w2);
+                kinetic+=0.5*prho[idx_xi]*(pu[idx_xi]*pu[idx_xi]
+                                           +pv[idx_xi]*pv[idx_xi]
+                                           +pw[idx_xi]*pw[idx_xi]);
             }
         }
     }

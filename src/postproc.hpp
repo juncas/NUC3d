@@ -49,6 +49,7 @@ namespace nuc3d
         Field w_x,w_y,w_z;
         
         double enstrophy_glb,enstrophy;
+        double kinetic_glb,kinetic;
         
     public:
         postproc(int,int,int);
