@@ -250,7 +250,7 @@ void nuc3d::physicsModel::initial(PDEData3d &myPDE,std::shared_ptr<EulerData3D> 
 
 void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                                    const Field &Jacobian,
-                                   const VectorField &Q_vec,
+                                   VectorField &Q_vec,
                                    VectorField &W_vec,
                                    VectorField &W0_vec
                                    )
@@ -323,6 +323,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                                               e,
                                               alpha);
                 
+                pRhoE[idx]=(e*rho+0.5*rho*(u*u+v*v+w*w))/jac;
                 pRho0[idx]=rho;
                 pU0[idx]=u;
                 pV0[idx]=v;

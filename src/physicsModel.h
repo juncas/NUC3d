@@ -164,7 +164,7 @@ namespace nuc3d
         
         void con2prim(const std::string &,
                       const Field &,
-                      const VectorField &,
+                      VectorField &,
                       VectorField &,
                       VectorField &);
         
