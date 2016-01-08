@@ -68,6 +68,22 @@ namespace nuc3d
         VectorField &getVisFlux_eta(){return Flux_eta_vis;};
         VectorField &getVisFlux_zeta(){return Flux_zeta_vis;};
         
+        Field &getUXi(){return du.getf_xi();};
+        Field &getUEta(){return du.getf_eta();};
+        Field &getUZeta(){return du.getf_zeta();};
+        
+        Field &getVXi(){return dv.getf_xi();};
+        Field &getVEta(){return dv.getf_eta();};
+        Field &getVZeta(){return dv.getf_zeta();};
+        
+        Field &getWXi(){return dw.getf_xi();};
+        Field &getWEta(){return dw.getf_eta();};
+        Field &getWZeta(){return dw.getf_zeta();};
+        
+        Field &getTXi(){return dT.getf_xi();};
+        Field &getTEta(){return dT.getf_eta();};
+        Field &getTZeta(){return dT.getf_zeta();};
+        
     public:
         
         virtual void solve(PDEData3d &,
