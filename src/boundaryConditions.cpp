@@ -1534,7 +1534,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 
                 double value=-u[idx];
                 
-                pRecv[idx_xi]=0;
+                pRecv[idx_xi]=value;
                 
             }
         }
@@ -1559,7 +1559,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 
                 double value=-v[idx];
                 
-                pRecv[idx_xi]=0;
+                pRecv[idx_xi]=value;
                 
             }
         }
@@ -1584,7 +1584,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 
                 double value=-w[idx];
                 
-                pRecv[idx_xi]=0;
+                pRecv[idx_xi]=value;
                 
             }
         }
@@ -2383,7 +2383,7 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_wall_eta(PDEData3d &myPDE,
                     int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
                     int idx=nx*ny*k+nx*j+iblock;
                     
-                    double value=pFlux[idx];
+                    double value=-pFlux[idx];
                     
                     pRecv[idx_xi]=value;
                 }
