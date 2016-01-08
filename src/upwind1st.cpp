@@ -349,8 +349,8 @@ void nuc3d::upwind1st::upwind1stnBR(const Field & fieldIN,
         {
             for(int i=ibeg;i<iend;i++)
             {
-                int idx_rf=nx0*ny0*k+nx0*j+i;
-                if((i+1)<0)
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
+                if((i+1)>=nx)
                 {
                     int idx_BND=nxBND*nyBND*k+nxBND*j+i+1-nx;
                     
