@@ -1573,15 +1573,17 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 q[2]=prim[3].getValue(i,jblock,k);
                 q[3]=accu[0].getValue(i,jblock,k);
                 
-                
                 double U=xi_x*q[0]+xi_y*q[1]+xi_z*q[2];
                 double V=eta_x*q[0]+eta_y*q[1]+eta_z*q[2];
                 double W=zeta_x*q[0]+zeta_y*q[1]+zeta_z*q[2];
                 
-                q[0]=-x_xi*U-x_eta*V-x_zeta*W;
-                q[1]=-y_xi*U-y_eta*V-y_zeta*W;
-                q[2]=-z_xi*U-z_eta*V-z_zeta*W;
+//                q[0]=-x_xi*U-x_eta*V-x_zeta*W;
+//                q[1]=-y_xi*U-y_eta*V-y_zeta*W;
+//                q[2]=-z_xi*U-z_eta*V-z_zeta*W;
                 
+                q[0]*=-1.0;
+                q[1]*=-1.0;
+                q[2]*=-1.0;
                 
                 int idx_xi=bfsize*nz*i+bfsize*k+jbuff;
                 
@@ -1592,7 +1594,6 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                     pRecv[idx_xi]=q[iter];
                 }
             }
-            
         }
     }
 }
