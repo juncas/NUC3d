@@ -1290,11 +1290,10 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
         {
             for(int i=0;i<bfsize;i++)
             {
-                int iblock=lr*(nx-1)+(1-2*lr)*i;
-                q[0]=prim[1].getValue(iblock,j,k);
-                q[1]=prim[2].getValue(iblock,j,k);
-                q[2]=prim[3].getValue(iblock,j,k);
-                q[3]=accu[0].getValue(iblock,j,k);
+                q[0]=prim[1].getValue(lr*(nx-1),j,k);
+                q[1]=prim[2].getValue(lr*(nx-1),j,k);
+                q[2]=prim[3].getValue(lr*(nx-1),j,k);
+                q[3]=accu[0].getValue(lr*(nx-1),j,k);
                 
                 int idx_xi=bfsize*ny*k+bfsize*j+i;
                 
