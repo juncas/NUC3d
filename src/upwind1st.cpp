@@ -51,8 +51,8 @@ void nuc3d::upwind1st::upwind1stp(const Field & fieldIN,
     int nz=fieldIN.getSizeZ();
     
     int nx0=fieldOUT.getSizeX();
-    int ny0=fieldOUT.getSizeX();
-    int nz0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizey();
+    int nz0=fieldOUT.getSizeZ();
     
     int ibeg=(tilesize-1);
     int iend=nx-tilesize;

@@ -175,30 +175,6 @@ void  nuc3d::physicsModel::solveRiemann(PDEData3d &myPDE,EulerData3D *myEuler)
                       myEuler->getFluxZeta());
     else
         std::cout << "Riemann Solver " << myRiemannName << " does not exist!" << std::endl;
-    
-    //    RiemannSolver(myRiemannName,
-    //                  myEuler->jacobian,
-    //                  myEuler->xi_xyz,
-    //                  myEuler->W_Euler,
-    //                  myEuler->W0_Euler,
-    //                  myPDE.getQ(),
-    //                  myEuler->Flux_xi);
-    //
-    //    RiemannSolver(myRiemannName,
-    //                  myEuler->jacobian,
-    //                  myEuler->eta_xyz,
-    //                  myEuler->W_Euler,
-    //                  myEuler->W0_Euler,
-    //                  myPDE.getQ(),
-    //                  myEuler->Flux_eta);
-    //
-    //    RiemannSolver(myRiemannName,
-    //                  myEuler->jacobian,
-    //                  myEuler->zeta_xyz,
-    //                  myEuler->W_Euler,
-    //                  myEuler->W0_Euler,
-    //                  myPDE.getQ(),
-    //                  myEuler->Flux_zeta);
 }
 
 
@@ -755,7 +731,7 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
             }
         }
     }
-
+    
     myFlux_xi.maxEigen=MaxEigen_xi;
     myFlux_eta.maxEigen=MaxEigen_eta;
     myFlux_zeta.maxEigen=MaxEigen_zeta;
@@ -806,7 +782,7 @@ double nuc3d::physicsModel::getMachL(const double &mach)
     double MachL;
     
     if (std::abs(mach) < 1.0)
-        MachL = 0.25*pow((mach + 1.0), 2)+0.125*pow((mach*mach-1), 2.0);
+        MachL = 0.25*pow((mach + 1.0), 2.0)+0.125*pow((mach*mach-1), 2.0);
     else
         MachL = 0.50*(mach + std::abs(mach));
     
@@ -820,7 +796,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     double MachR;
     
     if (std::abs(mach) < 1.0)
-        MachR = -0.25*pow((mach - 1.0), 2)-0.125*pow((mach*mach-1), 2.0);
+        MachR = -0.25*pow((mach - 1.0), 2.0)-0.125*pow((mach*mach-1), 2.0);
     else
         MachR = 0.50*(mach - std::abs(mach));
     
@@ -832,7 +808,7 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {
     double pressureL;
     if (std::abs(mach) < 1.0)
-        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach)+0.1875*mach*pow((mach*mach-1.0),2.0));
+        pressureL = p*(0.25*pow((mach + 1.0), 2.0)*(2.0 - mach)+0.1875*mach*pow((mach*mach-1.0),2.0));
     else
         pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
     
@@ -843,7 +819,7 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 {
     double pressureR;
     if (std::abs(mach) < 1.0)
-        pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach)-0.1875*mach*pow((mach*mach-1.0),2.0));
+        pressureR = p*(0.25*pow(mach - 1.0, 2.0)*(2.0 + mach)-0.1875*mach*pow((mach*mach-1.0),2.0));
     else
         pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
     
