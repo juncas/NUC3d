@@ -660,7 +660,7 @@ void nuc3d::block::Output(fieldOperator3d &myOp,
 void nuc3d::block::initial_default(double &rho,double &u,double &v,double &w,double &p,double &mach,double &x,double &y,double &z,double &gamma)
 {
     rho=1.0;
-    u=1.0;
+    u=0.0;
     v=0.0;
     w=0.0;
     p=1.0/(mach*mach*gamma);
