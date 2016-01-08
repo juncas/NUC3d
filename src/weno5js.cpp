@@ -367,13 +367,13 @@ void nuc3d::weno5js::weno5jsnBL(const Field & fieldIN,
                 
                 
                 is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2.0)
-                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
                 
                 is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2.0)
-                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2.0);
                 
                 is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*f[0]

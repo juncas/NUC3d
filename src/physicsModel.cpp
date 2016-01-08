@@ -898,10 +898,10 @@ double nuc3d::physicsModel::EoSIdealGasgetPressure(const double &rho,
     if(temp<0.0)
     {
         std::cout<<"negative pressure!!!"<<std::endl;
-        exit(-1);
-        //temp=std::abs(temp);
+        //exit(-1);
+        temp=std::pow(rho,gamma);
     }
-    return ((E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0));
+    return temp;
 }
 
 double nuc3d::physicsModel::EoSIdealGasgetTemp(const double &rho,
