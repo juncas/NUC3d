@@ -296,11 +296,11 @@ void nuc3d::upwind1st::upwind1stpBR(const Field & fieldIN,
         {
             for(int i=ibeg;i<iend;i++)
             {
-                int idx_rf=nx0*ny0*k+nx0*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
                 if(i>=nx)
                 {
-                    int idx_BND=nxBND*nyBND*k+nxBND*j+i;
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+i-nx;
                     
                     pOut[idx_rf]=pBND[idx_BND];
                 }
@@ -352,7 +352,7 @@ void nuc3d::upwind1st::upwind1stnBR(const Field & fieldIN,
                 int idx_rf=nx0*ny0*k+nx0*j+i;
                 if((i+1)<0)
                 {
-                    int idx_BND=nxBND*nyBND*k+nxBND*j+i+1;
+                    int idx_BND=nxBND*nyBND*k+nxBND*j+i+1-nx;
                     
                     pOut[idx_rf]=pBND[idx_BND];
                 }
