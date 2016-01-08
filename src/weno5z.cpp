@@ -52,8 +52,8 @@ void nuc3d::weno5z::weno5zp(const Field & fieldIN,
     int nz=fieldIN.getSizeZ();
     
     int nx0=fieldOUT.getSizeX();
-    int ny0=fieldOUT.getSizeX();
-    int nz0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
     
     int ibeg=(tilesize-1);
     int iend=nx-tilesize;
@@ -131,8 +131,8 @@ void nuc3d::weno5z::weno5zn(const Field & fieldIN,
     int nz=fieldIN.getSizeZ();
     
     int nx0=fieldOUT.getSizeX();
-    int ny0=fieldOUT.getSizeX();
-    int nz0=fieldOUT.getSizeX();
+    int ny0=fieldOUT.getSizeY();
+    int nz0=fieldOUT.getSizeZ();
     
     int ibeg=(tilesize-1);
     int iend=nx-tilesize;
@@ -477,12 +477,12 @@ void nuc3d::weno5z::weno5zpBR(const Field & fieldIN,
         {
             for(int i=ibeg;i<iend;i++)
             {
-                int idx_rf=nx0*ny0*k+nx0*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 for(int z=-2;z<=2;z++)
                 {
                     if((i+z)>=nx)
                     {
-                        int idx_BND=nxBND*nyBND*k+nxBND*j+i+z;
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+i+z-nx;
                         
                         f[2+z]=pBND[idx_BND];
                     }
@@ -576,13 +576,13 @@ void nuc3d::weno5z::weno5znBR(const Field & fieldIN,
         {
             for(int i=ibeg;i<iend;i++)
             {
-                int idx_rf=nx0*ny0*k+nx0*j+i;
+                int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
                 for(int z=-2;z<=2;z++)
                 {
-                    if((i-z+1)<0)
+                    if((i-z+1)>=nx)
                     {
-                        int idx_BND=nxBND*nyBND*k+nxBND*j+i-z+1;
+                        int idx_BND=nxBND*nyBND*k+nxBND*j+i-z+1-nx;
                         
                         f[2+z]=pBND[idx_BND];
                     }
