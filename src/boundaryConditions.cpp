@@ -1532,7 +1532,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
                 int idx=nx*ny*k+nx*j+iblock;
                 
-                double value=-u[idx];
+                double value=u[idx];
                 
                 pRecv[idx_xi]=value;
                 
@@ -1557,7 +1557,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
                 int idx=nx*ny*k+nx*j+iblock;
                 
-                double value=-v[idx];
+                double value=v[idx];
                 
                 pRecv[idx_xi]=value;
                 
@@ -1582,7 +1582,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                 int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
                 int idx=nx*ny*k+nx*j+iblock;
                 
-                double value=-w[idx];
+                double value=w[idx];
                 
                 pRecv[idx_xi]=value;
                 
