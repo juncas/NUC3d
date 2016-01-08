@@ -1331,11 +1331,11 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
         {
             for(int i=0;i<nx;i++)
             {
+                
                 q[0]=prim[1].getValue(i,lr*(ny-1),k);
                 q[1]=prim[2].getValue(i,lr*(ny-1),k);
                 q[2]=prim[3].getValue(i,lr*(ny-1),k);
                 q[3]=accu[0].getValue(i,lr*(ny-1),k);
-                
                 int idx_xi=bfsize*nz*i+bfsize*k+j;
 
                 
@@ -2383,7 +2383,7 @@ void nuc3d::boundaryCondition::VisFluxBCsetter_wall_eta(PDEData3d &myPDE,
                     int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
                     int idx=nx*ny*k+nx*j+iblock;
                     
-                    double value=-pFlux[idx];
+                    double value=pFlux[idx];
                     
                     pRecv[idx_xi]=value;
                 }
