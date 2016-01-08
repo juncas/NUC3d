@@ -812,6 +812,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_xi(PDEData3d &myPDE,
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
+    
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -870,7 +871,6 @@ void nuc3d::boundaryCondition::BCsetter_symm_xi(PDEData3d &myPDE,
                     pRecv[idx_xi]=fluxr[iter-myBf.begin()];
                 }
             }
-            
         }
     }
 }
@@ -942,6 +942,7 @@ void nuc3d::boundaryCondition::BCsetter_symm_eta(PDEData3d &myPDE,
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
+                
                 q[1]=x_xi*U-x_eta*V+x_zeta*W;
                 q[2]=y_xi*U-y_eta*V+y_zeta*W;
                 q[3]=z_xi*U-z_eta*V+z_zeta*W;
