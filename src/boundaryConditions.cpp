@@ -1546,7 +1546,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_xi(PDEData3d &myPDE,
                                                    VectorBuffer &myBf,
                                                    int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -1632,7 +1632,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                                                     VectorBuffer &myBf,
                                                     int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -1721,7 +1721,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
                                                      VectorBuffer &myBf,
                                                      int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -1837,7 +1837,7 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_xi(PDEData3d &myPDE,
                                                    VectorBuffer &myBf,
                                                    int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -1923,7 +1923,7 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_eta(PDEData3d &myPDE,
                                                     VectorBuffer &myBf,
                                                     int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
@@ -2012,7 +2012,7 @@ void nuc3d::boundaryCondition::VisBCsetter_symm_zeta(PDEData3d &myPDE,
                                                      VectorBuffer &myBf,
                                                      int lr)
 {
-    std::vector<double> q(4);
+    std::vector<double> q(4,1.0);
     
     Field &jac=myFluxes.getJac();
     VectorField &xi_xyz=myFluxes.getXi_xyz();
