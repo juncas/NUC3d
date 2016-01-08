@@ -120,7 +120,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          boundaryCondition &myBC)
 {
     
-    //setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
+    setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     solveViscousFlux(myModel);
     setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);

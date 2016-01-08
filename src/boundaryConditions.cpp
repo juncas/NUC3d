@@ -1080,6 +1080,7 @@ void nuc3d::boundaryCondition::setVisBC_Inlet(PDEData3d &myPDE,
                                               VectorBuffer &myBf,
                                               int iface)
 {
+    std::cout<<"vis bc inlet"<<std::endl;
     switch (iface) {
         case 0:
             VisBCsetter_inlet_xi(myPDE,myPhyMod,myFluxes,myBf,0);
@@ -1247,6 +1248,7 @@ void nuc3d::boundaryCondition::setVisBC_Outlet(PDEData3d &myPDE,
                                                VectorBuffer &myBf,
                                                int iface)
 {
+    std::cout<<"vis bc outlet"<<std::endl;
     switch (iface) {
         case 0:
             VisBCsetter_outlet_xi(myPDE,myPhyMod,myFluxes,myBf,0);
@@ -1518,6 +1520,7 @@ void nuc3d::boundaryCondition::setVisBC_wall(PDEData3d &myPDE,
                                              VectorBuffer &myBf,
                                              int iface)
 {
+    std::cout<<"vis bc wall"<<std::endl;
     switch (iface) {
         case 0:
             VisBCsetter_wall_xi(myPDE,myPhyMod,myFluxes,myBf,0);
@@ -1808,6 +1811,7 @@ void nuc3d::boundaryCondition::setVisBC_symm(PDEData3d &myPDE,
                                              VectorBuffer &myBf,
                                              int iface)
 {
+    std::cout<<"vis bc symm"<<std::endl;
     switch (iface) {
         case 0:
             VisBCsetter_symm_xi(myPDE,myPhyMod,myFluxes,myBf,0);
