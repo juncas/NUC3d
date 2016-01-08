@@ -1515,7 +1515,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
     int nx,ny,nz;
     double *pRecv;
     
-    pRecv=myBf[0].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[0].BufferRecv[2+lr].getDataPtr();
     double *u=myFluxes.getUEta().getDataPtr();
     nx=myFluxes.getUEta().getSizeX();
     ny=myFluxes.getUEta().getSizeY();
@@ -1540,7 +1540,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
         }
     }
     
-    pRecv=myBf[1].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[1].BufferRecv[2+lr].getDataPtr();
     double *v=myFluxes.getVEta().getDataPtr();
     nx=myFluxes.getVEta().getSizeX();
     ny=myFluxes.getVEta().getSizeY();
@@ -1565,7 +1565,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
         }
     }
     
-    pRecv=myBf[2].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[2].BufferRecv[2+lr].getDataPtr();
     double *w=myFluxes.getWEta().getDataPtr();
     nx=myFluxes.getWEta().getSizeX();
     ny=myFluxes.getWEta().getSizeY();
@@ -1590,7 +1590,7 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
         }
     }
     
-    pRecv=myBf[3].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[3].BufferRecv[2+lr].getDataPtr();
     double *T=myFluxes.getTEta().getDataPtr();
     nx=myFluxes.getTEta().getSizeX();
     ny=myFluxes.getTEta().getSizeY();
