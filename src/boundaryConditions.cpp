@@ -1514,88 +1514,111 @@ void nuc3d::boundaryCondition::VisBCsetter_wall_eta(PDEData3d &myPDE,
                                                     VectorBuffer &myBf,
                                                     int lr)
 {
-    double q[4];
-    
-    Field &jac=myFluxes.getJac();
-    VectorField &xi_xyz=myFluxes.getXi_xyz();
-    VectorField &eta_xyz=myFluxes.getEta_xyz();
-    VectorField &zeta_xyz=myFluxes.getZeta_xyz();
-    
-    VectorField &dx=myFluxes.getDx();
-    VectorField &dy=myFluxes.getDy();
-    VectorField &dz=myFluxes.getDz();
-    
-    VectorField &prim=myFluxes.getPrimatives();
-    VectorField &accu=myFluxes.getAcoustics();
-    
-    const int nx=myFluxes.nx;
-    const int ny=myFluxes.ny;
-    const int nz=myFluxes.nz;
     const int bfsize=myBf[0].bufferWidth;
+    int nx,ny,nz;
+    double *pRecv;
     
+    pRecv=myBf[0].BufferRecv[lr].getDataPtr();
+    double *u=myFluxes.getUEta().getDataPtr();
+    nx=myFluxes.getUEta().getSizeX();
+    ny=myFluxes.getUEta().getSizeY();
+    nz=myFluxes.getUEta().getSizeZ();
     for(int k=0;k<nz;k++)
     {
-        for(int j=0;j<bfsize;j++)
+        for(int j=0;j<ny;j++)
         {
-            for(int i=0;i<nx;i++)
+            for(int i=0;i<bfsize;i++)
             {
-                int jblock=lr*(ny-1)+(1-2*lr)*j;
-                int jbuff=(bfsize-1)*(1-lr)-(1-2*lr)*j;
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
                 
-                double jacob=jac.getValue(i,jblock,k);
+                int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
+                int idx=nx*ny*k+nx*j+iblock;
                 
-                double xi_x=xi_xyz[0].getValue(i,jblock,k);
-                double xi_y=xi_xyz[1].getValue(i,jblock,k);
-                double xi_z=xi_xyz[2].getValue(i,jblock,k);
+                double value=-u[idx];
                 
-                double eta_x=eta_xyz[0].getValue(i,jblock,k);
-                double eta_y=eta_xyz[1].getValue(i,jblock,k);
-                double eta_z=eta_xyz[2].getValue(i,jblock,k);
+                pRecv[idx_xi]=value;
                 
-                double zeta_x=zeta_xyz[0].getValue(i,jblock,k);
-                double zeta_y=zeta_xyz[1].getValue(i,jblock,k);
-                double zeta_z=zeta_xyz[2].getValue(i,jblock,k);
-                
-                double x_xi=dx[0].getValue(i, jblock, k);
-                double y_xi=dy[0].getValue(i, jblock, k);
-                double z_xi=dz[0].getValue(i, jblock, k);
-                
-                double x_eta=dx[1].getValue(i, jblock, k);
-                double y_eta=dy[1].getValue(i, jblock, k);
-                double z_eta=dz[1].getValue(i, jblock, k);
-                
-                double x_zeta=dx[2].getValue(i, jblock, k);
-                double y_zeta=dy[2].getValue(i, jblock, k);
-                double z_zeta=dz[2].getValue(i, jblock, k);
-                
-                q[0]=prim[1].getValue(i,jblock,k);
-                q[1]=prim[2].getValue(i,jblock,k);
-                q[2]=prim[3].getValue(i,jblock,k);
-                q[3]=accu[0].getValue(i,jblock,k);
-                
-                double U=xi_x*q[0]+xi_y*q[1]+xi_z*q[2];
-                double V=eta_x*q[0]+eta_y*q[1]+eta_z*q[2];
-                double W=zeta_x*q[0]+zeta_y*q[1]+zeta_z*q[2];
-                
-//                q[0]=-x_xi*U-x_eta*V-x_zeta*W;
-//                q[1]=-y_xi*U-y_eta*V-y_zeta*W;
-//                q[2]=-z_xi*U-z_eta*V-z_zeta*W;
-                
-                q[0]*=-1.0;
-                q[1]*=-1.0;
-                q[2]*=-1.0;
-                
-                int idx_xi=bfsize*nz*i+bfsize*k+jbuff;
-                
-                for(int iter=0;iter!=4;iter++)
-                {
-                    double *pRecv=myBf[iter].BufferRecv[2+lr].getDataPtr();
-                    
-                    pRecv[idx_xi]=q[iter];
-                }
             }
         }
     }
+    
+    pRecv=myBf[1].BufferRecv[lr].getDataPtr();
+    double *v=myFluxes.getVEta().getDataPtr();
+    nx=myFluxes.getVEta().getSizeX();
+    ny=myFluxes.getVEta().getSizeY();
+    nz=myFluxes.getVEta().getSizeZ();
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<bfsize;i++)
+            {
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
+                
+                int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
+                int idx=nx*ny*k+nx*j+iblock;
+                
+                double value=-v[idx];
+                
+                pRecv[idx_xi]=value;
+                
+            }
+        }
+    }
+    
+    pRecv=myBf[2].BufferRecv[lr].getDataPtr();
+    double *w=myFluxes.getWEta().getDataPtr();
+    nx=myFluxes.getWEta().getSizeX();
+    ny=myFluxes.getWEta().getSizeY();
+    nz=myFluxes.getWEta().getSizeZ();
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<bfsize;i++)
+            {
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
+                
+                int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
+                int idx=nx*ny*k+nx*j+iblock;
+                
+                double value=-w[idx];
+                
+                pRecv[idx_xi]=value;
+                
+            }
+        }
+    }
+    
+    pRecv=myBf[3].BufferRecv[lr].getDataPtr();
+    double *T=myFluxes.getTEta().getDataPtr();
+    nx=myFluxes.getTEta().getSizeX();
+    ny=myFluxes.getTEta().getSizeY();
+    nz=myFluxes.getTEta().getSizeZ();
+    for(int k=0;k<nz;k++)
+    {
+        for(int j=0;j<ny;j++)
+        {
+            for(int i=0;i<bfsize;i++)
+            {
+                int iblock=lr*(nx-1)+(1-2*lr)*i;
+                int ibuff=(bfsize-1)*(1-lr)-(1-2*lr)*i;
+                
+                int idx_xi=bfsize*ny*k+bfsize*j+ibuff;
+                int idx=nx*ny*k+nx*j+iblock;
+                
+                double value=T[idx];
+                
+                pRecv[idx_xi]=value;
+                
+            }
+        }
+    }
+
+    
 }
 
 void nuc3d::boundaryCondition::VisBCsetter_wall_zeta(PDEData3d &myPDE,
