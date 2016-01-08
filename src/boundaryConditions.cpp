@@ -1287,7 +1287,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
     const int bfsize=myBf[0].bufferWidth;
     double *pRecv;
     
-    myBf[0].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[0].BufferRecv[lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1304,7 +1304,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
         }
     }
     
-    myBf[1].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[1].BufferRecv[lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1320,7 +1320,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
         }
     }
     
-    myBf[2].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[2].BufferRecv[lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1336,7 +1336,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_xi(PDEData3d &myPDE,
         }
     }
     
-    myBf[3].BufferRecv[lr].getDataPtr();
+    pRecv=myBf[3].BufferRecv[lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int j=0;j<ny;j++)
@@ -1370,7 +1370,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
     const int bfsize=myBf[0].bufferWidth;
     double *pRecv;
     
-    myBf[0].BufferRecv[2+lr].getDataPtr();
+    pRecv=myBf[0].BufferRecv[2+lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
@@ -1387,7 +1387,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
         }
     }
     
-    myBf[1].BufferRecv[2+lr].getDataPtr();
+    pRecv=myBf[1].BufferRecv[2+lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
@@ -1403,7 +1403,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
         }
     }
     
-    myBf[2].BufferRecv[2+lr].getDataPtr();
+   pRecv=myBf[2].BufferRecv[2+lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
@@ -1419,7 +1419,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_eta(PDEData3d &myPDE,
         }
     }
     
-    myBf[3].BufferRecv[2+lr].getDataPtr();
+    pRecv=myBf[3].BufferRecv[2+lr].getDataPtr();
     for(int k=0;k<nz;k++)
     {
         for(int i=0;i<nx;i++)
@@ -1455,7 +1455,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
     
     double *pRecv;
     
-    myBf[0].BufferRecv[4+lr].getDataPtr();
+    pRecv=myBf[0].BufferRecv[4+lr].getDataPtr();
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1469,7 +1469,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
         }
     }
     
-    myBf[1].BufferRecv[4+lr].getDataPtr();
+    pRecv=myBf[1].BufferRecv[4+lr].getDataPtr();
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1483,7 +1483,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
         }
     }
     
-    myBf[2].BufferRecv[4+lr].getDataPtr();
+    pRecv=myBf[2].BufferRecv[4+lr].getDataPtr();
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
@@ -1498,7 +1498,7 @@ void nuc3d::boundaryCondition::VisBCsetter_outlet_zeta(PDEData3d &myPDE,
         }
     }
     
-    myBf[3].BufferRecv[4+lr].getDataPtr();
+    pRecv=myBf[3].BufferRecv[4+lr].getDataPtr();
     for(int j=0;j<ny;j++)
     {
         for(int i=0;i<nx;i++)
