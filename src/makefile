@@ -24,9 +24,9 @@ TVD-RK3.cpp\
 OBJS=$(srcs:.cpp=.o)
 
 %.o:%.cpp
-	$(cc) -pg -std=c++11 -c $<
+	$(cc) -std=c++11 -c $<
 default:$(OBJS)
-	$(cc) -pg -O2 -o a.out $(OBJS)
+	$(cc) -O2 -o a.out $(OBJS)
 install:
 	cp ./a.out ../../bin
 clean:
