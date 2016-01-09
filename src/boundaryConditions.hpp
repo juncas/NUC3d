@@ -72,19 +72,19 @@ namespace nuc3d
             &boundaryCondition::setBC_symm// bc_id=3
         };
         
-        psetVisBuffer myVisSetter[4]={
-            &boundaryCondition::setVisBC_Inlet, // bc_id=0
-            &boundaryCondition::setVisBC_Outlet,// bc_id=1
-            &boundaryCondition::setVisBC_wall,// bc_id=2
-            &boundaryCondition::setVisBC_symm// bc_id=3
-        };
-
-        psetVisFluxBuffer myVisFluxSetter[4]={
-            &boundaryCondition::setVisFluxBC_Inlet, // bc_id=0
-            &boundaryCondition::setVisFluxBC_Outlet,// bc_id=1
-            &boundaryCondition::setVisFluxBC_wall,// bc_id=2
-            &boundaryCondition::setVisFluxBC_symm// bc_id=3
-        };
+//        psetVisBuffer myVisSetter[4]={
+//            &boundaryCondition::setVisBC_Inlet, // bc_id=0
+//            &boundaryCondition::setVisBC_Outlet,// bc_id=1
+//            &boundaryCondition::setVisBC_wall,// bc_id=2
+//            &boundaryCondition::setVisBC_symm// bc_id=3
+//        };
+//
+//        psetVisFluxBuffer myVisFluxSetter[4]={
+//            &boundaryCondition::setVisFluxBC_Inlet, // bc_id=0
+//            &boundaryCondition::setVisFluxBC_Outlet,// bc_id=1
+//            &boundaryCondition::setVisFluxBC_wall,// bc_id=2
+//            &boundaryCondition::setVisFluxBC_symm// bc_id=3
+//        };
         
         std::vector<faceBC> BCTopo;
         
@@ -209,8 +209,9 @@ namespace nuc3d
                                 physicsModel &myPhyMod,
                                 EulerData3D &myFluxes,
                                 VectorBuffer &myBf,
-                                int lr);
-    //Viscous boundary conditions
+                               int lr);
+   /*
+        //Viscous boundary conditions
         //intlet
         void setVisBC_Inlet(PDEData3d &myPDE,
                          physicsModel &myPhyMod,
@@ -396,6 +397,7 @@ namespace nuc3d
                                    NaiverStokesData3d &myFluxes,
                                    VectorBuffer &myBf,
                                    int lr);
+    */
 
     };
 }

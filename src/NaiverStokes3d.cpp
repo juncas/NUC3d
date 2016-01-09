@@ -136,7 +136,7 @@ void nuc3d::NaiverStokesData3d::setBoundaryGrad(PDEData3d &myPDE,
                                                 MPIComunicator3d_nonblocking &myMPI,
                                                 boundaryCondition &myBC)
 {
-    myBC.setVisBC(myPDE, myModel,*this,myBf);
+    //myBC.setVisBC(myPDE, myModel,*this,myBf);
 }
 
 void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
@@ -399,7 +399,7 @@ void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
                                                        std::vector<bufferData> &myBf,
                                                        boundaryCondition &myBC)
 {
-    myBC.setVisFluxBC(myPDE, myModel, *this, myBf);
+    //myBC.setVisFluxBC(myPDE, myModel, *this, myBf);
 }
 
 void nuc3d::NaiverStokesData3d::setDerivativesVis(fieldOperator3d &myOP,
