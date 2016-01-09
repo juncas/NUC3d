@@ -68,7 +68,6 @@ namespace nuc3d
         VectorField &getVisFlux_eta(){return Flux_eta_vis;};
         VectorField &getVisFlux_zeta(){return Flux_zeta_vis;};
         
-        
     public:
         
         virtual void solve(PDEData3d &,
@@ -89,13 +88,7 @@ namespace nuc3d
                       boundaryCondition &);
         
     private:
-        void setBoundaryGrad(PDEData3d &myPDE,
-                             fieldOperator3d &myOP,
-                             physicsModel &myModel,
-                             std::vector<bufferData> &myBf,
-                             MPIComunicator3d_nonblocking &myMPI,
-                             boundaryCondition &myBC);
-        
+       
         void solveGrads(PDEData3d &myPDE,
                         fieldOperator3d &myOP,
                         std::vector<bufferData> &myBf,
@@ -132,25 +125,22 @@ namespace nuc3d
                            int fdID,int typeL,int typeR);
         
         void solveViscousFlux(physicsModel &myPhyMod);
-        
-        void setBoundaryViscousFlux(PDEData3d &myPDE,
-                                    physicsModel &myModel,
-                                    std::vector<bufferData> &myBf,
-                                    boundaryCondition &myBC);
-        //void solveViscousFlux();
-        
+                
         void setDerivativesVis(fieldOperator3d &myOP,
                                std::vector<bufferData> &myBf,
                                MPIComunicator3d_nonblocking &myMPI,
                                boundaryCondition &myBC);
+        
         void setDerivativeXi(fieldOperator3d &myOP,
                              std::vector<bufferData> &myBf,
                              MPIComunicator3d_nonblocking &myMPI,
                              boundaryCondition &myBC);
+        
         void setDerivativeEta(fieldOperator3d &myOP,
                               std::vector<bufferData> &myBf,
                               MPIComunicator3d_nonblocking &myMPI,
                               boundaryCondition &myBC);
+        
         void setDerivativeZeta(fieldOperator3d &myOP,
                                std::vector<bufferData> &myBf,
                                MPIComunicator3d_nonblocking &myMPI,

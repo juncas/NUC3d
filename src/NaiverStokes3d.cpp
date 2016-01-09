@@ -104,10 +104,10 @@ void nuc3d::NaiverStokesData3d::solve(PDEData3d &myPDE,
                                       MPIComunicator3d_nonblocking &myMPI,
                                       boundaryCondition &myBC)
 {
-    this->EulerData3D::solveCon2Prim(myPDE, myModel);
-    this->EulerData3D::solveRiemann(myPDE, myModel);
-    this->EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
-    this->EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
+    EulerData3D::solveCon2Prim(myPDE, myModel);
+    EulerData3D::solveRiemann(myPDE, myModel);
+    EulerData3D::setBoundaryCondition(myPDE,myModel,myBf,myBC);
+    EulerData3D::solveInv(myOP,myBf,myMPI,myBC);
     NaiverStokesData3d::solveVis(myPDE,myOP,myModel,myBf,myMPI,myBC);
     NaiverStokesData3d::solveRHS(myPDE);
 }
@@ -119,24 +119,9 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
-    
-    //setBoundaryGrad(myPDE,myOP,myModel,myBf,myMPI,myBC);
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     solveViscousFlux(myModel);
-    //setBoundaryViscousFlux(myPDE,myModel,myBf,myBC);
     setDerivativesVis(myOP,myBf,myMPI,myBC);
-    //if(myMPI.getMyId()==0) std::cout<<"Vis solved"<<std::endl;
-}
-
-
-void nuc3d::NaiverStokesData3d::setBoundaryGrad(PDEData3d &myPDE,
-                                                fieldOperator3d &myOP,
-                                                physicsModel &myModel,
-                                                std::vector<bufferData> &myBf,
-                                                MPIComunicator3d_nonblocking &myMPI,
-                                                boundaryCondition &myBC)
-{
-    //myBC.setVisBC(myPDE, myModel,*this,myBf);
 }
 
 void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
@@ -145,19 +130,19 @@ void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
                                            MPIComunicator3d_nonblocking &myMPI,
                                            boundaryCondition &myBC)
 {
-    Field &u=this->EulerData3D::W_Euler[1];
-    Field &v=this->EulerData3D::W_Euler[2];
-    Field &w=this->EulerData3D::W_Euler[3];
-    Field &T=this->EulerData3D::W0_Euler[0];
+    Field &u=EulerData3D::W_Euler[1];
+    Field &v=EulerData3D::W_Euler[2];
+    Field &w=EulerData3D::W_Euler[3];
+    Field &T=EulerData3D::W0_Euler[0];
     
-    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad u"<<std::endl;
     solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad v"<<std::endl;
+    
     solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad w"<<std::endl;
+    
     solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
-    //if(0==myMPI.getMyId()) std::cout<<"solving solve_grad T"<<std::endl;
+    
     solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
+    
     MPI_Barrier(MPI_COMM_WORLD);
 }
 
@@ -394,14 +379,6 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
     
 }
 
-void nuc3d::NaiverStokesData3d::setBoundaryViscousFlux(PDEData3d &myPDE,
-                                                       physicsModel &myModel,
-                                                       std::vector<bufferData> &myBf,
-                                                       boundaryCondition &myBC)
-{
-    //myBC.setVisFluxBC(myPDE, myModel, *this, myBf);
-}
-
 void nuc3d::NaiverStokesData3d::setDerivativesVis(fieldOperator3d &myOP,
                                                   std::vector<bufferData> &myBf,
                                                   MPIComunicator3d_nonblocking &myMPI,
@@ -539,9 +516,7 @@ void nuc3d::NaiverStokesData3d::solveRHS(PDEData3d &myPDE)
                     rhs[idx_xi]+=dh[idx_zeta];
                 }
             }
-        }
-        
-        
+        }        
         
         for (int k=0; k<nz; k++)
         {
