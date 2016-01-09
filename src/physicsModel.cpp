@@ -208,19 +208,24 @@ void nuc3d::physicsModel::sutherland(const Field &T,
     int ny=T.getSizeY();
     int nz=T.getSizeZ();
     
+    double *pT=T.getDataPtr();
+    double *pMiu=miu.getDataPtr();
+    double *pCoeff=coeff.getDataPtr();
+    
     for (int k = 0; k < nz; k++)
     {
         for (int j = 0; j < ny; j++)
         {
             for (int i = 0; i < nx; i++)
             {
-                double T_local=T.getValue(i, j, k);
+                int idx=nx*ny*k+nx*j+i;
+                double T_local=pT[idx];
                 double non_dim_T_ref=T_ref/T_inf;
                 double miu0=(1.0+non_dim_T_ref)/(T_local+non_dim_T_ref)*pow(T_local,1.5)/Reynolds;
                 double coeff0=miu0/((gamma-1.0)*Mach*Mach*pt);
                 
-                miu.setValue(i, j, k, miu0);
-                coeff.setValue(i, j, k, coeff0);
+                pMiu[idx]=miu0;
+                pCoeff[idx]=coeff0;
             }
         }
     }
