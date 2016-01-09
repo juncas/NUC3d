@@ -17,15 +17,9 @@ MethodMap(
               {"scheme_x_ivs","weno5js"},
               {"scheme_y_ivs","weno5js"},
               {"scheme_z_ivs","weno5js"},
-              {"scheme_x_ivsBND","weno5js"},
-              {"scheme_y_ivsBND","weno5js"},
-              {"scheme_z_ivsBND","weno5js"},
               {"scheme_x_vis","cd6"},
               {"scheme_y_vis","cd6"},
-              {"scheme_z_vis","cd6"},
-              {"scheme_x_visBND","cd2"},
-              {"scheme_y_visBND","cd2"},
-              {"scheme_z_visBND","cd2"},
+              {"scheme_z_vis","cd6"}
           }
           )
 {
@@ -146,25 +140,6 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
-    
-    std::string s_BND=MethodMap["scheme_x_ivsBND"];
-    
-    if(s_BND=="weno5js")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
-    }
-    else if(s_BND=="weno5z")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5z>());
-    }
-    else if(s_BND=="upwind1st")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
-    }
-    else
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
-    }
 }
 
 
@@ -191,25 +166,6 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
-    
-    std::string s_BND=MethodMap["scheme_y_ivsBND"];
-    
-    if(s_BND=="weno5js")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
-    }
-    else if(s_BND=="weno5z")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5z>());
-    }
-    else if(s_BND=="upwind1st")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
-    }
-    else
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
-    }
 }
 
 void nuc3d::fieldOperator3d::setMethodIvsZ()
@@ -234,25 +190,6 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     else
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
-    }
-    
-    std::string s_BND=MethodMap["scheme_z_ivsBND"];
-    
-    if(s_BND=="weno5js")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
-    }
-    else if(s_BND=="weno5z")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5z>());
-    }
-    else if(s_BND=="upwind1st")
-    {
-        myInteroplatorsBND.push_back(std::make_shared<upwind1st>());
-    }
-    else
-    {
-        myInteroplatorsBND.push_back(std::make_shared<weno5js>());
     }
     
 }
@@ -284,18 +221,15 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
     
     if(s=="cd6")
     {
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference6th>());
+        myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
     else if(s=="cd2")
     {
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference2nd>());
+        myDifferenters.push_back(std::make_shared<centraldifference2nd>());
     }
     else
     {
-        myDifferenters.push_back(
-                                 std::make_shared<centraldifference6th>());
+        myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
     
     myDifferentersBND.push_back(std::make_shared<boundaryScheme>());
@@ -364,37 +298,8 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
                                                     int typeL,
                                                     int typeR)
 {
-    if((-1)==typeL)
-        reconstructionBoundaryExteriorL(fieldIN,boundaryL,direction,upwind,fieldOUT);
-    else
-        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
-    
-    if((-1)==typeR)
-        reconstructionBoundaryExteriorR(fieldIN,boundaryR,direction,upwind,fieldOUT);
-    else
-        reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
-    
-}
-
-void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorL(
-                                                             const Field &fieldIN,
-                                                             const Field &boundaryL,
-                                                             const int direction,
-                                                             const int upwind,
-                                                             Field &fieldOUT)
-{
-    switch(direction)
-    {
-        case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_xi);
-            break;
-        case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_eta);
-            break;
-        case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_zeta);
-            break;
-    }
+    reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
     
 }
 
@@ -420,28 +325,6 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerL(
     
 }
 
-
-void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorR(
-                                                             const Field &fieldIN,
-                                                             const Field &boundaryR,
-                                                             const int direction,
-                                                             const int upwind,
-                                                             Field &fieldOUT)
-{
-    switch(direction)
-    {
-        case 0:
-            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_xi);
-            break;
-        case 1:
-            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_eta);
-            break;
-        case 2:
-            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_zeta);
-            break;
-    }
-    
-}
 
 void nuc3d::fieldOperator3d::reconstructionBoundaryInnerR(
                                                           const Field &fieldIN,
@@ -526,7 +409,8 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
 
 void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
                                                          const Field &boundaryL,
-                                                         const int direction,                                             Field &fieldOUT)
+                                                         const int direction,
+                                                         Field &fieldOUT)
 {
     switch(direction)
     {

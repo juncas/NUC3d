@@ -86,7 +86,6 @@ namespace nuc3d
         int bufferSize_zeta;
         
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
-        std::vector<std::shared_ptr<interoplation>> myInteroplatorsBND;
         std::vector<std::shared_ptr<differential>> myDifferenters;
         std::vector<std::shared_ptr<differential>> myDifferentersBND;
         
@@ -153,23 +152,12 @@ namespace nuc3d
                                           const int direction,
                                           const int upwind,
                                           Field &fieldOUT);
-        
-        void reconstructionBoundaryExteriorL(const Field &fieldIN,
-                                             const Field &boundaryL,
-                                             const int direction,
-                                             const int upwind,
-                                             Field &fieldOUT);
         void reconstructionBoundaryInnerR(const Field &fieldIN,
                                           const Field &boundaryR,
                                           const int direction,
                                           const int upwind,
                                           Field &fieldOUT);
         
-        void reconstructionBoundaryExteriorR(const Field &fieldIN,
-                                             const Field &boundaryR,
-                                             const int direction,
-                                             const int upwind,
-                                             Field &fieldOUT);
         
         void differenceBoundaryInnerL(const Field &fieldIN,
                                       const Field &boundaryL,

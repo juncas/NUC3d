@@ -35,7 +35,6 @@ void nuc3d::boundaryScheme::differentialBoundaryL(const Field & fieldIN,
 {
     double *pIn=fieldIN.getDataPtr();
     double *pOut=fieldOUT.getDataPtr();
-    double *pBND=boundaryL.getDataPtr();
     
     int nx=fieldIN.getSizeX();
     int ny=fieldIN.getSizeY();
@@ -71,7 +70,6 @@ void nuc3d::boundaryScheme::differentialBoundaryR(const Field & fieldIN,
 {
     double *pIn=fieldIN.getDataPtr();
     double *pOut=fieldOUT.getDataPtr();
-    double *pBND=boundaryR.getDataPtr();
     
     int nx=fieldIN.getSizeX();
     int ny=fieldIN.getSizeY();
