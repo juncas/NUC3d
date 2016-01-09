@@ -8,6 +8,7 @@
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
 #include "centraldifference2nd.hpp"
+#include "boundaryScheme.hpp"
 
 nuc3d::fieldOperator3d::fieldOperator3d():
 MethodMap(
@@ -273,21 +274,7 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
         myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
     
-    std::string s_BND=MethodMap["scheme_x_visBND"];
-    
-    if(s_BND=="cd6")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-    else if(s_BND=="cd2")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
-    }
-    else
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-    
+    myDifferentersBND.push_back(std::make_shared<boundaryScheme>());
     
 }
 
@@ -311,21 +298,7 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
                                  std::make_shared<centraldifference6th>());
     }
     
-    std::string s_BND=MethodMap["scheme_y_visBND"];
-    
-    if(s_BND=="cd6")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-    else if(s_BND=="cd2")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
-    }
-    else
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-
+    myDifferentersBND.push_back(std::make_shared<boundaryScheme>());
 }
 
 void nuc3d::fieldOperator3d::setDiffMethodZ()
@@ -347,22 +320,8 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
     }
-    std::string s_BND=MethodMap["scheme_z_visBND"];
+    myDifferentersBND.push_back(std::make_shared<boundaryScheme>());
     
-    if(s_BND=="cd6")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-    else if(s_BND=="cd2")
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference2nd>());
-    }
-    else
-    {
-        myDifferentersBND.push_back(std::make_shared<centraldifference6th>());
-    }
-    
-
 }
 
 void nuc3d::fieldOperator3d::setTimeMethod()
@@ -547,9 +506,9 @@ void nuc3d::fieldOperator3d::differenceBoundary(
 
 
 void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
-                              const Field &boundaryL,
-                              const int direction,
-                              Field &fieldOUT)
+                                                      const Field &boundaryL,
+                                                      const int direction,
+                                                      Field &fieldOUT)
 {
     switch(direction)
     {
@@ -566,8 +525,8 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerL(const Field &fieldIN,
 }
 
 void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
-                                 const Field &boundaryL,
-                                 const int direction,                                             Field &fieldOUT)
+                                                         const Field &boundaryL,
+                                                         const int direction,                                             Field &fieldOUT)
 {
     switch(direction)
     {
@@ -581,14 +540,14 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorL(const Field &fieldIN,
             myDifferentersBND[2]->differentialBoundaryL(fieldIN,boundaryL,fieldOUT,bufferSize_zeta);
             break;
     }
-
+    
     
 }
 
 void nuc3d::fieldOperator3d::differenceBoundaryInnerR(const Field &fieldIN,
-                              const Field &boundaryR,
-                              const int direction,
-                              Field &fieldOUT)
+                                                      const Field &boundaryR,
+                                                      const int direction,
+                                                      Field &fieldOUT)
 {
     switch(direction)
     {
@@ -606,9 +565,9 @@ void nuc3d::fieldOperator3d::differenceBoundaryInnerR(const Field &fieldIN,
 }
 
 void nuc3d::fieldOperator3d::differenceBoundaryExteriorR(const Field &fieldIN,
-                                 const Field &boundaryR,
-                                 const int direction,
-                                 Field &fieldOUT)
+                                                         const Field &boundaryR,
+                                                         const int direction,
+                                                         Field &fieldOUT)
 {
     switch(direction)
     {
@@ -622,7 +581,7 @@ void nuc3d::fieldOperator3d::differenceBoundaryExteriorR(const Field &fieldIN,
             myDifferentersBND[2]->differentialBoundaryR(fieldIN,boundaryR,fieldOUT,bufferSize_zeta);
             break;
     }
-
+    
     
 }
 
