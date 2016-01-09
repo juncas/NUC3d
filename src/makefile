@@ -26,7 +26,7 @@ OBJS=$(srcs:.cpp=.o)
 %.o:%.cpp
 	$(cc) -pg -std=c++11 -c $<
 default:$(OBJS)
-	$(cc) -O2 -o a.out $(OBJS)
+	$(cc) -pg -O2 -o a.out $(OBJS)
 install:
 	cp ./a.out ../../bin
 clean:
