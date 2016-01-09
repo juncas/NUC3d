@@ -323,7 +323,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                                               e,
                                               alpha);
                 
-                pRhoE[idx]=(e*rho+0.5*rho*(u*u+v*v+w*w))/jac;
+                //pRhoE[idx]=(e*rho+0.5*rho*(u*u+v*v+w*w))/jac;
                 pRho0[idx]=rho;
                 pU0[idx]=u;
                 pV0[idx]=v;
@@ -898,9 +898,9 @@ double nuc3d::physicsModel::EoSIdealGasgetPressure(const double &rho,
     double temp=(E - 0.5*rho*(u*u + v*v + w*w))*(gamma - 1.0);
     if(temp<0.0)
     {
-        //std::cout<<"negative pressure!!!"<<std::endl;
-        //exit(-1);
-        temp=std::pow(rho,gamma);
+        std::cout<<"negative pressure!!!"<<std::endl;
+        exit(-1);
+        //temp=std::pow(rho,gamma);
     }
     return temp;
 }
