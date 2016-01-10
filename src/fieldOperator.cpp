@@ -315,7 +315,7 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
     if((-1)==typeR)
         reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
     else
-        reconstructionBoundaryExteriorR(fieldIN,boundaryL,direction,upwind,fieldOUT);
+        reconstructionBoundaryExteriorR(fieldIN,boundaryR,direction,upwind,fieldOUT);
     
 }
 
