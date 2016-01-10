@@ -227,6 +227,7 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
 {
     
     myPhyMod.getMiu(this->EulerData3D::W0_Euler[0], miu, coeff);
+    
     double *pu=this->EulerData3D::W_Euler[1].getDataPtr();
     double *pv=this->EulerData3D::W_Euler[2].getDataPtr();
     double *pw=this->EulerData3D::W_Euler[3].getDataPtr();
@@ -377,6 +378,8 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
         }
     }
     
+    MPI_Barrier(MPI_COMM_WORLD);
+
 }
 
 void nuc3d::NaiverStokesData3d::setDerivativesVis(fieldOperator3d &myOP,
