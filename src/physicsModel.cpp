@@ -789,7 +789,7 @@ double nuc3d::physicsModel::getMachL(const double &mach)
     double MachL;
     
     if (std::abs(mach) < 1.0)
-        MachL = 0.25*pow((mach + 1.0), 2);//+0.125*pow((mach*mach-1), 2);
+        MachL = 0.25*pow((mach + 1.0), 2)+0.125*pow((mach*mach-1), 2);
     else
         MachL = 0.50*(mach + std::abs(mach));
     
@@ -803,7 +803,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     double MachR;
     
     if (std::abs(mach) < 1.0)
-        MachR = -0.25*pow((mach - 1.0), 2);//-0.125*pow((mach*mach-1), 2);
+        MachR = -0.25*pow((mach - 1.0), 2)-0.125*pow((mach*mach-1), 2);
     else
         MachR = 0.50*(mach - std::abs(mach));
     
@@ -815,7 +815,7 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {
     double pressureL;
     if (std::abs(mach) < 1.0)
-        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach));//+0.1875*mach*pow((mach*mach-1.0),2)
+        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach)+0.1875*mach*pow((mach*mach-1.0),2));
     else
         pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
     
@@ -826,7 +826,7 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 {
     double pressureR;
     if (std::abs(mach) < 1.0)
-        pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach));//-0.1875*mach*pow((mach*mach-1.0),2)
+        pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach)-0.1875*mach*pow((mach*mach-1.0),2));
     else
         pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
     
