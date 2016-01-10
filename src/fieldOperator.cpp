@@ -9,6 +9,7 @@
 #include "centraldifference6th.h"
 #include "centraldifference2nd.hpp"
 #include "boundaryScheme.hpp"
+#include "reconstructionBoundaryScheme.hpp"
 
 nuc3d::fieldOperator3d::fieldOperator3d():
 MethodMap(
@@ -140,6 +141,8 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
+    
+    myInteroplatorsBND.push_back(std::make_shared<ReconstructionboundaryScheme>());
 }
 
 
@@ -166,6 +169,8 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
+    myInteroplatorsBND.push_back(std::make_shared<ReconstructionboundaryScheme>());
+    
 }
 
 void nuc3d::fieldOperator3d::setMethodIvsZ()
@@ -191,6 +196,8 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     {
         myInteroplators.push_back(std::make_shared<weno5js>());
     }
+    myInteroplatorsBND.push_back(std::make_shared<ReconstructionboundaryScheme>());
+    
     
 }
 
@@ -298,8 +305,17 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
                                                     int typeL,
                                                     int typeR)
 {
-    reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
-    reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
+    
+    if((-1)==typeL)
+        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    
+    
+    if((-1)==typeR)
+        reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerR(fieldIN,boundaryL,direction,upwind,fieldOUT);
     
 }
 
@@ -343,6 +359,51 @@ void nuc3d::fieldOperator3d::reconstructionBoundaryInnerR(
             break;
         case 2:
             myInteroplators[2]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_zeta);
+            break;
+    }
+    
+}
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorL(
+                                                          const Field &fieldIN,
+                                                          const Field &boundaryL,
+                                                          const int direction,
+                                                          const int upwind,
+                                                          Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myInteroplatorsBND[0]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_xi);
+            break;
+        case 1:
+            myInteroplatorsBND[1]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_eta);
+            break;
+        case 2:
+            myInteroplatorsBND[2]->interpolationBoundaryL(fieldIN,boundaryL,upwind,fieldOUT,bufferSize_zeta);
+            break;
+    }
+    
+}
+
+
+void nuc3d::fieldOperator3d::reconstructionBoundaryExteriorR(
+                                                          const Field &fieldIN,
+                                                          const Field &boundaryR,
+                                                          const int direction,
+                                                          const int upwind,
+                                                          Field &fieldOUT)
+{
+    switch(direction)
+    {
+        case 0:
+            myInteroplatorsBND[0]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_xi);
+            break;
+        case 1:
+            myInteroplatorsBND[1]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_eta);
+            break;
+        case 2:
+            myInteroplatorsBND[2]->interpolationBoundaryR(fieldIN,boundaryR,upwind,fieldOUT,bufferSize_zeta);
             break;
     }
     

@@ -550,13 +550,6 @@ void nuc3d::block::initialQ(IOController &myIO,physicsModel &myPhyMod)
                 
                 (this->*myInitial[fp])(rho,u,v,w,p,mach,x,y,z,gamma);
                 
-                //
-                //                rho=1.0;
-                //                u=1.0;
-                //                v=0.0;
-                //                w=0.0;
-                //                p=1.0/(gamma*mach*mach);
-                
                 rhou=rho*u;
                 rhov=rho*v;
                 rhow=rho*w;

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E30F01A11BD646440091F90C /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F019F1BD646440091F90C /* block.cpp */; };
 		E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F01A21BD646F50091F90C /* singleBlock.cpp */; };
+		E310760E1C4220ED0090915F /* reconstructionBoundaryScheme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */; };
 		E3156F2E1C3AC1AD0001B3D2 /* postproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */; };
 		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; };
 		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; };
@@ -50,6 +51,8 @@
 		E30F01A01BD646440091F90C /* block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = block.h; path = src/block.h; sourceTree = SOURCE_ROOT; };
 		E30F01A21BD646F50091F90C /* singleBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = singleBlock.cpp; path = src/singleBlock.cpp; sourceTree = SOURCE_ROOT; };
 		E30F01A31BD646F50091F90C /* singleBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = singleBlock.h; path = src/singleBlock.h; sourceTree = SOURCE_ROOT; };
+		E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reconstructionBoundaryScheme.cpp; path = src/reconstructionBoundaryScheme.cpp; sourceTree = SOURCE_ROOT; };
+		E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reconstructionBoundaryScheme.hpp; path = src/reconstructionBoundaryScheme.hpp; sourceTree = SOURCE_ROOT; };
 		E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = postproc.cpp; path = src/postproc.cpp; sourceTree = SOURCE_ROOT; };
 		E3156F2D1C3AC1AD0001B3D2 /* postproc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = postproc.hpp; path = src/postproc.hpp; sourceTree = SOURCE_ROOT; };
 		E346427B1BD131C9007BB96D /* NUC3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NUC3d; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +192,8 @@
 				E39F4BBB1C1E9B2C00690CB1 /* schemes.hpp */,
 				E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */,
 				E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */,
+				E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */,
+				E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -302,6 +307,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */,
+				E310760E1C4220ED0090915F /* reconstructionBoundaryScheme.cpp in Sources */,
 				E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */,
 				E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */,
 				E34642A41BD1329B007BB96D /* IOcontroller.cpp in Sources */,

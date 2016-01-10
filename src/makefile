@@ -20,6 +20,7 @@ TVD-RK3.cpp\
 	upwind1st.cpp\
 	centraldifference2nd.cpp\
 	boundaryScheme.cpp\
+	reconstructionBoundaryScheme.cpp\
 	postproc.cpp
 OBJS=$(srcs:.cpp=.o)
 

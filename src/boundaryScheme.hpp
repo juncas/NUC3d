@@ -54,7 +54,7 @@ namespace nuc3d
         void fourthOrder(double *,double *,int &);
         void sixthOrder(double *,double *,int &);
     };
-}
+    }
 
 
 
