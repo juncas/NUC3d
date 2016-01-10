@@ -203,8 +203,9 @@ bool nuc3d::IOController::ifsave(int currentStep)
 bool nuc3d::IOController::ifpost(int currentStep)
 {
     int postStep=myIOController["postStep"];
-    
-    if((currentStep%postStep==0)&&(postStep!=0))
+    if(postStep==0)
+        return false;
+    else if((currentStep%postStep==0))
         return true;
     else
         return false;

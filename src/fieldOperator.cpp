@@ -307,15 +307,15 @@ void nuc3d::fieldOperator3d::reconstructionBoundary(
 {
     
     if((-1)==typeL)
-        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
-    else
         reconstructionBoundaryExteriorL(fieldIN,boundaryL,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerL(fieldIN,boundaryL,direction,upwind,fieldOUT);
     
     
     if((-1)==typeR)
-        reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
-    else
         reconstructionBoundaryExteriorR(fieldIN,boundaryR,direction,upwind,fieldOUT);
+    else
+        reconstructionBoundaryInnerR(fieldIN,boundaryR,direction,upwind,fieldOUT);
     
 }
 

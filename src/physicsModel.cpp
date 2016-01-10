@@ -439,9 +439,11 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
     double *xi_x=xi_xyz[0].getDataPtr();
     double *xi_y=xi_xyz[1].getDataPtr();
     double *xi_z=xi_xyz[2].getDataPtr();
+    
     double *eta_x=eta_xyz[0].getDataPtr();
     double *eta_y=eta_xyz[1].getDataPtr();
     double *eta_z=eta_xyz[2].getDataPtr();
+    
     double *zeta_x=zeta_xyz[0].getDataPtr();
     double *zeta_y=zeta_xyz[1].getDataPtr();
     double *zeta_z=zeta_xyz[2].getDataPtr();
