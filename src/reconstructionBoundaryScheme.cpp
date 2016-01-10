@@ -150,10 +150,10 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
             f3rd=pIn+idx_f+2;
             f5th=pIn+idx_f+3;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            secondOrderP(f2nd,pOut+idx_rf+1);
-            thirdOrderP(f3rd,pOut+idx_rf+2);
-            fifthOrderP(f5th,pOut+idx_rf+3);
+            firstOrderN(f1st,pOut+idx_rf);
+            secondOrderN(f2nd,pOut+idx_rf+1);
+            thirdOrderN(f3rd,pOut+idx_rf+2);
+            fifthOrderN(f5th,pOut+idx_rf+3);
         }
     }
 }
@@ -280,10 +280,10 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
             f3rd=pIn+idx_f-1;
             f5th=pIn+idx_f-2;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            secondOrderP(f2nd,pOut+idx_rf-1);
-            thirdOrderP(f3rd,pOut+idx_rf-2);
-            fifthOrderP(f5th,pOut+idx_rf-3);
+            firstOrderN(f1st,pOut+idx_rf);
+            secondOrderN(f2nd,pOut+idx_rf-1);
+            thirdOrderN(f3rd,pOut+idx_rf-2);
+            fifthOrderN(f5th,pOut+idx_rf-3);
         }
     }
 }
