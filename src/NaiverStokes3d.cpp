@@ -120,7 +120,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          boundaryCondition &myBC)
 {
     solveGrads(myPDE, myOP, myBf, myMPI,myBC);
-    //solveViscousFlux(myModel);
+    solveViscousFlux(myModel);
     setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
 
@@ -156,23 +156,30 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
 {
     int typeL;
     int typeR;
+    Field &dxi=myGrad.getdxi();
+    Field &deta=myGrad.getdeta();
+    Field &dzeta=myGrad.getdzeta();
+    
+    Field &fxi=myGrad.getf_xi();
+    Field &feta=myGrad.getf_eta();
+    Field &fzeta=myGrad.getf_zeta();
     
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
     
     myGrad.setGrad(myField);
     
-    solveGradXi(myGrad.getf_xi(),myOP,myBf,myMPI,myGrad.getdxi(),fdID,typeL,typeR);
+    solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(2);
     typeR=myBC.getBCtype(3);
     
-    solveGradEta(myGrad.getf_eta(),myOP,myBf,myMPI,myGrad.getdeta(),fdID,typeL,typeR);
+    solveGradEta(feta,myOP,myBf,myMPI,deta,fdID,typeL,typeR);
     
     typeL=myBC.getBCtype(4);
     typeR=myBC.getBCtype(5);
     
-    solveGradZeta(myGrad.getf_zeta(),myOP,myBf,myMPI,myGrad.getdzeta(),fdID,typeL,typeR);
+    solveGradZeta(fzeta,myOP,myBf,myMPI,dzeta,fdID,typeL,typeR);
 }
 
 void nuc3d::NaiverStokesData3d::solveGradXi(Field &myField,
