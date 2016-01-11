@@ -167,7 +167,7 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
     
-    myGrad.setGrad(myField);
+    //myGrad.setGrad(myField);
     
     solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
     
