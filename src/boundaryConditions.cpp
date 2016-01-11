@@ -507,6 +507,10 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
     
     VectorField &prim=myFluxes.getPrimatives();
     
+    double t_wall=myPhyMod.getWallTemp();
+    double gamma=myPhyMod.getGamma();
+    double mach=myPhyMod.getMach();
+    
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
@@ -552,10 +556,16 @@ void nuc3d::boundaryCondition::BCsetter_wall_xi(PDEData3d &myPDE,
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
+                //
+                //                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
+                //                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
+                //                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
                 
-                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
-                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
-                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
+                q[0]=q[4]*gamma*mach*mach/t_wall;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
+                
                 
                 myPhyMod.solveRiemannPoint(q, jacob, xi_x, xi_y, xi_z, fluxl, fluxr);
                 
@@ -596,6 +606,10 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
     
     VectorField &prim=myFluxes.getPrimatives();
     
+    double t_wall=myPhyMod.getWallTemp();
+    double gamma=myPhyMod.getGamma();
+    double mach=myPhyMod.getMach();
+
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
     const int nz=myFluxes.nz;
@@ -642,10 +656,15 @@ void nuc3d::boundaryCondition::BCsetter_wall_eta(PDEData3d &myPDE,
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
+                //
+                //                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
+                //                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
+                //                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
                 
-                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
-                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
-                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
+                q[0]=q[4]*gamma*mach*mach/t_wall;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 
                 myPhyMod.solveRiemannPoint(q, jacob, eta_x, eta_y, eta_z, fluxl, fluxr);
@@ -686,6 +705,11 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
     VectorField &dz=myFluxes.getDz();
     
     VectorField &prim=myFluxes.getPrimatives();
+    
+    double t_wall=myPhyMod.getWallTemp();
+    double gamma=myPhyMod.getGamma();
+    double mach=myPhyMod.getMach();
+
     
     const int nx=myFluxes.nx;
     const int ny=myFluxes.ny;
@@ -732,10 +756,15 @@ void nuc3d::boundaryCondition::BCsetter_wall_zeta(PDEData3d &myPDE,
                 double U=xi_x*q[1]+xi_y*q[2]+xi_z*q[3];
                 double V=eta_x*q[1]+eta_y*q[2]+eta_z*q[3];
                 double W=zeta_x*q[1]+zeta_y*q[2]+zeta_z*q[3];
+                //
+                //                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
+                //                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
+                //                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
                 
-                q[1]=-x_xi*U-x_eta*V-x_zeta*W;
-                q[2]=-y_xi*U-y_eta*V-y_zeta*W;
-                q[3]=-z_xi*U-z_eta*V-z_zeta*W;
+                q[0]=q[4]*gamma*mach*mach/t_wall;
+                q[1]=0.0;
+                q[2]=0.0;
+                q[3]=0.0;
                 
                 
                 myPhyMod.solveRiemannPoint(q, jacob, zeta_x, zeta_y, zeta_z, fluxl, fluxr);
