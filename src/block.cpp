@@ -888,7 +888,9 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     
     myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
-    <<xyz.size()+OutPutValue_prim.size()+OutPutValue_acoust.size()
+    <<xyz.size()+myFluxes->getXi_xyz().size()
+    +myFluxes->getEta_xyz().size()
+    +myFluxes->getZeta_xyz().size()
     <<"]=CELLCENTERED)\n";
     
     for(auto iter=xyz.begin();iter!=xyz.end();iter++)
