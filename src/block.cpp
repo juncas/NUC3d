@@ -84,7 +84,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     initialData(nx, ny, nz, myPhyMod);
     getJacobians();
-    
+    outputGEO_tecplot(myMPI.getMyId());
     //    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
     //      writeField(myFile_o, *iter);
     
@@ -847,5 +847,70 @@ void nuc3d::block::readField_binary(std::ifstream &myFile, nuc3d::Field &myField
             }
         }
     }
+}
+
+void nuc3d::block::outputGEO_tecplot(int myID)
+{
+    std::string forename_flow = ("flowData/GEO_");
+    std::string mid("_id_");
+    std::string id;
+    std::string tailname = (".dat");
+    
+    std::stringstream ss_id;
+    
+    ss_id<<myID;
+    ss_id>>id;
+    
+    std::string filename_flow = forename_flow + mid + id + tailname;
+    
+    std::ofstream myIOfile;
+    
+    myIOfile.open(filename_flow);
+    
+    std::string TECplotHeader[2]={"title=NUC3d\n",
+        "variables=x,y,z"};
+    
+    myIOfile<<TECplotHeader[0]
+    <<TECplotHeader[1];
+    
+    for(int i=0;i<(myFluxes->getXi_xyz().size()
+                   +myFluxes->getEta_xyz().size()
+                   +myFluxes->getZeta_xyz().size());i++)
+    {
+        std::string head("Val_");
+        std::string temp;
+        std::stringstream sstemp;
+        
+        sstemp<<i;
+        sstemp>>temp;
+        myIOfile<<","<<head+temp;
+    }
+    
+    myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
+    <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
+    <<xyz.size()+OutPutValue_prim.size()+OutPutValue_acoust.size()
+    <<"]=CELLCENTERED)\n";
+    
+    for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    for(auto iter=myFluxes->getXi_xyz().begin();iter!=myFluxes->getXi_xyz().end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    for(auto iter=myFluxes->getEta_xyz().begin();iter!=myFluxes->getEta_xyz().end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    myIOfile.close();
+    
 }
 

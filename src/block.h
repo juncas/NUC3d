@@ -232,6 +232,7 @@ namespace nuc3d
         void readField_binary(std::ifstream &, Field &);
         void writeField_binary(std::ofstream &myFile, Field &myField);
         void outputQ_tecplot(int,physicsModel&);
+        void outputGEO_tecplot(int myID);
         void outputQ_binary(int,physicsModel&);
         void inputQ_binary(int,int);
     };
