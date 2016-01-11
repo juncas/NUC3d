@@ -119,7 +119,7 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
-    solveGrads(myPDE, myOP, myBf, myMPI,myBC);
+    //solveGrads(myPDE, myOP, myBf, myMPI,myBC);
     solveViscousFlux(myModel);
     setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
@@ -267,6 +267,10 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
     double *flux_eta[5];
     double *flux_zeta[5];
     
+    double fv[5];
+    double gv[5];
+    double hv[5];
+    
     flux_xi[0]=Flux_xi_vis[0].getDataPtr();
     flux_xi[1]=Flux_xi_vis[1].getDataPtr();
     flux_xi[2]=Flux_xi_vis[2].getDataPtr();
@@ -338,12 +342,7 @@ void nuc3d::NaiverStokesData3d::solveViscousFlux(physicsModel &myPhyMod)
                 double coeff0=pCoeff[idx_xi];
                 double tau_tx=coeff0*tx;
                 double tau_ty=coeff0*ty;
-                double tau_tz=coeff0*tz;
-                
-                
-                double fv[5];
-                double gv[5];
-                double hv[5];
+                double tau_tz=coeff0*tz;                
                 
                 double u=pu[idx_xi];
                 double v=pv[idx_xi];
