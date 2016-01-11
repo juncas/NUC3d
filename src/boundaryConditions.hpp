@@ -75,20 +75,10 @@ namespace nuc3d
                    EulerData3D &,
                    VectorBuffer &);
         
-        void setVisBC(PDEData3d &,
-                      physicsModel &,
-                      NaiverStokesData3d &,
-                      VectorBuffer &);
-        
-        void setVisFluxBC(PDEData3d &,
-                          physicsModel &,
-                          NaiverStokesData3d &,
-                          VectorBuffer &);
-        
         void initialBC(VectorBuffer &,
                        MPIComunicator3d_nonblocking &);
         
-        int &getBCtype(int i){return BCTopo[i].Type;};
+        int getBCtype(int i){return BCTopo[i].Type;};
     private:
         std::ifstream& readBCTopo(std::ifstream&,int);
         
