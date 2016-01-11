@@ -119,8 +119,8 @@ void nuc3d::NaiverStokesData3d::solveVis(PDEData3d &myPDE,
                                          MPIComunicator3d_nonblocking &myMPI,
                                          boundaryCondition &myBC)
 {
-    //solveGrads(myPDE, myOP, myBf, myMPI,myBC);
-    solveViscousFlux(myModel);
+    solveGrads(myPDE, myOP, myBf, myMPI,myBC);
+    //solveViscousFlux(myModel);
     setDerivativesVis(myOP,myBf,myMPI,myBC);
 }
 
