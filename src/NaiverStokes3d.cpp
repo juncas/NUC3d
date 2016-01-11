@@ -130,18 +130,18 @@ void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
                                            MPIComunicator3d_nonblocking &myMPI,
                                            boundaryCondition &myBC)
 {
-    Field &u=EulerData3D::W_Euler[1];
-    Field &v=EulerData3D::W_Euler[2];
-    Field &w=EulerData3D::W_Euler[3];
-    Field &T=EulerData3D::W0_Euler[0];
+//    Field &u=EulerData3D::W_Euler[1];
+//    Field &v=EulerData3D::W_Euler[2];
+//    Field &w=EulerData3D::W_Euler[3];
+//    Field &T=EulerData3D::W0_Euler[0];
     
-    solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
+    solve_grad(EulerData3D::W_Euler[1],myOP,myBf[0],myMPI,du,0,myBC);
     
-    solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
+    solve_grad(EulerData3D::W_Euler[2],myOP,myBf[1],myMPI,dv,1,myBC);
     
-    solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
+    solve_grad(EulerData3D::W_Euler[3],myOP,myBf[2],myMPI,dw,2,myBC);
     
-    solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
+    solve_grad(EulerData3D::W0_Euler[0],myOP,myBf[3],myMPI,dT,3,myBC);
     
     MPI_Barrier(MPI_COMM_WORLD);
 }
@@ -167,7 +167,7 @@ void nuc3d::NaiverStokesData3d::solve_grad(Field &myField,
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
     
-    //myGrad.setGrad(myField);
+    myGrad.setGrad(myField);
     
     solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
     
