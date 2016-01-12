@@ -292,7 +292,7 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
     double *dz1=dz[1].getDataPtr();
     double *dz2=dz[2].getDataPtr();
     
-
+    
     double *x_xi0=gradx.getdxi().getDataPtr();
     double *y_xi0=grady.getdxi().getDataPtr();
     double *z_xi0=gradz.getdxi().getDataPtr();
@@ -345,20 +345,21 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
                 
                 if(jacob<0.0)
                 {
-                    std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
-                    <<x_xi<<" "
-                    <<y_xi<<" "
-                    <<z_xi<<" "
-                    <<x_eta<<" "
-                    <<y_eta<<" "
-                    <<z_eta<<" "
-                    <<x_zeta<<" "
-                    <<y_zeta<<" "
-                    <<z_zeta<<" "
-                    <<std::endl;
+                    if(myMPI.getMyId()==0)
+                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
+                        <<x_xi<<" "
+                        <<y_xi<<" "
+                        <<z_xi<<" "
+                        <<x_eta<<" "
+                        <<y_eta<<" "
+                        <<z_eta<<" "
+                        <<x_zeta<<" "
+                        <<y_zeta<<" "
+                        <<z_zeta<<" "
+                        <<std::endl;
                     exit(-1);
                 }
-
+                
                 jacob0[idx_xi]=jacob;
                 xi_x0[idx_xi]=(y_eta*z_zeta-y_zeta*z_eta)*jacob0[idx_xi];
                 xi_y0[idx_xi]=(x_zeta*z_eta-x_eta*z_zeta)*jacob0[idx_xi];
