@@ -343,22 +343,22 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
                                   +x_zeta*(y_xi*z_eta-y_eta*z_xi));
                 
-                if(jacob<0.0)
-                {
-                    if(myMPI.getMyId()==0)
-                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
-                        <<x_xi<<" "
-                        <<y_xi<<" "
-                        <<z_xi<<" "
-                        <<x_eta<<" "
-                        <<y_eta<<" "
-                        <<z_eta<<" "
-                        <<x_zeta<<" "
-                        <<y_zeta<<" "
-                        <<z_zeta<<" "
-                        <<std::endl;
-                    exit(-1);
-                }
+//                if(jacob<0.0)
+//                {
+//                    if(myMPI.getMyId()==0)
+//                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
+//                        <<x_xi<<" "
+//                        <<y_xi<<" "
+//                        <<z_xi<<" "
+//                        <<x_eta<<" "
+//                        <<y_eta<<" "
+//                        <<z_eta<<" "
+//                        <<x_zeta<<" "
+//                        <<y_zeta<<" "
+//                        <<z_zeta<<" "
+//                        <<std::endl;
+//                    exit(-1);
+//                }
                 
                 jacob0[idx_xi]=jacob;
                 xi_x0[idx_xi]=(y_eta*z_zeta-y_zeta*z_eta)*jacob0[idx_xi];
@@ -930,7 +930,8 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     
     for(int i=0;i<(myFluxes->getXi_xyz().size()
                    +myFluxes->getEta_xyz().size()
-                   +myFluxes->getZeta_xyz().size());i++)
+                   +myFluxes->getZeta_xyz().size()
+                   +xyz_center.size());i++)
     {
         std::string head("Val_");
         std::string temp;
@@ -943,7 +944,9 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     
     myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
-    <<xyz.size()+myFluxes->getXi_xyz().size()
+    <<xyz.size()
+    +xyz_center.size()
+    +myFluxes->getXi_xyz().size()
     +myFluxes->getEta_xyz().size()
     +myFluxes->getZeta_xyz().size()
     <<"]=CELLCENTERED)\n";
@@ -964,6 +967,11 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     }
     
     for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    for(auto iter=xyz_center.begin();iter!=xyz_center.end();iter++)
     {
         writeField(myIOfile, *iter);
     }
