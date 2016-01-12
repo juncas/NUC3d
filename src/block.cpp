@@ -17,6 +17,7 @@
 #include "boundaryConditions.hpp"
 #include "postproc.hpp"
 
+
 #define TILE_SIZE 4;
 
 nuc3d::block::block():
@@ -84,9 +85,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
     initialData(nx, ny, nz, myPhyMod);
     myBC.initialBC(mybuffer,myMPI);
-    
-    getJacobians(myOP,myMPI,myBC);
-    
+    getJacobians();
     outputGEO_tecplot(myMPI.getMyId());
     //    for(auto iter=myFluxes->getZeta_xyz().begin();iter!=myFluxes->getZeta_xyz().end();iter++)
     //      writeField(myFile_o, *iter);
@@ -237,9 +236,7 @@ double nuc3d::block::interpolation_lag_center(const int ibeg,const int iend,
     return value_zeta;
 }
 
-void nuc3d::block::getJacobians(fieldOperator3d &myOP,
-                                MPIComunicator3d_nonblocking &myMPI,
-                                boundaryCondition &myBC)
+void nuc3d::block::getJacobians()
 {
     VectorField &xi_xyz=myFluxes->getXi_xyz(); // xyz_Xi
     VectorField &eta_xyz=myFluxes->getEta_xyz();// xyz_Eta
@@ -253,126 +250,75 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
     
     //std::cout<<"Start calculate xyz_xi, xyz_eta, xyz_zta ..."<<std::endl;
     
-    gradvector gradx(nx,ny,nz);
-    gradvector grady(nx,ny,nz);
-    gradvector gradz(nx,ny,nz);
-    
-    solve_grad(xyz_center[0], myOP, mybuffer[0], myMPI, gradx, 0, myBC);
-    solve_grad(xyz_center[1], myOP, mybuffer[1], myMPI, grady, 1, myBC);
-    solve_grad(xyz_center[2], myOP, mybuffer[2], myMPI, gradz, 2, myBC);
+    for(int iter=0;iter!=3;iter++)
+    {
+        interpolation_derlag(xyz[0], dx[iter],iter);
+        interpolation_derlag(xyz[1], dy[iter],iter);
+        interpolation_derlag(xyz[2], dz[iter],iter);
+    }
     
     //std::cout<<std::endl;
     
     //std::cout<<"xx_xyz has been calculated ..."<<std::endl;
     //std::cout<<"Calculating Jacobians calculated ..."<<std::endl;
     
-    double *jacob0=jac.getDataPtr();
     
-    double *xi_x0=xi_xyz[0].getDataPtr();
-    double *xi_y0=xi_xyz[1].getDataPtr();
-    double *xi_z0=xi_xyz[2].getDataPtr();
-    
-    double *eta_x0=eta_xyz[0].getDataPtr();
-    double *eta_y0=eta_xyz[1].getDataPtr();
-    double *eta_z0=eta_xyz[2].getDataPtr();
-    
-    double *zeta_x0=zeta_xyz[0].getDataPtr();
-    double *zeta_y0=zeta_xyz[1].getDataPtr();
-    double *zeta_z0=zeta_xyz[2].getDataPtr();
-    
-    double *dx0=dx[0].getDataPtr();
-    double *dx1=dx[1].getDataPtr();
-    double *dx2=dx[2].getDataPtr();
-    
-    double *dy0=dy[0].getDataPtr();
-    double *dy1=dy[1].getDataPtr();
-    double *dy2=dy[2].getDataPtr();
-    
-    double *dz0=dz[0].getDataPtr();
-    double *dz1=dz[1].getDataPtr();
-    double *dz2=dz[2].getDataPtr();
-    
-    
-    double *x_xi0=gradx.getdxi().getDataPtr();
-    double *y_xi0=grady.getdxi().getDataPtr();
-    double *z_xi0=gradz.getdxi().getDataPtr();
-    
-    double *x_eta0=gradx.getdeta().getDataPtr();
-    double *y_eta0=grady.getdeta().getDataPtr();
-    double *z_eta0=gradz.getdeta().getDataPtr();
-    
-    double *x_zeta0=gradx.getdzeta().getDataPtr();
-    double *y_zeta0=grady.getdzeta().getDataPtr();
-    double *z_zeta0=gradz.getdzeta().getDataPtr();
-    
-    for(int k=0;k<nx;k++)
+    int nx0=jac.getSizeX();
+    int ny0=jac.getSizeY();
+    int nz0=jac.getSizeZ();
+    for(int k=0;k<nz0;k++)
     {
-        for(int j=0;j<ny;j++)
+        for(int j=0;j<ny0;j++)
         {
-            for(int i=0;i<nx;i++)
+            for(int i=0;i<nx0;i++)
             {
-                int idx_xi=nx*ny*k+nx*j+i;
-                int idx_eta=ny*nz*i+ny*k+j;
-                int idx_zeta=nz*nx*j+nz*i+k;
+                double x_xi=dx[0].getValue(i, j, k);
+                double y_xi=dy[0].getValue(i, j, k);
+                double z_xi=dz[0].getValue(i, j, k);
                 
-                double x_xi=x_xi0[idx_xi];
-                double y_xi=y_xi0[idx_xi];
-                double z_xi=z_xi0[idx_xi];
+                double x_eta=dx[1].getValue(i, j, k);
+                double y_eta=dy[1].getValue(i, j, k);
+                double z_eta=dz[1].getValue(i, j, k);
                 
-                double x_eta=x_eta0[idx_eta];
-                double y_eta=y_eta0[idx_eta];
-                double z_eta=z_eta0[idx_eta];
-                
-                double x_zeta=x_zeta0[idx_zeta];
-                double y_zeta=y_zeta0[idx_zeta];
-                double z_zeta=z_zeta0[idx_zeta];
-                
-                dx0[idx_xi]=x_xi;
-                dx1[idx_xi]=x_eta;
-                dx2[idx_xi]=x_zeta;
-                
-                dy0[idx_xi]=y_xi;
-                dy1[idx_xi]=y_eta;
-                dy2[idx_xi]=y_zeta;
-                
-                dz0[idx_xi]=z_xi;
-                dz1[idx_xi]=z_eta;
-                dz2[idx_xi]=z_zeta;
+                double x_zeta=dx[2].getValue(i, j, k);
+                double y_zeta=dy[2].getValue(i, j, k);
+                double z_zeta=dz[2].getValue(i, j, k);
                 
                 double jacob=1.0/(x_xi*(y_eta*z_zeta-y_zeta*z_eta)
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
                                   +x_zeta*(y_xi*z_eta-y_eta*z_xi));
                 
+                
+                double xi_x=(y_eta*z_zeta-y_zeta*z_eta)*jacob;
+                double xi_y=(x_zeta*z_eta-x_eta*z_zeta)*jacob;
+                double xi_z=(x_eta*y_zeta-x_zeta*y_eta)*jacob;
+                
+                double eta_x=(y_zeta*z_xi-y_xi*z_zeta)*jacob;
+                double eta_y=(x_xi*z_zeta-x_zeta*z_xi)*jacob;
+                double eta_z=(x_zeta*y_xi-x_xi*y_zeta)*jacob;
+                
+                double zeta_x=(y_xi*z_eta-y_eta*z_xi)*jacob;
+                double zeta_y=(x_eta*z_xi-x_xi*z_eta)*jacob;
+                double zeta_z=(x_xi*y_eta-x_eta*y_xi)*jacob;
+                
+                xi_xyz[0].setValue(i, j, k, xi_x);
+                xi_xyz[1].setValue(i, j, k, xi_y);
+                xi_xyz[2].setValue(i, j, k, xi_z);
+                
+                eta_xyz[0].setValue(i, j, k, eta_x);
+                eta_xyz[1].setValue(i, j, k, eta_y);
+                eta_xyz[2].setValue(i, j, k, eta_z);
+                
+                zeta_xyz[0].setValue(i, j, k, zeta_x);
+                zeta_xyz[1].setValue(i, j, k, zeta_y);
+                zeta_xyz[2].setValue(i, j, k, zeta_z);
+                
                 if(jacob<0.0)
                 {
-                    if(myMPI.getMyId()==0)
-                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
-                        <<x_xi<<" "
-                        <<y_xi<<" "
-                        <<z_xi<<" "
-                        <<x_eta<<" "
-                        <<y_eta<<" "
-                        <<z_eta<<" "
-                        <<x_zeta<<" "
-                        <<y_zeta<<" "
-                        <<z_zeta<<" "
-                        <<std::endl;
+                    std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k<<std::endl;
                     exit(-1);
                 }
-                
-                jacob0[idx_xi]=jacob;
-                xi_x0[idx_xi]=(y_eta*z_zeta-y_zeta*z_eta)*jacob0[idx_xi];
-                xi_y0[idx_xi]=(x_zeta*z_eta-x_eta*z_zeta)*jacob0[idx_xi];
-                xi_z0[idx_xi]=(x_eta*y_zeta-x_zeta*y_eta)*jacob0[idx_xi];
-                
-                eta_x0[idx_xi]=(y_zeta*z_xi-y_xi*z_zeta)*jacob0[idx_xi];
-                eta_y0[idx_xi]=(x_xi*z_zeta-x_zeta*z_xi)*jacob0[idx_xi];
-                eta_z0[idx_xi]=(x_zeta*y_xi-x_xi*y_zeta)*jacob0[idx_xi];
-                
-                zeta_x0[idx_xi]=(y_xi*z_eta-y_eta*z_xi)*jacob0[idx_xi];
-                zeta_y0[idx_xi]=(x_eta*z_xi-x_xi*z_eta)*jacob0[idx_xi];
-                zeta_z0[idx_xi]=(x_xi*y_eta-x_eta*y_xi)*jacob0[idx_xi];
-                
+                jac.setValue(i, j, k, jacob);
                 
             }
         }
@@ -930,8 +876,7 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     
     for(int i=0;i<(myFluxes->getXi_xyz().size()
                    +myFluxes->getEta_xyz().size()
-                   +myFluxes->getZeta_xyz().size()
-                   +xyz_center.size());i++)
+                   +myFluxes->getZeta_xyz().size());i++)
     {
         std::string head("Val_");
         std::string temp;
@@ -944,9 +889,7 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     
     myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
-    <<xyz.size()
-    +xyz_center.size()
-    +myFluxes->getXi_xyz().size()
+    <<xyz.size()+myFluxes->getXi_xyz().size()
     +myFluxes->getEta_xyz().size()
     +myFluxes->getZeta_xyz().size()
     <<"]=CELLCENTERED)\n";
@@ -970,97 +913,7 @@ void nuc3d::block::outputGEO_tecplot(int myID)
     {
         writeField(myIOfile, *iter);
     }
-    
-    for(auto iter=xyz_center.begin();iter!=xyz_center.end();iter++)
-    {
-        writeField(myIOfile, *iter);
-    }
     myIOfile.close();
     
-}
-
-void nuc3d::block::solve_grad(Field &myField,
-                              fieldOperator3d &myOP,
-                              bufferData &myBf,
-                              MPIComunicator3d_nonblocking &myMPI,
-                              gradvector &myGrad,
-                              int fdID,
-                              boundaryCondition &myBC)
-{
-    int typeL=-1;
-    int typeR=-1;
-    myGrad.setGrad(myField);
-    
-    Field &dxi=myGrad.getdxi();
-    Field &deta=myGrad.getdeta();
-    Field &dzeta=myGrad.getdzeta();
-    
-    Field &fxi=myGrad.getf_xi();
-    Field &feta=myGrad.getf_eta();
-    Field &fzeta=myGrad.getf_zeta();
-//    
-//    typeL=myBC.getBCtype(0);
-//    typeR=myBC.getBCtype(1);
-    
-    
-    solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
-//    
-//    typeL=myBC.getBCtype(2);
-//    typeR=myBC.getBCtype(3);
-    
-    SolveGradEta(feta,myOP,myBf,myMPI,deta,fdID,typeL,typeR);
-//    
-//    typeL=myBC.getBCtype(4);
-//    typeR=myBC.getBCtype(5);
-    
-    solveGradZeta(fzeta,myOP,myBf,myMPI,dzeta,fdID,typeL,typeR);
-}
-
-void nuc3d::block::solveGradXi(Field &myField,
-                               fieldOperator3d &myOP,
-                               bufferData &myBf,
-                               MPIComunicator3d_nonblocking &myMPI,
-                               Field &dxi,
-                               int fdID,
-                               int typeL,
-                               int typeR)
-{
-    myMPI.bufferSendRecv(myField, myBf, 0, fdID);
-    myOP.differenceInner(myField, 0, dxi);
-    myMPI.waitSendRecv(myBf, 0);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[0], myBf.BufferRecv[1], 0, dxi,typeL,typeR);
-    MPI_Barrier(MPI_COMM_WORLD);
-}
-
-void nuc3d::block::SolveGradEta(Field &myField,
-                                fieldOperator3d &myOP,
-                                bufferData &myBf,
-                                MPIComunicator3d_nonblocking &myMPI,
-                                Field &deta,
-                                int fdID,
-                                int typeL,
-                                int typeR)
-{
-    myMPI.bufferSendRecv(myField, myBf, 1, fdID);
-    myOP.differenceInner(myField, 1, deta);
-    myMPI.waitSendRecv(myBf, 1);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[2], myBf.BufferRecv[3], 1,deta,typeL,typeR);
-    MPI_Barrier(MPI_COMM_WORLD);
-}
-
-void nuc3d::block::solveGradZeta(Field &myField,
-                                 fieldOperator3d &myOP,
-                                 bufferData &myBf,
-                                 MPIComunicator3d_nonblocking &myMPI,
-                                 Field &dzeta,
-                                 int fdID,
-                                 int typeL,
-                                 int typeR)
-{
-    myMPI.bufferSendRecv(myField, myBf, 2, fdID);
-    myOP.differenceInner(myField, 2, dzeta);
-    myMPI.waitSendRecv(myBf, 2);
-    myOP.differenceBoundary(myField, myBf.BufferRecv[4], myBf.BufferRecv[5], 2, dzeta,typeL,typeR);
-    MPI_Barrier(MPI_COMM_WORLD);
 }
 

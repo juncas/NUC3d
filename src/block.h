@@ -146,9 +146,7 @@ namespace nuc3d
         
         void getXYZ_center();
         
-        void getJacobians(fieldOperator3d &myOP,
-                          MPIComunicator3d_nonblocking &myMPI,
-                          boundaryCondition &myBC);
+        void getJacobians();
         
         void initialQ(IOController &myIO,physicsModel &myPhyMod);
         void initial_default(double &rho,
@@ -238,40 +236,6 @@ namespace nuc3d
         void outputGEO_tecplot(int myID);
         void outputQ_binary(int,physicsModel&);
         void inputQ_binary(int,int);
-        
-        void solve_grad(Field &myField,
-                        fieldOperator3d &myOP,
-                        bufferData &myBf,
-                        MPIComunicator3d_nonblocking &myMPI,
-                        gradvector &myGrad,
-                        int fdID,
-                        boundaryCondition &myBC);
-        
-        void solveGradXi(Field &myField,
-                         fieldOperator3d &myOP,
-                         bufferData &myBf,
-                         MPIComunicator3d_nonblocking &myMPI,
-                         Field &dxi,
-                         int fdID,
-                         int typeL,
-                         int typeR);
-        void SolveGradEta(Field &myField,
-                          fieldOperator3d &myOP,
-                          bufferData &myBf,
-                          MPIComunicator3d_nonblocking &myMPI,
-                          Field &deta,
-                          int fdID,
-                          int typeL,
-                          int typeR);
-        
-        void solveGradZeta(Field &myField,
-                           fieldOperator3d &myOP,
-                           bufferData &myBf,
-                           MPIComunicator3d_nonblocking &myMPI,
-                           Field &dzeta,
-                           int fdID,
-                           int typeL,
-                           int typeR);
         
     };
     
