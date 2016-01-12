@@ -300,8 +300,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
     double *pT0=iterT0->getDataPtr();
     double *pE0=iterE0->getDataPtr();
     double *pAlpha0=iterAlpha0->getDataPtr();
-    
-    
+    double gamma = myModelParameters["Gamma"];
     for (int k = 0; k < nz; ++k)
     {
         for (int j = 0; j < ny; ++j)
@@ -316,6 +315,10 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 v = pRhoV[idx] / rho*jac;
                 w = pRhoW[idx] / rho*jac;
                 E = pRhoE[idx]*jac;
+                
+                double e0=E-0.5*rho*(u*u+v*v+w*w);
+                if(e0<0.0)
+                    pRhoE[idx]=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w))/jac;
                 
                 (this->*myEosFWDMap[EoSName])(rho,
                                               u,
