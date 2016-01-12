@@ -136,36 +136,13 @@ void nuc3d::NaiverStokesData3d::solveGrads(PDEData3d &myPDE,
     Field &T=this->EulerData3D::W0_Euler[0];
     
     
-    int typeL=myBC.getBCtype(0);
-    int typeR=myBC.getBCtype(1);
+    solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
     
-    du.setGrad(u);
-    dv.setGrad(v);
-    dw.setGrad(w);
-    dT.setGrad(T);
+    solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
     
-    solveGradXi(du.getf_xi(),myOP,myBf[0],myMPI,du.getdxi(),0,typeL,typeR);
-    solveGradXi(dv.getf_xi(),myOP,myBf[1],myMPI,dv.getdxi(),1,typeL,typeR);
-    solveGradXi(dw.getf_xi(),myOP,myBf[2],myMPI,dw.getdxi(),2,typeL,typeR);
-    solveGradXi(dT.getf_xi(),myOP,myBf[3],myMPI,dT.getdxi(),3,typeL,typeR);
+    solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
     
-    solveGradEta(du.getf_eta(),myOP,myBf[0],myMPI,du.getdeta(),0,typeL,typeR);
-    solveGradEta(dv.getf_eta(),myOP,myBf[1],myMPI,dv.getdeta(),1,typeL,typeR);
-    solveGradEta(dw.getf_eta(),myOP,myBf[2],myMPI,dw.getdeta(),2,typeL,typeR);
-    solveGradEta(dT.getf_eta(),myOP,myBf[3],myMPI,dT.getdeta(),3,typeL,typeR);
-    
-    solveGradZeta(du.getf_zeta(),myOP,myBf[0],myMPI,du.getdzeta(),0,typeL,typeR);
-    solveGradZeta(dv.getf_zeta(),myOP,myBf[1],myMPI,dv.getdzeta(),1,typeL,typeR);
-    solveGradZeta(dw.getf_zeta(),myOP,myBf[2],myMPI,dw.getdzeta(),2,typeL,typeR);
-    solveGradZeta(dT.getf_zeta(),myOP,myBf[3],myMPI,dT.getdzeta(),3,typeL,typeR);
-//
-//    solve_grad(u,myOP,myBf[0],myMPI,du,0,myBC);
-//    
-//    solve_grad(v,myOP,myBf[1],myMPI,dv,1,myBC);
-//    
-//    solve_grad(w,myOP,myBf[2],myMPI,dw,2,myBC);
-//    
-//    solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
+    solve_grad(T,myOP,myBf[3],myMPI,dT,3,myBC);
     
     MPI_Barrier(MPI_COMM_WORLD);
 }
