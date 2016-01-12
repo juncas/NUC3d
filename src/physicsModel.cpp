@@ -318,7 +318,10 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 
                 double e0=E-0.5*rho*(u*u+v*v+w*w);
                 if(e0<0.0)
+                {
                     pRhoE[idx]=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w))/jac;
+                    E = pRhoE[idx]*jac;
+                }
                 
                 (this->*myEosFWDMap[EoSName])(rho,
                                               u,
