@@ -90,18 +90,18 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pL(const Field & fieldIN,
             int idx_rf=nx0*ny0*k+nx0*j;
             int idx_f=nx*ny*k+nx*j;
             int idx_BND=nxBND*nyBND*k+nxBND*j+nxBND-1;
+//            
+//            f1st=pBND+idx_BND;
+//            f2nd=pIn+idx_f;
+//            f3rd=pIn+idx_f+1;
+//            f5th=pIn+idx_f+2;
+//            
+//            firstOrderP(f1st,pOut+idx_rf);
+//            firstOrderP(f2nd,pOut+idx_rf+1);
+//            firstOrderP(f3rd,pOut+idx_rf+2);
+//            firstOrderP(f5th,pOut+idx_rf+3);
             
-            f1st=pBND+idx_BND;
-            f2nd=pIn+idx_f;
-            f3rd=pIn+idx_f+1;
-            f5th=pIn+idx_f+2;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            firstOrderP(f2nd,pOut+idx_rf+1);
-            firstOrderP(f3rd,pOut+idx_rf+2);
-            firstOrderP(f5th,pOut+idx_rf+3);
-            
-            /*
             f1st=pBND+idx_BND;
             f2nd=pIn+idx_f;
             f3rd=pIn+idx_f;
@@ -111,7 +111,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pL(const Field & fieldIN,
             secondOrderP(f2nd,pOut+idx_rf+1);
             thirdOrderP(f3rd,pOut+idx_rf+2);
             fifthOrderP(f5th,pOut+idx_rf+3);
-             */
+            
 
             
         }
@@ -157,18 +157,18 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
         {
             int idx_rf=nx0*ny0*k+nx0*j;
             int idx_f=nx*ny*k+nx*j;
+//            
+//            f1st=pIn+idx_f;
+//            f2nd=pIn+idx_f+1;
+//            f3rd=pIn+idx_f+2;
+//            f5th=pIn+idx_f+3;
+//            
+//            firstOrderN(f1st,pOut+idx_rf);
+//            firstOrderN(f2nd,pOut+idx_rf+1);
+//            firstOrderN(f3rd,pOut+idx_rf+2);
+//            firstOrderN(f5th,pOut+idx_rf+3);
             
-            f1st=pIn+idx_f;
-            f2nd=pIn+idx_f+1;
-            f3rd=pIn+idx_f+2;
-            f5th=pIn+idx_f+3;
             
-            firstOrderN(f1st,pOut+idx_rf);
-            firstOrderN(f2nd,pOut+idx_rf+1);
-            firstOrderN(f3rd,pOut+idx_rf+2);
-            firstOrderN(f5th,pOut+idx_rf+3);
-            
-            /*
             f1st=pIn+idx_f;
             f2nd=pIn+idx_f+1;
             f3rd=pIn+idx_f+2;
@@ -178,7 +178,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
             secondOrderN(f2nd,pOut+idx_rf+1);
             thirdOrderN(f3rd,pOut+idx_rf+2);
             fifthOrderN(f5th,pOut+idx_rf+3);
-             */
+            
         }
     }
 }
@@ -244,18 +244,18 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
         {
             int idx_rf=nx0*ny0*k+nx0*j+nx0-1;
             int idx_f=nx*ny*k+nx*j+nx-1;
+//            
+//            f1st=pIn+idx_f;
+//            f2nd=pIn+idx_f-1;
+//            f3rd=pIn+idx_f-2;
+//            f5th=pIn+idx_f-3;
+//            
+//            firstOrderP(f1st,pOut+idx_rf);
+//            firstOrderP(f2nd,pOut+idx_rf-1);
+//            firstOrderP(f3rd,pOut+idx_rf-2);
+//            firstOrderP(f5th,pOut+idx_rf-3);
             
-            f1st=pIn+idx_f;
-            f2nd=pIn+idx_f-1;
-            f3rd=pIn+idx_f-2;
-            f5th=pIn+idx_f-3;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            firstOrderP(f2nd,pOut+idx_rf-1);
-            firstOrderP(f3rd,pOut+idx_rf-2);
-            firstOrderP(f5th,pOut+idx_rf-3);
-            
-            /*
             f1st=pIn+idx_f;
             f2nd=pIn+idx_f-1;
             f3rd=pIn+idx_f-3;
@@ -265,7 +265,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
             secondOrderP(f2nd,pOut+idx_rf-1);
             thirdOrderP(f3rd,pOut+idx_rf-2);
             fifthOrderP(f5th,pOut+idx_rf-3);
-             */
+            
         }
     }
 }
@@ -311,18 +311,18 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
             int idx_rf=nx0*ny0*k+nx0*j+nx0-1;
             int idx_f=nx*ny*k+nx*j+nx-1;
             int idx_BND=nxBND*nyBND*k+nxBND*j;
+//            
+//            f1st=pBND+idx_BND;
+//            f2nd=pIn+idx_f;
+//            f3rd=pIn+idx_f-1;
+//            f5th=pIn+idx_f-2;
+//            
+//            firstOrderN(f1st,pOut+idx_rf);
+//            firstOrderN(f2nd,pOut+idx_rf-1);
+//            firstOrderN(f3rd,pOut+idx_rf-2);
+//            firstOrderN(f5th,pOut+idx_rf-3);
             
-            f1st=pBND+idx_BND;
-            f2nd=pIn+idx_f;
-            f3rd=pIn+idx_f-1;
-            f5th=pIn+idx_f-2;
             
-            firstOrderN(f1st,pOut+idx_rf);
-            firstOrderN(f2nd,pOut+idx_rf-1);
-            firstOrderN(f3rd,pOut+idx_rf-2);
-            firstOrderN(f5th,pOut+idx_rf-3);
-            
-            /*
             f1st=pBND+idx_BND;
             f2nd=pIn+idx_f;
             f3rd=pIn+idx_f-1;
@@ -332,7 +332,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
             secondOrderN(f2nd,pOut+idx_rf-1);
             thirdOrderN(f3rd,pOut+idx_rf-2);
             fifthOrderN(f5th,pOut+idx_rf-3);
-             */
+            
         }
     }
 }
