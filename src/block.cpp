@@ -343,22 +343,22 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
                                   +x_eta*(y_zeta*z_xi-y_xi*z_zeta)
                                   +x_zeta*(y_xi*z_eta-y_eta*z_xi));
                 
-//                if(jacob<0.0)
-//                {
-//                    if(myMPI.getMyId()==0)
-//                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
-//                        <<x_xi<<" "
-//                        <<y_xi<<" "
-//                        <<z_xi<<" "
-//                        <<x_eta<<" "
-//                        <<y_eta<<" "
-//                        <<z_eta<<" "
-//                        <<x_zeta<<" "
-//                        <<y_zeta<<" "
-//                        <<z_zeta<<" "
-//                        <<std::endl;
-//                    exit(-1);
-//                }
+                if(jacob<0.0)
+                {
+                    if(myMPI.getMyId()==0)
+                        std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
+                        <<x_xi<<" "
+                        <<y_xi<<" "
+                        <<z_xi<<" "
+                        <<x_eta<<" "
+                        <<y_eta<<" "
+                        <<z_eta<<" "
+                        <<x_zeta<<" "
+                        <<y_zeta<<" "
+                        <<z_zeta<<" "
+                        <<std::endl;
+                    exit(-1);
+                }
                 
                 jacob0[idx_xi]=jacob;
                 xi_x0[idx_xi]=(y_eta*z_zeta-y_zeta*z_eta)*jacob0[idx_xi];
@@ -987,8 +987,8 @@ void nuc3d::block::solve_grad(Field &myField,
                               int fdID,
                               boundaryCondition &myBC)
 {
-    int typeL;
-    int typeR;
+    int typeL=-1;
+    int typeR=-1;
     myGrad.setGrad(myField);
     
     Field &dxi=myGrad.getdxi();
@@ -998,20 +998,20 @@ void nuc3d::block::solve_grad(Field &myField,
     Field &fxi=myGrad.getf_xi();
     Field &feta=myGrad.getf_eta();
     Field &fzeta=myGrad.getf_zeta();
-    
-    typeL=myBC.getBCtype(0);
-    typeR=myBC.getBCtype(1);
+//    
+//    typeL=myBC.getBCtype(0);
+//    typeR=myBC.getBCtype(1);
     
     
     solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
-    
-    typeL=myBC.getBCtype(2);
-    typeR=myBC.getBCtype(3);
+//    
+//    typeL=myBC.getBCtype(2);
+//    typeR=myBC.getBCtype(3);
     
     SolveGradEta(feta,myOP,myBf,myMPI,deta,fdID,typeL,typeR);
-    
-    typeL=myBC.getBCtype(4);
-    typeR=myBC.getBCtype(5);
+//    
+//    typeL=myBC.getBCtype(4);
+//    typeR=myBC.getBCtype(5);
     
     solveGradZeta(fzeta,myOP,myBf,myMPI,dzeta,fdID,typeL,typeR);
 }
