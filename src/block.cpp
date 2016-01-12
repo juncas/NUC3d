@@ -345,7 +345,17 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
                 
                 if(jacob<0.0)
                 {
-                    std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k<<std::endl;
+                    std::cout<<"Jacob < 0.0 at "<<i<<", "<<j<<", "<<k
+                    <<x_xi<<" "
+                    <<y_xi<<" "
+                    <<z_xi<<" "
+                    <<x_eta<<" "
+                    <<y_eta<<" "
+                    <<z_eta<<" "
+                    <<x_zeta<<" "
+                    <<y_zeta<<" "
+                    <<z_zeta<<" "
+                    <<std::endl;
                     exit(-1);
                 }
 
