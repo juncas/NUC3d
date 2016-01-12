@@ -257,9 +257,9 @@ void nuc3d::block::getJacobians(fieldOperator3d &myOP,
     gradvector grady(nx,ny,nz);
     gradvector gradz(nx,ny,nz);
     
-    solve_grad(xyz[0], myOP, mybuffer[0], myMPI, gradx, 0, myBC);
-    solve_grad(xyz[1], myOP, mybuffer[1], myMPI, grady, 1, myBC);
-    solve_grad(xyz[2], myOP, mybuffer[2], myMPI, gradz, 2, myBC);
+    solve_grad(xyz_center[0], myOP, mybuffer[0], myMPI, gradx, 0, myBC);
+    solve_grad(xyz_center[1], myOP, mybuffer[1], myMPI, grady, 1, myBC);
+    solve_grad(xyz_center[2], myOP, mybuffer[2], myMPI, gradz, 2, myBC);
     
     //std::cout<<std::endl;
     
@@ -970,6 +970,8 @@ void nuc3d::block::solve_grad(Field &myField,
 {
     int typeL;
     int typeR;
+    myGrad.setGrad(myField);
+    
     Field &dxi=myGrad.getdxi();
     Field &deta=myGrad.getdeta();
     Field &dzeta=myGrad.getdzeta();
@@ -981,7 +983,6 @@ void nuc3d::block::solve_grad(Field &myField,
     typeL=myBC.getBCtype(0);
     typeR=myBC.getBCtype(1);
     
-    myGrad.setGrad(myField);
     
     solveGradXi(fxi,myOP,myBf,myMPI,dxi,fdID,typeL,typeR);
     
