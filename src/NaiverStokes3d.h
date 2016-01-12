@@ -9,33 +9,11 @@
 #ifndef NaiverStokesData3d_hpp
 #define NaiverStokesData3d_hpp
 #include "euler3d.h"
+#include "gradvector.hpp"
 
 
 namespace nuc3d
-{
-    class gradvector
-    {
-        friend class NaiverStokesData3d;
-        Field f_xi;
-        Field f_eta;
-        Field f_zeta;
-        
-        Field dxi;
-        Field deta;
-        Field dzeta;
-    public:
-        gradvector(int,int,int);
-        void setGrad(Field &);
-        ~gradvector();
-    private:
-        Field& getdxi(){return dxi;};
-        Field& getdeta(){return deta;};
-        Field& getdzeta(){return dzeta;};
-        Field& getf_xi(){return f_xi;};
-        Field& getf_eta(){return f_eta;};
-        Field& getf_zeta(){return f_zeta;};
-    };
-    
+{    
     class NaiverStokesData3d : virtual public EulerData3D
     {
         friend class physicsModel;
