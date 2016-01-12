@@ -144,10 +144,8 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
         {
             int idx_rf=nx0*ny0*k+nx0*j;
             int idx_f=nx*ny*k+nx*j;
-            int idx_BND=nxBND*nyBND*k+nxBND*j+nxBND-1;
             
-            f1st=pBND+idx_BND;
-            //f1st=pIn+idx_f;
+            f1st=pIn+idx_f;
             f2nd=pIn+idx_f+1;
             f3rd=pIn+idx_f+2;
             f5th=pIn+idx_f+3;
@@ -222,11 +220,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
             int idx_rf=nx0*ny0*k+nx0*j+nx0-1;
             int idx_f=nx*ny*k+nx*j+nx-1;
             
-            int idx_BND=nxBND*nyBND*k+nxBND*j;
-            
-            f1st=pBND+idx_BND;
-
-            //f1st=pIn+idx_f;
+            f1st=pIn+idx_f;
             f2nd=pIn+idx_f-1;
             f3rd=pIn+idx_f-3;
             f5th=pIn+idx_f-5;
