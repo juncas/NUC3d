@@ -622,7 +622,7 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 Rhow0=RhoW[idx_xi];
                 Rhoe0=RhoE[idx_xi];
                 
-                theta_eta=sqrt(eta_x0*eta_x0
+                theta_eta=std::sqrt(eta_x0*eta_x0
                                + eta_y0*eta_y0
                                + eta_z0*eta_z0);
                 

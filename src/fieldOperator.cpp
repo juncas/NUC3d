@@ -4,6 +4,7 @@
 #include "fieldOperator.h"
 #include "weno5js.h"
 #include "weno5z.hpp"
+#include "weno3js.hpp"
 #include "upwind1st.hpp"
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
@@ -132,6 +133,11 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
         bufferSize_xi=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
+    else if(s=="weno3js")
+    {
+        bufferSize_xi=1;
+        myInteroplators.push_back(std::make_shared<weno3js>());
+    }
     else if(s=="upwind1st")
     {
         bufferSize_xi=1;
@@ -160,6 +166,11 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
         bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
+    else if(s=="weno3js")
+    {
+        bufferSize_xi=1;
+        myInteroplators.push_back(std::make_shared<weno3js>());
+    }
     else if(s=="upwind1st")
     {
         bufferSize_eta=1;
@@ -186,6 +197,11 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     {
         bufferSize_zeta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
+    }
+    else if(s=="weno3js")
+    {
+        bufferSize_xi=1;
+        myInteroplators.push_back(std::make_shared<weno3js>());
     }
     else if(s=="upwind1st")
     {

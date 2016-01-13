@@ -11,6 +11,7 @@
 		E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E30F01A21BD646F50091F90C /* singleBlock.cpp */; };
 		E310760E1C4220ED0090915F /* reconstructionBoundaryScheme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */; };
 		E31076111C44BA060090915F /* gradvector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E310760F1C44BA060090915F /* gradvector.cpp */; };
+		E31076141C46374B0090915F /* weno3js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31076121C46374B0090915F /* weno3js.cpp */; };
 		E3156F2E1C3AC1AD0001B3D2 /* postproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */; };
 		E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642861BD1329B007BB96D /* euler3d.cpp */; };
 		E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E34642871BD1329B007BB96D /* MPICommunicator.cpp */; };
@@ -56,6 +57,8 @@
 		E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reconstructionBoundaryScheme.hpp; path = src/reconstructionBoundaryScheme.hpp; sourceTree = SOURCE_ROOT; };
 		E310760F1C44BA060090915F /* gradvector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gradvector.cpp; path = src/gradvector.cpp; sourceTree = SOURCE_ROOT; };
 		E31076101C44BA060090915F /* gradvector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = gradvector.hpp; path = src/gradvector.hpp; sourceTree = SOURCE_ROOT; };
+		E31076121C46374B0090915F /* weno3js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno3js.cpp; path = src/weno3js.cpp; sourceTree = SOURCE_ROOT; };
+		E31076131C46374B0090915F /* weno3js.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = weno3js.hpp; path = src/weno3js.hpp; sourceTree = SOURCE_ROOT; };
 		E3156F2C1C3AC1AD0001B3D2 /* postproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = postproc.cpp; path = src/postproc.cpp; sourceTree = SOURCE_ROOT; };
 		E3156F2D1C3AC1AD0001B3D2 /* postproc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = postproc.hpp; path = src/postproc.hpp; sourceTree = SOURCE_ROOT; };
 		E346427B1BD131C9007BB96D /* NUC3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NUC3d; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +202,8 @@
 				E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */,
 				E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */,
 				E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */,
+				E31076121C46374B0090915F /* weno3js.cpp */,
+				E31076131C46374B0090915F /* weno3js.hpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -324,6 +329,7 @@
 				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
 				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */,
 				E38279D51C1DC79D00CBAB14 /* centraldifference2nd.cpp in Sources */,
+				E31076141C46374B0090915F /* weno3js.cpp in Sources */,
 				E3E5AEBF1C1C557C00238C41 /* upwind1st.cpp in Sources */,
 				E31076111C44BA060090915F /* gradvector.cpp in Sources */,
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
