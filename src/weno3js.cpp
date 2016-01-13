@@ -74,14 +74,14 @@ void nuc3d::weno3js::weno3jsp(const Field & fieldIN,
                 int idx_f=nx*ny*k+nx*j+i;
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
-                double is0=pow((pIn[idx_f-1]-pIn[idx_f]),2);
-                double is1=pow((pIn[idx_f]-pIn[idx_f+1]),2);
+                double is0=std::pow((pIn[idx_f-1]-pIn[idx_f]),2);
+                double is1=std::pow((pIn[idx_f]-pIn[idx_f+1]),2);
                 
                 double q20=-0.5*pIn[idx_f-1]+1.5*pIn[idx_f];
                 double q21=0.5*pIn[idx_f]+0.5*pIn[idx_f+1];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);
@@ -125,14 +125,14 @@ void nuc3d::weno3js::weno3jsn(const Field & fieldIN,
                 int idx_f=nx*ny*k+nx*j+i;
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
-                double is0=pow((pIn[idx_f+2]-pIn[idx_f+1]),2);
-                double is1=pow((pIn[idx_f+1]-pIn[idx_f-1]),2);
+                double is0=std::pow((pIn[idx_f+2]-pIn[idx_f+1]),2);
+                double is1=std::pow((pIn[idx_f+1]-pIn[idx_f-1]),2);
                 
                 double q20=-0.5*pIn[idx_f+2]+1.5*pIn[idx_f+1];
                 double q21=0.5*pIn[idx_f+1]+0.5*pIn[idx_f-1];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);
@@ -219,14 +219,14 @@ void nuc3d::weno3js::weno3jspBL(const Field & fieldIN,
                 }
                 
                 
-                double is0=pow((f[0]-f[1]),2);
-                double is1=pow((f[1]-f[2]),2);
+                double is0=std::pow((f[0]-f[1]),2);
+                double is1=std::pow((f[1]-f[2]),2);
 
                 double q20=-0.5*f[0]+1.5*f[1];
                 double q21=0.5*f[1]+0.5*f[2];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);
@@ -290,15 +290,15 @@ void nuc3d::weno3js::weno3jsnBL(const Field & fieldIN,
                     }
                 }
                 
-                double is0=pow((f[0]-f[1]),2);
-                double is1=pow((f[1]-f[2]),2);
+                double is0=std::pow((f[0]-f[1]),2);
+                double is1=std::pow((f[1]-f[2]),2);
 
-                
+                 
                 double q20=-0.5*f[0]+1.5*f[1];
                 double q21=0.5*f[1]+0.5*f[2];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);
@@ -384,14 +384,14 @@ void nuc3d::weno3js::weno3jspBR(const Field & fieldIN,
                     }
                 }
                 
-                double is0=pow((f[0]-f[1]),2);
-                double is1=pow((f[1]-f[2]),2);
+                double is0=std::pow((f[0]-f[1]),2);
+                double is1=std::pow((f[1]-f[2]),2);
 
                 double q20=-0.5*f[0]+1.5*f[1];
                 double q21=0.5*f[1]+0.5*f[2];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);
@@ -455,14 +455,14 @@ void nuc3d::weno3js::weno3jsnBR(const Field & fieldIN,
                     }
                 }
                 
-                double is0=pow((f[0]-f[1]),2);
-                double is1=pow((f[1]-f[2]),2);
+                double is0=std::pow((f[0]-f[1]),2);
+                double is1=std::pow((f[1]-f[2]),2);
 
                 double q20=-0.5*f[0]+1.5*f[1];
                 double q21=0.5*f[1]+0.5*f[2];
                 
-                double aa0=1.0/3.0/pow(ss+is0,p);
-                double aa1=2.0/3.0/pow(ss+is1,p);
+                double aa0=1.0/3.0/std::pow(ss+is0,p);
+                double aa1=2.0/3.0/std::pow(ss+is1,p);
                 
                 double w0=aa0/(aa0+aa1);
                 double w1=aa1/(aa0+aa1);

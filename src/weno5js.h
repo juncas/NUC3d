@@ -8,7 +8,7 @@ namespace nuc3d
     class weno5js : public interoplation
     {
         double ss;
-        int p;
+        double p;
         
     public:
         weno5js();

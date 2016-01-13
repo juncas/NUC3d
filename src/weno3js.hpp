@@ -17,7 +17,7 @@ namespace nuc3d
     class weno3js : public interoplation
     {
         double ss;
-        int p;
+        double p;
         
     public:
         weno3js();

@@ -6,9 +6,9 @@
 namespace nuc3d
 {
     class weno5z : public interoplation
-    {        
+    {
         double ss;
-        int p;
+        double p;
         
     public:
         weno5z();

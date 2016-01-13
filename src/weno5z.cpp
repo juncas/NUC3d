@@ -71,14 +71,14 @@ void nuc3d::weno5z::weno5zp(const Field & fieldIN,
                 int idx_f=nx*ny*k+nx*j+i;
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
-                is0= coeff_weno5_gamma0*pow((pIn[idx_f-2]-2.0*pIn[idx_f-1]+pIn[idx_f]),2.0)
-                +coeff_weno5_gamma1*pow((pIn[idx_f-2]-4.0*pIn[idx_f-1]+3.0*pIn[idx_f]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((pIn[idx_f-2]-2.0*pIn[idx_f-1]+pIn[idx_f]),2.0)
+                +coeff_weno5_gamma1*std::pow((pIn[idx_f-2]-4.0*pIn[idx_f-1]+3.0*pIn[idx_f]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((pIn[idx_f-1]-2.0*pIn[idx_f]+pIn[idx_f+1]),2.0)
-                +coeff_weno5_gamma1*pow((pIn[idx_f-1]-pIn[idx_f+1]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((pIn[idx_f-1]-2.0*pIn[idx_f]+pIn[idx_f+1]),2.0)
+                +coeff_weno5_gamma1*std::pow((pIn[idx_f-1]-pIn[idx_f+1]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((pIn[idx_f]-2.0*pIn[idx_f+1]+pIn[idx_f+1]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*pIn[idx_f]-4.0*pIn[idx_f+1]+pIn[idx_f+2]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((pIn[idx_f]-2.0*pIn[idx_f+1]+pIn[idx_f+1]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*pIn[idx_f]-4.0*pIn[idx_f+1]+pIn[idx_f+2]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*pIn[idx_f-2]
@@ -150,14 +150,14 @@ void nuc3d::weno5z::weno5zn(const Field & fieldIN,
                 int idx_f=nx*ny*k+nx*j+i;
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
-                is0= coeff_weno5_gamma0*pow((pIn[idx_f+3]-2.0*pIn[idx_f+2]+pIn[idx_f+1]),2.0)
-                +coeff_weno5_gamma1*pow((pIn[idx_f+3]-4.0*pIn[idx_f+2]+3.0*pIn[idx_f+1]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((pIn[idx_f+3]-2.0*pIn[idx_f+2]+pIn[idx_f+1]),2.0)
+                +coeff_weno5_gamma1*std::pow((pIn[idx_f+3]-4.0*pIn[idx_f+2]+3.0*pIn[idx_f+1]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((pIn[idx_f+2]-2.0*pIn[idx_f+1]+pIn[idx_f]),2.0)
-                +coeff_weno5_gamma1*pow((pIn[idx_f+2]-pIn[idx_f]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((pIn[idx_f+2]-2.0*pIn[idx_f+1]+pIn[idx_f]),2.0)
+                +coeff_weno5_gamma1*std::pow((pIn[idx_f+2]-pIn[idx_f]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((pIn[idx_f+1]-2.0*pIn[idx_f]+pIn[idx_f-1]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*pIn[idx_f+1]-4.0*pIn[idx_f]+pIn[idx_f-1]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((pIn[idx_f+1]-2.0*pIn[idx_f]+pIn[idx_f-1]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*pIn[idx_f+1]-4.0*pIn[idx_f]+pIn[idx_f-1]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*pIn[idx_f+3]
@@ -272,14 +272,14 @@ void nuc3d::weno5z::weno5zpBL(const Field & fieldIN,
                 }
                 
                 
-                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2.0)
-                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2.0)
-                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*f[0]
@@ -372,14 +372,14 @@ void nuc3d::weno5z::weno5znBL(const Field & fieldIN,
                 }
                 
                 
-                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2.0)
-                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2.0)
-                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*f[0]
@@ -494,14 +494,14 @@ void nuc3d::weno5z::weno5zpBR(const Field & fieldIN,
                 }
                 
                 
-                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2.0)
-                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2.0)
-                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*f[0]
@@ -594,14 +594,14 @@ void nuc3d::weno5z::weno5znBR(const Field & fieldIN,
                 }
                 
                 
-                is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2.0)
-                +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
+                is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2.0);
                 
-                is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2.0)
-                +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2.0);
+                is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2.0)
+                +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2.0);
                 
-                is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2.0)
-                +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
+                is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2.0)
+                +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
                 
                 
                 q30= coeff_weno5_alpha[0][0]*f[0]
