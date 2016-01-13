@@ -18,6 +18,21 @@ namespace nuc3d
     
     class ReconstructionboundaryScheme: public interoplation
     {
+        
+        typedef void (ReconstructionboundaryScheme::*pscheme)(double *,double *);
+        
+        pscheme mySchemeP[4]={
+            &ReconstructionboundaryScheme::firstOrderP,
+            &ReconstructionboundaryScheme::firstOrderP,
+            &ReconstructionboundaryScheme::thirdOrderP,
+            &ReconstructionboundaryScheme::fifthOrderP
+        };
+        pscheme mySchemeN[4]={
+            &ReconstructionboundaryScheme::firstOrderN,
+            &ReconstructionboundaryScheme::firstOrderN,
+            &ReconstructionboundaryScheme::thirdOrderN,
+            &ReconstructionboundaryScheme::fifthOrderN
+        };
     public:
         ReconstructionboundaryScheme();
         ~ReconstructionboundaryScheme();

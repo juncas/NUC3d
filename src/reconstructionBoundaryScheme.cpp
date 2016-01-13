@@ -77,12 +77,8 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pL(const Field & fieldIN,
     int kbeg=0;
     int kend=nz;
     
-    double *f1st;
-    double *f2nd;
-    double *f3rd;
-    double *f5th;
     
-    
+    double *pf[4];
     for(int k=kbeg;k<kend;k++)
     {
         for(int j=jbeg;j<jend;j++)
@@ -90,29 +86,24 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pL(const Field & fieldIN,
             int idx_rf=nx0*ny0*k+nx0*j;
             int idx_f=nx*ny*k+nx*j;
             int idx_BND=nxBND*nyBND*k+nxBND*j+nxBND-1;
-//            
-//            f1st=pBND+idx_BND;
-//            f2nd=pIn+idx_f;
-//            f3rd=pIn+idx_f+1;
-//            f5th=pIn+idx_f+2;
-//            
-//            firstOrderP(f1st,pOut+idx_rf);
-//            firstOrderP(f2nd,pOut+idx_rf+1);
-//            firstOrderP(f3rd,pOut+idx_rf+2);
-//            firstOrderP(f5th,pOut+idx_rf+3);
             
+            //           double f1st=pBND+idx_BND;
+            //           double f2nd=pIn+idx_f;
+            //           double f3rd=pIn+idx_f+1;
+            //           double f5th=pIn+idx_f+2;
+            //
+            //            firstOrderP(f1st,pOut+idx_rf);
+            //            firstOrderP(f2nd,pOut+idx_rf+1);
+            //            firstOrderP(f3rd,pOut+idx_rf+2);
+            //            firstOrderP(f5th,pOut+idx_rf+3);
             
-            f1st=pBND+idx_BND;
-            f2nd=pIn+idx_f;
-            f3rd=pIn+idx_f;
-            f5th=pIn+idx_f;
+            pf[0]=pBND+idx_BND;
+            pf[1]=pIn+idx_f;
+            pf[2]=pIn+idx_f;
+            pf[3]=pIn+idx_f;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            firstOrderP(f2nd,pOut+idx_rf+1);
-            thirdOrderP(f3rd,pOut+idx_rf+2);
-            fifthOrderP(f5th,pOut+idx_rf+3);
-            
-
+            for(int i=0;i<tilesize;i++)
+                (this->*mySchemeP[i])(pf[i],pOut+idx_rf+i);
             
         }
     }
@@ -146,10 +137,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
     int kbeg=0;
     int kend=nz;
     
-    double *f1st;
-    double *f2nd;
-    double *f3rd;
-    double *f5th;
+    double *pf[4];
     
     for(int k=kbeg;k<kend;k++)
     {
@@ -157,28 +145,25 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nL(const Field & fieldIN,
         {
             int idx_rf=nx0*ny0*k+nx0*j;
             int idx_f=nx*ny*k+nx*j;
-//            
-//            f1st=pIn+idx_f;
-//            f2nd=pIn+idx_f+1;
-//            f3rd=pIn+idx_f+2;
-//            f5th=pIn+idx_f+3;
-//            
-//            firstOrderN(f1st,pOut+idx_rf);
-//            firstOrderN(f2nd,pOut+idx_rf+1);
-//            firstOrderN(f3rd,pOut+idx_rf+2);
-//            firstOrderN(f5th,pOut+idx_rf+3);
+            //
+            //            f1st=pIn+idx_f;
+            //            f2nd=pIn+idx_f+1;
+            //            f3rd=pIn+idx_f+2;
+            //            f5th=pIn+idx_f+3;
+            //
+            //            firstOrderN(f1st,pOut+idx_rf);
+            //            firstOrderN(f2nd,pOut+idx_rf+1);
+            //            firstOrderN(f3rd,pOut+idx_rf+2);
+            //            firstOrderN(f5th,pOut+idx_rf+3);
             
             
-            f1st=pIn+idx_f;
-            f2nd=pIn+idx_f+1;
-            f3rd=pIn+idx_f+2;
-            f5th=pIn+idx_f+3;
+            pf[0]=pIn+idx_f;
+            pf[1]=pIn+idx_f+1;
+            pf[2]=pIn+idx_f+2;
+            pf[3]=pIn+idx_f+3;
             
-            firstOrderN(f1st,pOut+idx_rf);
-            firstOrderN(f2nd,pOut+idx_rf+1);
-            thirdOrderN(f3rd,pOut+idx_rf+2);
-            fifthOrderN(f5th,pOut+idx_rf+3);
-            
+            for(int i=0;i<tilesize;i++)
+                (this->*mySchemeN[i])(pf[i],pOut+idx_rf+i);
         }
     }
 }
@@ -233,10 +218,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
     int kbeg=0;
     int kend=nz;
     
-    double *f1st;
-    double *f2nd;
-    double *f3rd;
-    double *f5th;
+    double *pf[4];
     
     for(int k=kbeg;k<kend;k++)
     {
@@ -244,27 +226,25 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
         {
             int idx_rf=nx0*ny0*k+nx0*j+nx0-1;
             int idx_f=nx*ny*k+nx*j+nx-1;
-//            
-//            f1st=pIn+idx_f;
-//            f2nd=pIn+idx_f-1;
-//            f3rd=pIn+idx_f-2;
-//            f5th=pIn+idx_f-3;
-//            
-//            firstOrderP(f1st,pOut+idx_rf);
-//            firstOrderP(f2nd,pOut+idx_rf-1);
-//            firstOrderP(f3rd,pOut+idx_rf-2);
-//            firstOrderP(f5th,pOut+idx_rf-3);
+            //
+            //            f1st=pIn+idx_f;
+            //            f2nd=pIn+idx_f-1;
+            //            f3rd=pIn+idx_f-2;
+            //            f5th=pIn+idx_f-3;
+            //
+            //            firstOrderP(f1st,pOut+idx_rf);
+            //            firstOrderP(f2nd,pOut+idx_rf-1);
+            //            firstOrderP(f3rd,pOut+idx_rf-2);
+            //            firstOrderP(f5th,pOut+idx_rf-3);
             
             
-            f1st=pIn+idx_f;
-            f2nd=pIn+idx_f-1;
-            f3rd=pIn+idx_f-3;
-            f5th=pIn+idx_f-5;
+            pf[0]=pIn+idx_f;
+            pf[1]=pIn+idx_f-1;
+            pf[2]=pIn+idx_f-3;
+            pf[3]=pIn+idx_f-5;
             
-            firstOrderP(f1st,pOut+idx_rf);
-            firstOrderP(f2nd,pOut+idx_rf-1);
-            thirdOrderP(f3rd,pOut+idx_rf-2);
-            fifthOrderP(f5th,pOut+idx_rf-3);
+            for(int i=0;i<tilesize;i++)
+                (this->*mySchemeP[i])(pf[i],pOut+idx_rf+i);
             
         }
     }
@@ -298,11 +278,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
     int kbeg=0;
     int kend=nz;
     
-    double *f1st;
-    double *f2nd;
-    double *f3rd;
-    double *f5th;
-    
+    double *pf[4];
     
     for(int k=kbeg;k<kend;k++)
     {
@@ -311,27 +287,25 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
             int idx_rf=nx0*ny0*k+nx0*j+nx0-1;
             int idx_f=nx*ny*k+nx*j+nx-1;
             int idx_BND=nxBND*nyBND*k+nxBND*j;
-//            
-//            f1st=pBND+idx_BND;
-//            f2nd=pIn+idx_f;
-//            f3rd=pIn+idx_f-1;
-//            f5th=pIn+idx_f-2;
-//            
-//            firstOrderN(f1st,pOut+idx_rf);
-//            firstOrderN(f2nd,pOut+idx_rf-1);
-//            firstOrderN(f3rd,pOut+idx_rf-2);
-//            firstOrderN(f5th,pOut+idx_rf-3);
+            //
+            //            f1st=pBND+idx_BND;
+            //            f2nd=pIn+idx_f;
+            //            f3rd=pIn+idx_f-1;
+            //            f5th=pIn+idx_f-2;
+            //
+            //            firstOrderN(f1st,pOut+idx_rf);
+            //            firstOrderN(f2nd,pOut+idx_rf-1);
+            //            firstOrderN(f3rd,pOut+idx_rf-2);
+            //            firstOrderN(f5th,pOut+idx_rf-3);
             
             
-            f1st=pBND+idx_BND;
-            f2nd=pIn+idx_f;
-            f3rd=pIn+idx_f-1;
-            f5th=pIn+idx_f-2;
+            pf[0]=pBND+idx_BND;
+            pf[1]=pIn+idx_f;
+            pf[2]=pIn+idx_f-1;
+            pf[3]=pIn+idx_f-2;
             
-            firstOrderN(f1st,pOut+idx_rf);
-            firstOrderN(f2nd,pOut+idx_rf-1);
-            thirdOrderN(f3rd,pOut+idx_rf-2);
-            fifthOrderN(f5th,pOut+idx_rf-3);
+            for(int i=0;i<tilesize;i++)
+                (this->*mySchemeN[i])(pf[i],pOut+idx_rf+i);
             
         }
     }
@@ -359,8 +333,8 @@ void nuc3d::ReconstructionboundaryScheme::thirdOrderP(double *f,double *fout)
     double q20=-0.5*f[0]+1.5*f[1];
     double q21=0.5*f[1]+0.5*f[2];
     
-    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2);
-    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2);
+    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2.0);
+    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2.0);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -376,14 +350,14 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderP(double *f,double *fout)
     double is0,is1,is2;
     double q30,q31,q32;
     
-    is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2)
+    is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2.0)
     +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
     
-    is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2)
+    is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2.0)
     +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2);
     
-    is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2)
-    +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+    is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2.0)
+    +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2.0);
     
     
     q30= coeff_weno5_alpha[0][0]*f[0]
@@ -398,9 +372,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderP(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f[3]
     +coeff_weno5_alpha[2][2]*f[4];
     
-    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2);
-    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2);
-    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2.0);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2.0);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2.0);
     
     
     alphaSum=alpha0+alpha1+alpha2;
@@ -439,8 +413,8 @@ void nuc3d::ReconstructionboundaryScheme::thirdOrderN(double *f,double *fout)
     double q20=-0.5*f0+1.5*f1;
     double q21=0.5*f1+0.5*f2;
     
-    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2);
-    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2);
+    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2.0);
+    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2.0);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -462,14 +436,14 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderN(double *f,double *fout)
     double f3=*(f-1);
     double f4=*(f-2);
     
-    is0= coeff_weno5_gamma0*std::pow((    f0-2.0*f1+    f2),2)
+    is0= coeff_weno5_gamma0*std::pow((    f0-2.0*f1+    f2),2.0)
     +coeff_weno5_gamma1*std::pow((    f0-4.0*f1+3.0*f2),2);
     
-    is1= coeff_weno5_gamma0*std::pow((    f1-2.0*f2+    f3),2)
-    +coeff_weno5_gamma1*std::pow((    f1-             f3),2);
+    is1= coeff_weno5_gamma0*std::pow((    f1-2.0*f2+    f3),2.0)
+    +coeff_weno5_gamma1*std::pow((    f1-             f3),2.0);
     
-    is2= coeff_weno5_gamma0*std::pow((    f2-2.0*f3+    f4),2)
-    +coeff_weno5_gamma1*std::pow((3.0*f2-4.0*f3+    f4),2);
+    is2= coeff_weno5_gamma0*std::pow((    f2-2.0*f3+    f4),2.0)
+    +coeff_weno5_gamma1*std::pow((3.0*f2-4.0*f3+    f4),2.0);
     
     
     q30= coeff_weno5_alpha[0][0]*f0
@@ -484,9 +458,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderN(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f3
     +coeff_weno5_alpha[2][2]*f4;
     
-    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2);
-    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2);
-    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2.0);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2.0);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2.0);
     
     
     alphaSum=alpha0+alpha1+alpha2;
