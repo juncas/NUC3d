@@ -244,7 +244,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_pR(const Field & fieldIN,
             pf[3]=pIn+idx_f-5;
             
             for(int i=0;i<tilesize;i++)
-                (this->*mySchemeP[i])(pf[i],pOut+idx_rf+i);
+                (this->*mySchemeP[i])(pf[i],pOut+idx_rf-i);
             
         }
     }
@@ -305,7 +305,7 @@ void nuc3d::ReconstructionboundaryScheme::boundary_nR(const Field & fieldIN,
             pf[3]=pIn+idx_f-2;
             
             for(int i=0;i<tilesize;i++)
-                (this->*mySchemeN[i])(pf[i],pOut+idx_rf+i);
+                (this->*mySchemeN[i])(pf[i],pOut+idx_rf-i);
             
         }
     }
