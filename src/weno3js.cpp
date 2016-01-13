@@ -126,10 +126,10 @@ void nuc3d::weno3js::weno3jsn(const Field & fieldIN,
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
                 
                 double is0=std::pow((pIn[idx_f+2]-pIn[idx_f+1]),2);
-                double is1=std::pow((pIn[idx_f+1]-pIn[idx_f-1]),2);
+                double is1=std::pow((pIn[idx_f+1]-pIn[idx_f]),2);
                 
                 double q20=-0.5*pIn[idx_f+2]+1.5*pIn[idx_f+1];
-                double q21=0.5*pIn[idx_f+1]+0.5*pIn[idx_f-1];
+                double q21=0.5*pIn[idx_f+1]+0.5*pIn[idx_f];
                 
                 double aa0=1.0/3.0/std::pow(ss+is0,p);
                 double aa1=2.0/3.0/std::pow(ss+is1,p);
