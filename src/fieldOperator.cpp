@@ -135,7 +135,7 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
     }
     else if(s=="weno3js")
     {
-        bufferSize_xi=1;
+        bufferSize_xi=2;
         myInteroplators.push_back(std::make_shared<weno3js>());
     }
     else if(s=="upwind1st")
@@ -168,7 +168,7 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     }
     else if(s=="weno3js")
     {
-        bufferSize_xi=1;
+        bufferSize_eta=2;
         myInteroplators.push_back(std::make_shared<weno3js>());
     }
     else if(s=="upwind1st")
@@ -200,7 +200,7 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     }
     else if(s=="weno3js")
     {
-        bufferSize_xi=1;
+        bufferSize_zeta=2;
         myInteroplators.push_back(std::make_shared<weno3js>());
     }
     else if(s=="upwind1st")
