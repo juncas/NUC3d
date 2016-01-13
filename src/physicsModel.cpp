@@ -320,7 +320,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 
                 if(e0<0.0)
                 {
-                    E=(std::abs(e0)+0.5*rho*(u*u+v*v+w*w));
+                    E=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
                     pRhoE[idx]=E/jac;
                 }
                 
