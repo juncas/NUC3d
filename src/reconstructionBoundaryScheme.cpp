@@ -352,15 +352,15 @@ void nuc3d::ReconstructionboundaryScheme::secondOrderP(double *f,double *fout)
 
 void nuc3d::ReconstructionboundaryScheme::thirdOrderP(double *f,double *fout)
 {
-    double is0=pow((f[0]-f[1]),2);
-    double is1=pow((f[1]-f[2]),2);
+    double is0=std::pow((f[0]-f[1]),2);
+    double is1=std::pow((f[1]-f[2]),2);
     
     
     double q20=-0.5*f[0]+1.5*f[1];
     double q21=0.5*f[1]+0.5*f[2];
     
-    double aa0=1.0/3.0/pow(1.0e-6+is0,2);
-    double aa1=2.0/3.0/pow(1.0e-6+is1,2);
+    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2);
+    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -376,14 +376,14 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderP(double *f,double *fout)
     double is0,is1,is2;
     double q30,q31,q32;
     
-    is0= coeff_weno5_gamma0*pow((    f[0]-2.0*f[1]+    f[2]),2)
-    +coeff_weno5_gamma1*pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
+    is0= coeff_weno5_gamma0*std::pow((    f[0]-2.0*f[1]+    f[2]),2)
+    +coeff_weno5_gamma1*std::pow((    f[0]-4.0*f[1]+3.0*f[2]),2);
     
-    is1= coeff_weno5_gamma0*pow((    f[1]-2.0*f[2]+    f[3]),2)
-    +coeff_weno5_gamma1*pow((    f[1]-             f[3]),2);
+    is1= coeff_weno5_gamma0*std::pow((    f[1]-2.0*f[2]+    f[3]),2)
+    +coeff_weno5_gamma1*std::pow((    f[1]-             f[3]),2);
     
-    is2= coeff_weno5_gamma0*pow((    f[2]-2.0*f[3]+    f[4]),2)
-    +coeff_weno5_gamma1*pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
+    is2= coeff_weno5_gamma0*std::pow((    f[2]-2.0*f[3]+    f[4]),2)
+    +coeff_weno5_gamma1*std::pow((3.0*f[2]-4.0*f[3]+    f[4]),2);
     
     
     q30= coeff_weno5_alpha[0][0]*f[0]
@@ -398,9 +398,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderP(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f[3]
     +coeff_weno5_alpha[2][2]*f[4];
     
-    alpha0=coeff_weno5_c[0]/pow((1.0e-6+is0),2);
-    alpha1=coeff_weno5_c[1]/pow((1.0e-6+is1),2);
-    alpha2=coeff_weno5_c[2]/pow((1.0e-6+is2),2);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2);
     
     
     alphaSum=alpha0+alpha1+alpha2;
@@ -432,15 +432,15 @@ void nuc3d::ReconstructionboundaryScheme::thirdOrderN(double *f,double *fout)
     double f1=*f;
     double f2=*(f-1);
     
-    double is0=pow((f0-f1),2);
-    double is1=pow((f1-f2),2);
+    double is0=std::pow((f0-f1),2);
+    double is1=std::pow((f1-f2),2);
     
     
     double q20=-0.5*f0+1.5*f1;
     double q21=0.5*f1+0.5*f2;
     
-    double aa0=1.0/3.0/pow(1.0e-6+is0,2);
-    double aa1=2.0/3.0/pow(1.0e-6+is1,2);
+    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2);
+    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -462,14 +462,14 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderN(double *f,double *fout)
     double f3=*(f-1);
     double f4=*(f-2);
     
-    is0= coeff_weno5_gamma0*pow((    f0-2.0*f1+    f2),2)
-    +coeff_weno5_gamma1*pow((    f0-4.0*f1+3.0*f2),2);
+    is0= coeff_weno5_gamma0*std::pow((    f0-2.0*f1+    f2),2)
+    +coeff_weno5_gamma1*std::pow((    f0-4.0*f1+3.0*f2),2);
     
-    is1= coeff_weno5_gamma0*pow((    f1-2.0*f2+    f3),2)
-    +coeff_weno5_gamma1*pow((    f1-             f3),2);
+    is1= coeff_weno5_gamma0*std::pow((    f1-2.0*f2+    f3),2)
+    +coeff_weno5_gamma1*std::pow((    f1-             f3),2);
     
-    is2= coeff_weno5_gamma0*pow((    f2-2.0*f3+    f4),2)
-    +coeff_weno5_gamma1*pow((3.0*f2-4.0*f3+    f4),2);
+    is2= coeff_weno5_gamma0*std::pow((    f2-2.0*f3+    f4),2)
+    +coeff_weno5_gamma1*std::pow((3.0*f2-4.0*f3+    f4),2);
     
     
     q30= coeff_weno5_alpha[0][0]*f0
@@ -484,9 +484,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderN(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f3
     +coeff_weno5_alpha[2][2]*f4;
     
-    alpha0=coeff_weno5_c[0]/pow((1.0e-6+is0),2);
-    alpha1=coeff_weno5_c[1]/pow((1.0e-6+is1),2);
-    alpha2=coeff_weno5_c[2]/pow((1.0e-6+is2),2);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2);
     
     
     alphaSum=alpha0+alpha1+alpha2;
