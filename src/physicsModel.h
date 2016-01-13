@@ -173,6 +173,24 @@ namespace nuc3d
                       const VectorField &,
                       VectorField &);
         
+        void RiemannAUSMp(const double &U0,
+                         const double &alpha0,
+                         const double &Rho,
+                         const double &RhoU,
+                         const double &RhoV,
+                         const double &RhoW,
+                         const double &RhoE,
+                         const double &rho,
+                         const double &u,
+                         const double &v,
+                         const double &w,
+                         const double &p,
+                         const double &xx_x,
+                         const double &xx_y,
+                         const double &xx_z,
+                         const double &jac,
+                         double *fluxp,
+                         double *fluxn);
         void RiemannAUSM(const double &U0,
                          const double &alpha0,
                          const double &Rho,
@@ -210,24 +228,6 @@ namespace nuc3d
                          const double &jac,
                          double *fluxp,
                          double *fluxn);
-        
-//        void RiemannAUSM(const Field &,
-//                         const VectorField &,
-//                         const VectorField &,
-//                         const VectorField &,
-//                         const VectorField &,
-//                         VectorField &,
-//                         VectorField &,
-//                         double &);
-//        
-//        void RiemannLF(const Field &,
-//                       const VectorField &,
-//                       const VectorField &,
-//                       const VectorField &,
-//                       const VectorField &,
-//                       VectorField &,
-//                       VectorField &,
-//                       double &);
         
         void EoSIdealGasFWD(const double &,
                             const double &,
@@ -299,6 +299,12 @@ namespace nuc3d
         double getMachL(const double &);
         double getMachR(const double &);
         
+        double getPressureLp(const double &, const double &);
+        double getPressureRp(const double &, const double &);
+        
+        double getMachLp(const double &);
+        double getMachRp(const double &);
+        
         double EoSIdealGasgetPressure(const double &rho,
                                       const double &u,
                                       const double &v,
@@ -333,7 +339,16 @@ namespace nuc3d
                                    const double &p,
                                    const double &mach,
                                    const double &gamma);
+        
         void solveRiemannPointAUSM(const std::vector<double> &prim,
+                                   const double jac,
+                                   const double xx_x,
+                                   const double xx_y,
+                                   const double xx_z,
+                                   std::vector<double> &fluxl,
+                                   std::vector<double> &fluxr);
+        
+        void solveRiemannPointAUSMp(const std::vector<double> &prim,
                                    const double jac,
                                    const double xx_x,
                                    const double xx_y,

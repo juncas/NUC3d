@@ -26,12 +26,14 @@ myEosBWDMap(
             ),
 myRiemannMap(
              {
+                 { "AUSMp",&nuc3d::physicsModel::RiemannAUSMp },
                  { "AUSM",&nuc3d::physicsModel::RiemannAUSM },
                  { "LF",&nuc3d::physicsModel::RiemannLF}
              }
              ),
 myRiemannPointMap(
                   {
+                      { "AUSMp",&nuc3d::physicsModel::solveRiemannPointAUSMp},
                       { "AUSM",&nuc3d::physicsModel::solveRiemannPointAUSM},
                       { "LF",&::nuc3d::physicsModel::solveRiemannPointLF}
                   }
@@ -796,7 +798,7 @@ double nuc3d::physicsModel::getMachL(const double &mach)
     double MachL;
     
     if (std::abs(mach) < 1.0)
-        MachL = 0.25*pow((mach + 1.0), 2)+0.125*pow((mach*mach-1), 2);
+        MachL = 0.25*pow((mach + 1.0), 2);
     else
         MachL = 0.50*(mach + std::abs(mach));
     
@@ -810,7 +812,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     double MachR;
     
     if (std::abs(mach) < 1.0)
-        MachR = -0.25*pow((mach - 1.0), 2)-0.125*pow((mach*mach-1), 2);
+        MachR = -0.25*pow((mach - 1.0), 2);
     else
         MachR = 0.50*(mach - std::abs(mach));
     
@@ -822,7 +824,7 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {
     double pressureL;
     if (std::abs(mach) < 1.0)
-        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach)+0.1875*mach*pow((mach*mach-1.0),2));
+        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach));
     else
         pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
     
@@ -830,6 +832,94 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 }
 
 double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
+{
+    double pressureR;
+    if (std::abs(mach) < 1.0)
+        pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach));
+    else
+        pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
+    
+    return pressureR;
+}
+
+void nuc3d::physicsModel::RiemannAUSMp(const double &U0,
+                                      const double &alpha0,
+                                      const double &Rho,
+                                      const double &RhoU,
+                                      const double &RhoV,
+                                      const double &RhoW,
+                                      const double &RhoE,
+                                      const double &rho,
+                                      const double &u,
+                                      const double &v,
+                                      const double &w,
+                                      const double &p,
+                                      const double &xx_x,
+                                      const double &xx_y,
+                                      const double &xx_z,
+                                      const double &jac,
+                                      double *fluxp,
+                                      double *fluxn)
+{
+    double mach=U0/alpha0;
+    double machp = getMachLp(mach);
+    double machn = getMachRp(mach);
+    
+    double p_p = getPressureLp(mach, p);
+    double p_n = getPressureRp(mach, p);
+    
+    fluxp[0] = machp*alpha0*Rho;
+    fluxp[1] = machp*alpha0*RhoU + xx_x*p_p/jac;
+    fluxp[2] = machp*alpha0*RhoV + xx_y*p_p/jac;
+    fluxp[3] = machp*alpha0*RhoW + xx_z*p_p/jac;
+    fluxp[4] = machp*alpha0*RhoE + machp*alpha0*p/jac;
+    
+    fluxn[0] = machn*alpha0*Rho;
+    fluxn[1] = machn*alpha0*RhoU + xx_x*p_n/jac;
+    fluxn[2] = machn*alpha0*RhoV + xx_y*p_n/jac;
+    fluxn[3] = machn*alpha0*RhoW + xx_z*p_n/jac;
+    fluxn[4] = machn*alpha0*RhoE + machn*alpha0*p/jac;
+}
+
+double nuc3d::physicsModel::getMachLp(const double &mach)
+{
+    double MachL;
+    
+    if (std::abs(mach) < 1.0)
+        MachL = 0.25*pow((mach + 1.0), 2)+0.125*pow((mach*mach-1), 2);
+    else
+        MachL = 0.50*(mach + std::abs(mach));
+    
+    return MachL;
+    
+}
+
+double nuc3d::physicsModel::getMachRp(const double &mach)
+{
+    
+    double MachR;
+    
+    if (std::abs(mach) < 1.0)
+        MachR = -0.25*pow((mach - 1.0), 2)-0.125*pow((mach*mach-1), 2);
+    else
+        MachR = 0.50*(mach - std::abs(mach));
+    
+    return MachR;
+    
+}
+
+double nuc3d::physicsModel::getPressureLp(const double &mach, const double &p)
+{
+    double pressureL;
+    if (std::abs(mach) < 1.0)
+        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach)+0.1875*mach*pow((mach*mach-1.0),2));
+    else
+        pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
+    
+    return pressureL;
+}
+
+double nuc3d::physicsModel::getPressureRp(const double &mach, const double &p)
 {
     double pressureR;
     if (std::abs(mach) < 1.0)
@@ -1140,6 +1230,89 @@ void nuc3d::physicsModel::solveRiemannPointAUSM(const std::vector<double> &prim,
     
     
 }
+
+void nuc3d::physicsModel::solveRiemannPointAUSMp(const std::vector<double> &prim,
+                                                const double jac,
+                                                const double xx_x,
+                                                const double xx_y,
+                                                const double xx_z,
+                                                std::vector<double> &fluxl,
+                                                std::vector<double> &fluxr)
+{
+    const double &rho=prim[0];
+    const double &u=prim[1];
+    const double &v=prim[2];
+    const double &w=prim[3];
+    const double &p=prim[4];
+    
+    double _rho;
+    double _rhou;
+    double _rhov;
+    double _rhow;
+    double _E;
+    double _p;
+    double _T;
+    double _e;
+    double _alpha;
+    
+    
+    (this->*myEosBWDMap[myEoSName])(rho,
+                                    u,
+                                    v,
+                                    w,
+                                    p,
+                                    _rho,
+                                    _rhou,
+                                    _rhov,
+                                    _rhow,
+                                    _E);
+    
+    (this->*myEosFWDMap[myEoSName])(rho,
+                                    u,
+                                    v,
+                                    w,
+                                    _E,
+                                    _p,
+                                    _T,
+                                    _e,
+                                    _alpha);
+    
+    double mach, machp, machn;
+    double p_p, p_n;
+    double U0;
+    double theta;
+    theta=sqrt(xx_x*xx_x + xx_y*xx_y + xx_z*xx_z);
+    double alpha = _alpha*theta;
+    
+    U0=(xx_x*u + xx_y*v + xx_z*w);
+    
+    mach = U0 / alpha;
+    
+    
+    machp = getMachLp(mach);
+    machn = getMachRp(mach);
+    
+    p_p = getPressureLp(mach, p);
+    p_n = getPressureRp(mach, p);
+    
+    
+    
+    fluxl[0] = machp*alpha*_rho/jac;
+    fluxl[1] = machp*alpha*_rhou/jac + xx_x*p_p/jac;
+    fluxl[2] = machp*alpha*_rhov/jac + xx_y*p_p/jac;
+    fluxl[3] = machp*alpha*_rhow/jac + xx_z*p_p/jac;
+    fluxl[4] = machp*alpha*_E/jac + machp*alpha*p/jac;
+    
+    fluxr[0] = machn*alpha*_rho/jac;
+    fluxr[1] = machn*alpha*_rhou/jac + xx_x*p_n/jac;
+    fluxr[2] = machn*alpha*_rhov/jac + xx_y*p_n/jac;
+    fluxr[3] = machn*alpha*_rhow/jac + xx_z*p_n/jac;
+    fluxr[4] = machn*alpha*_E/jac + machn*alpha*p/jac;
+    
+    
+    
+}
+
 void nuc3d::physicsModel::solveRiemannPointLF(const std::vector<double> &prim,
                                               const double jac,
                                               const double xx_x,

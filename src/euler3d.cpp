@@ -22,8 +22,35 @@ maxEigen(1.0)
 
 void nuc3d::EulerFlux::combineFluxLR()
 {
-    for(auto iter=reconstFlux.begin();iter!=reconstFlux.end();iter++)
-        *iter=reconstFluxL[iter-reconstFlux.begin()]+reconstFluxR[iter-reconstFlux.begin()];
+    auto beg=reconstFlux.begin();
+    auto end=reconstFlux.end();
+    
+    for(auto iter=beg;iter!=end;iter++)
+    {
+        int nx0=iter->getSizeX();
+        int ny0=iter->getSizeY();
+        int nz0=iter->getSizeZ();
+        
+        double *prf=iter->getDataPtr();
+        double *prfp=reconstFluxL[iter-beg].getDataPtr();
+        double *prfn=reconstFluxR[iter-beg].getDataPtr();
+        
+        for (int k=0; k<nz0; k++)
+        {
+            for (int j=0; j<ny0; j++)
+            {
+                for (int i=0; i<nx0; i++)
+                {
+                    int idx=nx0*ny0*k+nx0*j+i;
+                    double rfp=prfp[idx];
+                    double rfn=prfn[idx];
+                    double rf=rfp+rfn;
+                    
+                    prf[idx]=rf;
+                }
+            }
+        }
+    }
 }
 
 nuc3d::EulerFlux::~EulerFlux()
@@ -156,7 +183,7 @@ void nuc3d::EulerData3D::setDerivativesEtaInv()
         int nx0=iter->getSizeX();
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
-
+        
         double *dg=dgdeta[iter-flux.begin()].getDataPtr();
         int nx1=dgdeta[iter-flux.begin()].getSizeX();
         int ny1=dgdeta[iter-flux.begin()].getSizeY();
@@ -189,7 +216,7 @@ void nuc3d::EulerData3D::setDerivativesZetaInv()
         int nx0=iter->getSizeX();
         int ny0=iter->getSizeY();
         int nz0=iter->getSizeZ();
-
+        
         double *dh=dhdzeta[iter-flux.begin()].getDataPtr();
         int nx1=dhdzeta[iter-flux.begin()].getSizeX();
         int ny1=dhdzeta[iter-flux.begin()].getSizeY();
@@ -271,7 +298,7 @@ void nuc3d::EulerData3D::solveInv(fieldOperator3d &myOP,
     solveInvicidFluxR(this->getFluxXi(), myOP, myBf,myMPI,myBC, 0);
     solveInvicidFluxR(this->getFluxEta(), myOP, myBf,myMPI,myBC, 1);
     solveInvicidFluxR(this->getFluxZeta(), myOP, myBf,myMPI,myBC,2);
-    this->setDerivativesInv();    
+    this->setDerivativesInv();
 }
 
 
