@@ -23,13 +23,13 @@ namespace nuc3d
         
         pscheme mySchemeP[4]={
             &ReconstructionboundaryScheme::firstOrderP,
-            &ReconstructionboundaryScheme::firstOrderP,
+            &ReconstructionboundaryScheme::secondOrderP,
             &ReconstructionboundaryScheme::thirdOrderP,
             &ReconstructionboundaryScheme::fifthOrderP
         };
         pscheme mySchemeN[4]={
             &ReconstructionboundaryScheme::firstOrderN,
-            &ReconstructionboundaryScheme::firstOrderN,
+            &ReconstructionboundaryScheme::secondOrderN,
             &ReconstructionboundaryScheme::thirdOrderN,
             &ReconstructionboundaryScheme::fifthOrderN
         };
