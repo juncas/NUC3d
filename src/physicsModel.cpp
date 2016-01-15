@@ -322,8 +322,65 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 
                 if(e0<0.0)
                 {
-                    E=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
-                    pRhoE[idx]=E/jac;
+                    if((i!=0)&&(i!=(nx-1)))
+                    {
+                        E= (pRhoE[idx-1]/pjac[idx-1]
+                            +pRhoE[idx+1]/pjac[idx+1])*0.5;
+                        
+                        rho=( pRho[idx-1]/pjac[idx-1]
+                             +pRho[idx+1]/pjac[idx+1])*0.5;
+                        
+                        u= (pRhoU[idx-1]/pjac[idx-1]
+                            +pRhoU[idx+1]/pjac[idx+1])*0.5/ rho;
+                        
+                        v= (pRhoV[idx-1]/pjac[idx-1]
+                            +pRhoV[idx+1]/pjac[idx+1])*0.5/ rho;
+                        
+                        w= (pRhoW[idx-1]/pjac[idx-1]
+                            +pRhoW[idx+1]/pjac[idx+1])*0.5/ rho;
+                    }
+                    else if((j!=0)&&(j!=(ny-1)))
+                    {
+                        E= (pRhoE[idx-nx]/pjac[idx-nx]
+                            +pRhoE[idx+nx]/pjac[idx+nx])*0.5;
+                        
+                        rho=( pRho[idx-nx]/pjac[idx-nx]
+                             +pRho[idx+nx]/pjac[idx+nx])*0.5;
+                        
+                        u= (pRhoU[idx-nx]/pjac[idx-nx]
+                            +pRhoU[idx+nx]/pjac[idx+nx])*0.5/ rho;
+                        
+                        v= (pRhoV[idx-nx]/pjac[idx-nx]
+                            +pRhoV[idx+nx]/pjac[idx+nx])*0.5/ rho;
+                        
+                        w= (pRhoW[idx-nx]/pjac[idx-nx]
+                            +pRhoW[idx+nx]/pjac[idx+nx])*0.5/ rho;}
+                    else if((k!=0)&&(k!=(nz-1)))
+                    {
+                        E= (pRhoE[idx-nx*ny]/pjac[idx-nx*ny]
+                            +pRhoE[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
+                        
+                        rho=( pRho[idx-nx*ny]/pjac[idx-nx*ny]
+                             +pRho[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
+                        
+                        u= (pRhoU[idx-nx*ny]/pjac[idx-nx*ny]
+                            +pRhoU[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
+                        
+                        v= (pRhoV[idx-nx*ny]/pjac[idx-nx*ny]
+                            +pRhoV[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
+                        
+                        w= (pRhoW[idx-nx*ny]/pjac[idx-nx*ny]
+                            +pRhoW[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;}
+                    else
+                    {
+                        E=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
+                    }
+                    
+                    pRho[idx]=  rho /jac;
+                    pRhoU[idx]= u *rho/jac;
+                    pRhoV[idx]= v*rho/jac;
+                    pRhoW[idx]= w*rho/jac;
+                    pRhoE[idx]= E*rho/jac;
                 }
                 
                 (this->*myEosFWDMap[EoSName])(rho,
@@ -625,8 +682,8 @@ void nuc3d::physicsModel::RiemannSolver(const std::string &SolverName,
                 Rhoe0=RhoE[idx_xi];
                 
                 theta_eta=std::sqrt(eta_x0*eta_x0
-                               + eta_y0*eta_y0
-                               + eta_z0*eta_z0);
+                                    + eta_y0*eta_y0
+                                    + eta_z0*eta_z0);
                 
                 V0=(eta_x0*u0 + eta_y0*v0 + eta_z0*w0);
                 
@@ -843,23 +900,23 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 }
 
 void nuc3d::physicsModel::RiemannAUSMp(const double &U0,
-                                      const double &alpha0,
-                                      const double &Rho,
-                                      const double &RhoU,
-                                      const double &RhoV,
-                                      const double &RhoW,
-                                      const double &RhoE,
-                                      const double &rho,
-                                      const double &u,
-                                      const double &v,
-                                      const double &w,
-                                      const double &p,
-                                      const double &xx_x,
-                                      const double &xx_y,
-                                      const double &xx_z,
-                                      const double &jac,
-                                      double *fluxp,
-                                      double *fluxn)
+                                       const double &alpha0,
+                                       const double &Rho,
+                                       const double &RhoU,
+                                       const double &RhoV,
+                                       const double &RhoW,
+                                       const double &RhoE,
+                                       const double &rho,
+                                       const double &u,
+                                       const double &v,
+                                       const double &w,
+                                       const double &p,
+                                       const double &xx_x,
+                                       const double &xx_y,
+                                       const double &xx_z,
+                                       const double &jac,
+                                       double *fluxp,
+                                       double *fluxn)
 {
     double mach=U0/alpha0;
     double machp = getMachLp(mach);
@@ -1232,12 +1289,12 @@ void nuc3d::physicsModel::solveRiemannPointAUSM(const std::vector<double> &prim,
 }
 
 void nuc3d::physicsModel::solveRiemannPointAUSMp(const std::vector<double> &prim,
-                                                const double jac,
-                                                const double xx_x,
-                                                const double xx_y,
-                                                const double xx_z,
-                                                std::vector<double> &fluxl,
-                                                std::vector<double> &fluxr)
+                                                 const double jac,
+                                                 const double xx_x,
+                                                 const double xx_y,
+                                                 const double xx_z,
+                                                 std::vector<double> &fluxl,
+                                                 std::vector<double> &fluxr)
 {
     const double &rho=prim[0];
     const double &u=prim[1];
