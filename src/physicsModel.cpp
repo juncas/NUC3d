@@ -322,65 +322,61 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 
                 if(e0<0.0)
                 {
-                    if((i!=0)&&(i!=(nx-1)))
-                    {
-                        E= (pRhoE[idx-1]/pjac[idx-1]
-                            +pRhoE[idx+1]/pjac[idx+1])*0.5;
-                        
-                        rho=( pRho[idx-1]/pjac[idx-1]
-                             +pRho[idx+1]/pjac[idx+1])*0.5;
-                        
-                        u= (pRhoU[idx-1]/pjac[idx-1]
-                            +pRhoU[idx+1]/pjac[idx+1])*0.5/ rho;
-                        
-                        v= (pRhoV[idx-1]/pjac[idx-1]
-                            +pRhoV[idx+1]/pjac[idx+1])*0.5/ rho;
-                        
-                        w= (pRhoW[idx-1]/pjac[idx-1]
-                            +pRhoW[idx+1]/pjac[idx+1])*0.5/ rho;
-                    }
-                    else if((j!=0)&&(j!=(ny-1)))
-                    {
-                        E= (pRhoE[idx-nx]/pjac[idx-nx]
-                            +pRhoE[idx+nx]/pjac[idx+nx])*0.5;
-                        
-                        rho=( pRho[idx-nx]/pjac[idx-nx]
-                             +pRho[idx+nx]/pjac[idx+nx])*0.5;
-                        
-                        u= (pRhoU[idx-nx]/pjac[idx-nx]
-                            +pRhoU[idx+nx]/pjac[idx+nx])*0.5/ rho;
-                        
-                        v= (pRhoV[idx-nx]/pjac[idx-nx]
-                            +pRhoV[idx+nx]/pjac[idx+nx])*0.5/ rho;
-                        
-                        w= (pRhoW[idx-nx]/pjac[idx-nx]
-                            +pRhoW[idx+nx]/pjac[idx+nx])*0.5/ rho;}
-                    else if((k!=0)&&(k!=(nz-1)))
-                    {
-                        E= (pRhoE[idx-nx*ny]/pjac[idx-nx*ny]
-                            +pRhoE[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
-                        
-                        rho=( pRho[idx-nx*ny]/pjac[idx-nx*ny]
-                             +pRho[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
-                        
-                        u= (pRhoU[idx-nx*ny]/pjac[idx-nx*ny]
-                            +pRhoU[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
-                        
-                        v= (pRhoV[idx-nx*ny]/pjac[idx-nx*ny]
-                            +pRhoV[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
-                        
-                        w= (pRhoW[idx-nx*ny]/pjac[idx-nx*ny]
-                            +pRhoW[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;}
-                    else
-                    {
+                    //                    if((i!=0)&&(i!=(nx-1)))
+//                    {
+//                        E= (pRhoE[idx-1]/pjac[idx-1]
+//                            +pRhoE[idx+1]/pjac[idx+1])*0.5;
+//                        
+//                        rho=( pRho[idx-1]/pjac[idx-1]
+//                             +pRho[idx+1]/pjac[idx+1])*0.5;
+//                        
+//                        u= (pRhoU[idx-1]/pjac[idx-1]
+//                            +pRhoU[idx+1]/pjac[idx+1])*0.5/ rho;
+//                        
+//                        v= (pRhoV[idx-1]/pjac[idx-1]
+//                            +pRhoV[idx+1]/pjac[idx+1])*0.5/ rho;
+//                        
+//                        w= (pRhoW[idx-1]/pjac[idx-1]
+//                            +pRhoW[idx+1]/pjac[idx+1])*0.5/ rho;
+//                    }
+//                    else if((j!=0)&&(j!=(ny-1)))
+//                    {
+//                        E= (pRhoE[idx-nx]/pjac[idx-nx]
+//                            +pRhoE[idx+nx]/pjac[idx+nx])*0.5;
+//                        
+//                        rho=( pRho[idx-nx]/pjac[idx-nx]
+//                             +pRho[idx+nx]/pjac[idx+nx])*0.5;
+//                        
+//                        u= (pRhoU[idx-nx]/pjac[idx-nx]
+//                            +pRhoU[idx+nx]/pjac[idx+nx])*0.5/ rho;
+//                        
+//                        v= (pRhoV[idx-nx]/pjac[idx-nx]
+//                            +pRhoV[idx+nx]/pjac[idx+nx])*0.5/ rho;
+//                        
+//                        w= (pRhoW[idx-nx]/pjac[idx-nx]
+//                            +pRhoW[idx+nx]/pjac[idx+nx])*0.5/ rho;}
+//                    else if((k!=0)&&(k!=(nz-1)))
+//                    {
+//                        E= (pRhoE[idx-nx*ny]/pjac[idx-nx*ny]
+//                            +pRhoE[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
+//                        
+//                        rho=( pRho[idx-nx*ny]/pjac[idx-nx*ny]
+//                             +pRho[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
+//                        
+//                        u= (pRhoU[idx-nx*ny]/pjac[idx-nx*ny]
+//                            +pRhoU[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
+//                        
+//                        v= (pRhoV[idx-nx*ny]/pjac[idx-nx*ny]
+//                            +pRhoV[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
+//                        
+//                        w= (pRhoW[idx-nx*ny]/pjac[idx-nx*ny]
+//                            +pRhoW[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;}
+//                    else
+//                    {
                         E=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
-                    }
-                    
-                    pRho[idx]=  rho /jac;
-                    pRhoU[idx]= u *rho/jac;
-                    pRhoV[idx]= v*rho/jac;
-                    pRhoW[idx]= w*rho/jac;
-                    pRhoE[idx]= E*rho/jac;
+                    //}
+
+                    pRhoE[idx]= E/jac;
                 }
                 
                 (this->*myEosFWDMap[EoSName])(rho,
