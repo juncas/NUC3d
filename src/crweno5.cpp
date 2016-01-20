@@ -61,11 +61,16 @@ void nuc3d::crweno5::crweno5p(const Field & fieldIN,
     int nx0=fieldOUT.getSizeX();
     int ny0=fieldOUT.getSizeY();
     int nz0=fieldOUT.getSizeZ();
-    
-    std::vector<double> a(nx-2*tilesize+1,0.0);
-    std::vector<double> b(nx-2*tilesize+1,1.0);
-    std::vector<double> c(nx-2*tilesize+1,0.0);
-    std::vector<double> d(nx-2*tilesize+1,0.0);
+//    vector is very very slow as this function is called many times
+//    std::vector<double> a(nx-2*tilesize+1,0.0);
+//    std::vector<double> b(nx-2*tilesize+1,1.0);
+//    std::vector<double> c(nx-2*tilesize+1,0.0);
+//    std::vector<double> d(nx-2*tilesize+1,0.0);
+    double a[256];
+    double b[256];
+    double c[256];
+    double d[256];
+
     
     int ibeg=(tilesize-1);
     int iend=nx-tilesize;
@@ -231,13 +236,18 @@ void nuc3d::crweno5::crweno5n(const Field & fieldIN,
     
     int nx=fieldIN.getSizeX();
     int ny=fieldIN.getSizeY();
-    int nz=fieldIN.getSizeZ();    
+    int nz=fieldIN.getSizeZ();
     
-    std::vector<double> a(nx-2*tilesize+1,0.0);
-    std::vector<double> b(nx-2*tilesize+1,1.0);
-    std::vector<double> c(nx-2*tilesize+1,0.0);
-    std::vector<double> d(nx-2*tilesize+1,0.0);
-
+//    vector is very very slow as this function is called many times
+//    std::vector<double> a(nx-2*tilesize+1,0.0);
+//    std::vector<double> b(nx-2*tilesize+1,1.0);
+//    std::vector<double> c(nx-2*tilesize+1,0.0);
+//    std::vector<double> d(nx-2*tilesize+1,0.0);
+    double a[256];
+    double b[256];
+    double c[256];
+    double d[256];
+    
     int nx0=fieldOUT.getSizeX();
     int ny0=fieldOUT.getSizeY();
     int nz0=fieldOUT.getSizeZ();
