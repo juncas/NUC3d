@@ -105,9 +105,9 @@ void nuc3d::crweno5::crweno5p(const Field & fieldIN,
                 +coeff_weno5_alpha[2][1]*pIn[idx_f+1]
                 +coeff_weno5_alpha[2][2]*pIn[idx_f+2];
                 
-                alpha0=coeff_crweno5_c[0]/std::pow((ss+is0),p);
-                alpha1=coeff_crweno5_c[1]/std::pow((ss+is1),p);
-                alpha2=coeff_crweno5_c[2]/std::pow((ss+is2),p);
+                alpha0=coeff_weno5_c[0]/std::pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/std::pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/std::pow((ss+is2),p);
                 
                 
                 alphaSum=alpha0+alpha1+alpha2;
@@ -122,7 +122,7 @@ void nuc3d::crweno5::crweno5p(const Field & fieldIN,
                 d[i-ibeg]=omega0*q30+omega1*q31+omega2*q32;
             }
             
-            for(int i=ibeg+1;i<iend-1;i++)
+            for(int i=ibeg+1;i<(iend-1);i++)
             {
                 int idx_f=nx*ny*k+nx*j+i;
                 int idx_rf=nx0*ny0*k+nx0*j+i+1;
@@ -135,19 +135,6 @@ void nuc3d::crweno5::crweno5p(const Field & fieldIN,
                 
                 is2= coeff_weno5_gamma0*std::pow((pIn[idx_f]-2.0*pIn[idx_f+1]+pIn[idx_f+2]),2)
                 +coeff_weno5_gamma1*std::pow((3.0*pIn[idx_f]-4.0*pIn[idx_f+1]+pIn[idx_f+2]),2);
-                
-                
-                q30= coeff_weno5_alpha[0][0]*pIn[idx_f-2]
-                +coeff_weno5_alpha[0][1]*pIn[idx_f-1]
-                +coeff_weno5_alpha[0][2]*pIn[idx_f];
-                
-                q31= coeff_weno5_alpha[1][0]*pIn[idx_f-1]
-                +coeff_weno5_alpha[1][1]*pIn[idx_f]
-                +coeff_weno5_alpha[1][2]*pIn[idx_f+1];
-                
-                q32= coeff_weno5_alpha[2][0]*pIn[idx_f]
-                +coeff_weno5_alpha[2][1]*pIn[idx_f+1]
-                +coeff_weno5_alpha[2][2]*pIn[idx_f+2];
                 
                 alpha0=coeff_crweno5_c[0]/std::pow((ss+is0),p);
                 alpha1=coeff_crweno5_c[1]/std::pow((ss+is1),p);
@@ -195,9 +182,9 @@ void nuc3d::crweno5::crweno5p(const Field & fieldIN,
                 +coeff_weno5_alpha[2][1]*pIn[idx_f+1]
                 +coeff_weno5_alpha[2][2]*pIn[idx_f+2];
                 
-                alpha0=coeff_crweno5_c[0]/std::pow((ss+is0),p);
-                alpha1=coeff_crweno5_c[1]/std::pow((ss+is1),p);
-                alpha2=coeff_crweno5_c[2]/std::pow((ss+is2),p);
+                alpha0=coeff_weno5_c[0]/std::pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/std::pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/std::pow((ss+is2),p);
                 
                 
                 alphaSum=alpha0+alpha1+alpha2;
@@ -294,9 +281,9 @@ void nuc3d::crweno5::crweno5n(const Field & fieldIN,
                 +coeff_weno5_alpha[2][2]*pIn[idx_f-1];
 
                 
-                alpha0=coeff_crweno5_c[0]/std::pow((ss+is0),p);
-                alpha1=coeff_crweno5_c[1]/std::pow((ss+is1),p);
-                alpha2=coeff_crweno5_c[2]/std::pow((ss+is2),p);
+                alpha0=coeff_weno5_c[0]/std::pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/std::pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/std::pow((ss+is2),p);
                 
                 
                 alphaSum=alpha0+alpha1+alpha2;
@@ -311,7 +298,7 @@ void nuc3d::crweno5::crweno5n(const Field & fieldIN,
                 d[i-ibeg]=omega0*q30+omega1*q31+omega2*q32;
             }
             
-            for(int i=ibeg+1;i<iend-1;i++)
+            for(int i=ibeg+1;i<(iend-1);i++)
             {
                 int idx_f=nx*ny*k+nx*j+i;
                 
@@ -371,9 +358,9 @@ void nuc3d::crweno5::crweno5n(const Field & fieldIN,
                 +coeff_weno5_alpha[2][2]*pIn[idx_f-1];
 
                 
-                alpha0=coeff_crweno5_c[0]/std::pow((ss+is0),p);
-                alpha1=coeff_crweno5_c[1]/std::pow((ss+is1),p);
-                alpha2=coeff_crweno5_c[2]/std::pow((ss+is2),p);
+                alpha0=coeff_weno5_c[0]/std::pow((ss+is0),p);
+                alpha1=coeff_weno5_c[1]/std::pow((ss+is1),p);
+                alpha2=coeff_weno5_c[2]/std::pow((ss+is2),p);
                 
                 
                 alphaSum=alpha0+alpha1+alpha2;
