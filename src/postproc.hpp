@@ -34,6 +34,11 @@ namespace nuc3d
         Field omega0;
         Field omega1;
         Field omega2;
+//        Field aver_rhou,aver_rhov,aver_rhow;
+//        Field aver_uu,aver_uv,aver_uw;
+//        Field aver_vv,aver_vw;
+//        Field aver_ww;
+        
         /*
          Other statistics can be added
          */

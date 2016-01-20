@@ -18,6 +18,7 @@ TVD-RK3.cpp\
 	weno5js.cpp\
  	weno5z.cpp\
 	weno3js.cpp\
+	crweno5.cpp\
 	upwind1st.cpp\
 	centraldifference2nd.cpp\
 	boundaryScheme.cpp\

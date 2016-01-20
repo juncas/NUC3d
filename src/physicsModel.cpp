@@ -303,6 +303,7 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
     double *pE0=iterE0->getDataPtr();
     double *pAlpha0=iterAlpha0->getDataPtr();
     double gamma = myModelParameters["Gamma"];
+    double mach = myModelParameters["Mach"];
     for (int k = 0; k < nz; ++k)
     {
         for (int j = 0; j < ny; ++j)
@@ -322,60 +323,11 @@ void nuc3d::physicsModel::con2prim(const std::string &EoSName,
                 
                 if(e0<0.0)
                 {
-                    //                    if((i!=0)&&(i!=(nx-1)))
-//                    {
-//                        E= (pRhoE[idx-1]/pjac[idx-1]
-//                            +pRhoE[idx+1]/pjac[idx+1])*0.5;
-//                        
-//                        rho=( pRho[idx-1]/pjac[idx-1]
-//                             +pRho[idx+1]/pjac[idx+1])*0.5;
-//                        
-//                        u= (pRhoU[idx-1]/pjac[idx-1]
-//                            +pRhoU[idx+1]/pjac[idx+1])*0.5/ rho;
-//                        
-//                        v= (pRhoV[idx-1]/pjac[idx-1]
-//                            +pRhoV[idx+1]/pjac[idx+1])*0.5/ rho;
-//                        
-//                        w= (pRhoW[idx-1]/pjac[idx-1]
-//                            +pRhoW[idx+1]/pjac[idx+1])*0.5/ rho;
-//                    }
-//                    else if((j!=0)&&(j!=(ny-1)))
-//                    {
-//                        E= (pRhoE[idx-nx]/pjac[idx-nx]
-//                            +pRhoE[idx+nx]/pjac[idx+nx])*0.5;
-//                        
-//                        rho=( pRho[idx-nx]/pjac[idx-nx]
-//                             +pRho[idx+nx]/pjac[idx+nx])*0.5;
-//                        
-//                        u= (pRhoU[idx-nx]/pjac[idx-nx]
-//                            +pRhoU[idx+nx]/pjac[idx+nx])*0.5/ rho;
-//                        
-//                        v= (pRhoV[idx-nx]/pjac[idx-nx]
-//                            +pRhoV[idx+nx]/pjac[idx+nx])*0.5/ rho;
-//                        
-//                        w= (pRhoW[idx-nx]/pjac[idx-nx]
-//                            +pRhoW[idx+nx]/pjac[idx+nx])*0.5/ rho;}
-//                    else if((k!=0)&&(k!=(nz-1)))
-//                    {
-//                        E= (pRhoE[idx-nx*ny]/pjac[idx-nx*ny]
-//                            +pRhoE[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
-//                        
-//                        rho=( pRho[idx-nx*ny]/pjac[idx-nx*ny]
-//                             +pRho[idx+nx*ny]/pjac[idx+nx*ny])*0.5;
-//                        
-//                        u= (pRhoU[idx-nx*ny]/pjac[idx-nx*ny]
-//                            +pRhoU[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
-//                        
-//                        v= (pRhoV[idx-nx*ny]/pjac[idx-nx*ny]
-//                            +pRhoV[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;
-//                        
-//                        w= (pRhoW[idx-nx*ny]/pjac[idx-nx*ny]
-//                            +pRhoW[idx+nx*ny]/pjac[idx+nx*ny])*0.5/ rho;}
-//                    else
-//                    {
-                        E=(pow(rho,gamma)/(gamma-1.0)+0.5*rho*(u*u+v*v+w*w));
-                    //}
-
+                    int id;
+                    MPI_Comm_rank(MPI_COMM_WORLD, &id);
+                    
+                    E=(pow(rho,gamma)/((gamma*mach*mach)*(gamma-1.0))+0.5*rho*(u*u+v*v+w*w));
+                    std::cout<<"negative pressure at"<<id<<":"<<i<<","<<j<<","<<k<<std::endl;
                     pRhoE[idx]= E/jac;
                 }
                 
@@ -838,12 +790,14 @@ void nuc3d::physicsModel::RiemannAUSM(const double &U0,
     fluxp[2] = machp*alpha0*RhoV + xx_y*p_p/jac;
     fluxp[3] = machp*alpha0*RhoW + xx_z*p_p/jac;
     fluxp[4] = machp*alpha0*RhoE + machp*alpha0*p/jac;
+    //fluxp[4] = machp*alpha0*RhoE + U0*p_p/jac;
     
     fluxn[0] = machn*alpha0*Rho;
     fluxn[1] = machn*alpha0*RhoU + xx_x*p_n/jac;
     fluxn[2] = machn*alpha0*RhoV + xx_y*p_n/jac;
     fluxn[3] = machn*alpha0*RhoW + xx_z*p_n/jac;
     fluxn[4] = machn*alpha0*RhoE + machn*alpha0*p/jac;
+    //fluxn[4] = machn*alpha0*RhoE + U0*p_n/jac;
 }
 
 double nuc3d::physicsModel::getMachL(const double &mach)
@@ -851,7 +805,7 @@ double nuc3d::physicsModel::getMachL(const double &mach)
     double MachL;
     
     if (std::abs(mach) < 1.0)
-        MachL = 0.25*pow((mach + 1.0), 2);
+        MachL = 0.25*std::pow((mach + 1.0), 2);
     else
         MachL = 0.50*(mach + std::abs(mach));
     
@@ -865,7 +819,7 @@ double nuc3d::physicsModel::getMachR(const double &mach)
     double MachR;
     
     if (std::abs(mach) < 1.0)
-        MachR = -0.25*pow((mach - 1.0), 2);
+        MachR = -0.25*std::pow((mach - 1.0), 2);
     else
         MachR = 0.50*(mach - std::abs(mach));
     
@@ -877,7 +831,7 @@ double nuc3d::physicsModel::getPressureL(const double &mach, const double &p)
 {
     double pressureL;
     if (std::abs(mach) < 1.0)
-        pressureL = p*(0.25*pow((mach + 1.0), 2)*(2.0 - mach));
+        pressureL = p*(0.25*std::pow((mach + 1.0), 2)*(2.0 - mach));
     else
         pressureL = 0.50*p*(mach + std::abs(mach)) / mach;
     
@@ -888,7 +842,7 @@ double nuc3d::physicsModel::getPressureR(const double &mach, const double &p)
 {
     double pressureR;
     if (std::abs(mach) < 1.0)
-        pressureR = p*(0.25*pow(mach - 1.0, 2)*(2.0 + mach));
+        pressureR = p*(0.25*std::pow(mach - 1.0, 2)*(2.0 + mach));
     else
         pressureR = 0.5*p*(mach - std::abs(mach)) / mach;
     

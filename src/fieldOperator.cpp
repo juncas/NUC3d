@@ -5,6 +5,7 @@
 #include "weno5js.h"
 #include "weno5z.hpp"
 #include "weno3js.hpp"
+#include "crweno5.hpp"
 #include "upwind1st.hpp"
 #include "TVD-RK3.h"
 #include "centraldifference6th.h"
@@ -133,6 +134,11 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
         bufferSize_xi=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
+    else if(s=="crweno5")
+    {
+        bufferSize_xi=3;
+        myInteroplators.push_back(std::make_shared<crweno5>());
+    }
     else if(s=="weno3js")
     {
         bufferSize_xi=2;
@@ -166,6 +172,11 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
         bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
     }
+    else if(s=="crweno5")
+    {
+        bufferSize_eta=3;
+        myInteroplators.push_back(std::make_shared<crweno5>());
+    }
     else if(s=="weno3js")
     {
         bufferSize_eta=2;
@@ -197,6 +208,11 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     {
         bufferSize_zeta=3;
         myInteroplators.push_back(std::make_shared<weno5z>());
+    }
+    else if(s=="crweno5")
+    {
+        bufferSize_zeta=3;
+        myInteroplators.push_back(std::make_shared<crweno5>());
     }
     else if(s=="weno3js")
     {
