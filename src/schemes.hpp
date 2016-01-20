@@ -20,8 +20,17 @@ namespace nuc3d
         {1.0/3.0,5.0/6.0,-1.0/6.0}
     };
     
+    
+    const double coeff_weno7_alpha[4][4] = {
+        {-3.0/12.0,13.0/12.0,-23.0/12.0,25.0/12.0},
+        {1.0/12.0,-5.0/12.0,13.0/12.0,3.0/12.0},
+        {-1.0/12.0,7.0/12.0,7.0/12.0,-1.0/12.0},
+        {3.0/12.0,13.0/12.0,-5.0/12.0,1.0/12.0}
+    };
+    
     const double coeff_weno5_c[3]={0.1,0.6,0.3};
     const double coeff_crweno5_c[3]={0.2,0.5,0.3};
+    const double coeff_weno7_c[4]={1.0/35.0,12.0/35.0,18.0/35.0,4.0/35.0};
     
     const double coeff_weno5_gamma0=13.0/12.0;
     const double coeff_weno5_gamma1=1.0/4.0;

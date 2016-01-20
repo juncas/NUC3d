@@ -32,6 +32,7 @@
 		E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */; };
 		E3DAB3231C40C25000E255C1 /* boundaryScheme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */; };
 		E3E352731C4F55D3003769AD /* crweno5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352711C4F55D3003769AD /* crweno5.cpp */; };
+		E3E352761C4F85DC003769AD /* weno7js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352741C4F85DC003769AD /* weno7js.cpp */; };
 		E3E5AEBF1C1C557C00238C41 /* upwind1st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */; };
 		E3E5AEC21C1C564E00238C41 /* weno5z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEC01C1C564E00238C41 /* weno5z.cpp */; };
 		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; };
@@ -103,6 +104,8 @@
 		E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = boundaryScheme.hpp; path = src/boundaryScheme.hpp; sourceTree = SOURCE_ROOT; };
 		E3E352711C4F55D3003769AD /* crweno5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = crweno5.cpp; path = src/crweno5.cpp; sourceTree = SOURCE_ROOT; };
 		E3E352721C4F55D3003769AD /* crweno5.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = crweno5.hpp; path = src/crweno5.hpp; sourceTree = SOURCE_ROOT; };
+		E3E352741C4F85DC003769AD /* weno7js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno7js.cpp; path = src/weno7js.cpp; sourceTree = SOURCE_ROOT; };
+		E3E352751C4F85DC003769AD /* weno7js.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = weno7js.hpp; path = src/weno7js.hpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = upwind1st.cpp; path = src/upwind1st.cpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = upwind1st.hpp; path = src/upwind1st.hpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEC01C1C564E00238C41 /* weno5z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5z.cpp; path = src/weno5z.cpp; sourceTree = SOURCE_ROOT; };
@@ -186,29 +189,31 @@
 		E34642B01BD133CD007BB96D /* FieldOperator */ = {
 			isa = PBXGroup;
 			children = (
-				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
-				E34642961BD1329B007BB96D /* centraldifference6th.h */,
-				E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */,
-				E34642921BD1329B007BB96D /* fieldOperator.h */,
-				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
-				E34642971BD1329B007BB96D /* TVD-RK3.h */,
-				E346429C1BD1329B007BB96D /* weno5js.cpp */,
-				E346429D1BD1329B007BB96D /* weno5js.h */,
-				E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */,
-				E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */,
-				E3E5AEC01C1C564E00238C41 /* weno5z.cpp */,
-				E3E5AEC11C1C564E00238C41 /* weno5z.hpp */,
-				E38279D31C1DC79D00CBAB14 /* centraldifference2nd.cpp */,
-				E38279D41C1DC79D00CBAB14 /* centraldifference2nd.hpp */,
-				E39F4BBB1C1E9B2C00690CB1 /* schemes.hpp */,
 				E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */,
 				E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */,
-				E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */,
-				E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */,
-				E31076121C46374B0090915F /* weno3js.cpp */,
-				E31076131C46374B0090915F /* weno3js.hpp */,
+				E38279D31C1DC79D00CBAB14 /* centraldifference2nd.cpp */,
+				E38279D41C1DC79D00CBAB14 /* centraldifference2nd.hpp */,
+				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
+				E34642961BD1329B007BB96D /* centraldifference6th.h */,
 				E3E352711C4F55D3003769AD /* crweno5.cpp */,
 				E3E352721C4F55D3003769AD /* crweno5.hpp */,
+				E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */,
+				E34642921BD1329B007BB96D /* fieldOperator.h */,
+				E310760C1C4220ED0090915F /* reconstructionBoundaryScheme.cpp */,
+				E310760D1C4220ED0090915F /* reconstructionBoundaryScheme.hpp */,
+				E39F4BBB1C1E9B2C00690CB1 /* schemes.hpp */,
+				E346429B1BD1329B007BB96D /* TVD-RK3.cpp */,
+				E34642971BD1329B007BB96D /* TVD-RK3.h */,
+				E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */,
+				E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */,
+				E31076121C46374B0090915F /* weno3js.cpp */,
+				E31076131C46374B0090915F /* weno3js.hpp */,
+				E346429C1BD1329B007BB96D /* weno5js.cpp */,
+				E346429D1BD1329B007BB96D /* weno5js.h */,
+				E3E5AEC01C1C564E00238C41 /* weno5z.cpp */,
+				E3E5AEC11C1C564E00238C41 /* weno5z.hpp */,
+				E3E352741C4F85DC003769AD /* weno7js.cpp */,
+				E3E352751C4F85DC003769AD /* weno7js.hpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -321,6 +326,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3E352761C4F85DC003769AD /* weno7js.cpp in Sources */,
 				E34642A21BD1329B007BB96D /* euler3d.cpp in Sources */,
 				E310760E1C4220ED0090915F /* reconstructionBoundaryScheme.cpp in Sources */,
 				E34642A91BD1329B007BB96D /* centraldifference6th.cpp in Sources */,
