@@ -381,7 +381,7 @@ void nuc3d::crweno5::crweno5n(const Field & fieldIN,
                 d[i]=(d[i]-d[i-1]*a[i])/(b[i]-c[i-1]*a[i]);
             }
             
-            pOut[nx0*ny0*k+nx0*j+iend]=d[iend-ibeg];
+            pOut[nx0*ny0*k+nx0*j+iend]=d[iend-ibeg-1];
             
             for(int i=(iend-ibeg-2);i>=0;i--)
             {
