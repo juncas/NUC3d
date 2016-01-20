@@ -34,7 +34,9 @@ namespace nuc3d
     
     const double coeff_weno5_gamma0=13.0/12.0;
     const double coeff_weno5_gamma1=1.0/4.0;
-        
+    
+    const double coeff_cd8_alpha[4] = { 4.0/5.0, -1.0/5.0, 4.0/105.0, -1.0/280.0};
+    
     const double coeff_cd6_alpha[3] = { 3.0 / 4.0, -3.0 / 20.0,1.0 / 60.0 };
     
     const double coeff_cd4_alpha[2] = { 2.0 / 3.0, -1.0 / 12.0};

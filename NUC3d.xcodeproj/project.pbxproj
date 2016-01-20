@@ -33,6 +33,7 @@
 		E3DAB3231C40C25000E255C1 /* boundaryScheme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */; };
 		E3E352731C4F55D3003769AD /* crweno5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352711C4F55D3003769AD /* crweno5.cpp */; };
 		E3E352761C4F85DC003769AD /* weno7js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352741C4F85DC003769AD /* weno7js.cpp */; };
+		E3E352791C4FA635003769AD /* centraldifference8th.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352771C4FA635003769AD /* centraldifference8th.cpp */; };
 		E3E5AEBF1C1C557C00238C41 /* upwind1st.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */; };
 		E3E5AEC21C1C564E00238C41 /* weno5z.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E5AEC01C1C564E00238C41 /* weno5z.cpp */; };
 		E3E61B0C1BD5395E00BADFDF /* fieldOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E61B0B1BD5395E00BADFDF /* fieldOperator.cpp */; };
@@ -106,6 +107,8 @@
 		E3E352721C4F55D3003769AD /* crweno5.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = crweno5.hpp; path = src/crweno5.hpp; sourceTree = SOURCE_ROOT; };
 		E3E352741C4F85DC003769AD /* weno7js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno7js.cpp; path = src/weno7js.cpp; sourceTree = SOURCE_ROOT; };
 		E3E352751C4F85DC003769AD /* weno7js.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = weno7js.hpp; path = src/weno7js.hpp; sourceTree = SOURCE_ROOT; };
+		E3E352771C4FA635003769AD /* centraldifference8th.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = centraldifference8th.cpp; path = src/centraldifference8th.cpp; sourceTree = SOURCE_ROOT; };
+		E3E352781C4FA635003769AD /* centraldifference8th.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = centraldifference8th.hpp; path = src/centraldifference8th.hpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEBD1C1C557C00238C41 /* upwind1st.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = upwind1st.cpp; path = src/upwind1st.cpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEBE1C1C557C00238C41 /* upwind1st.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = upwind1st.hpp; path = src/upwind1st.hpp; sourceTree = SOURCE_ROOT; };
 		E3E5AEC01C1C564E00238C41 /* weno5z.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = weno5z.cpp; path = src/weno5z.cpp; sourceTree = SOURCE_ROOT; };
@@ -191,6 +194,8 @@
 			children = (
 				E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */,
 				E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */,
+				E3E352771C4FA635003769AD /* centraldifference8th.cpp */,
+				E3E352781C4FA635003769AD /* centraldifference8th.hpp */,
 				E38279D31C1DC79D00CBAB14 /* centraldifference2nd.cpp */,
 				E38279D41C1DC79D00CBAB14 /* centraldifference2nd.hpp */,
 				E34642991BD1329B007BB96D /* centraldifference6th.cpp */,
@@ -353,6 +358,7 @@
 				E34642A61BD1329B007BB96D /* physicsModel.cpp in Sources */,
 				E3E5AEC21C1C564E00238C41 /* weno5z.cpp in Sources */,
 				E34642A81BD1329B007BB96D /* NUC3d.cpp in Sources */,
+				E3E352791C4FA635003769AD /* centraldifference8th.cpp in Sources */,
 				E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */,
 				E3A7AF471BEA1C2300385249 /* PDEData3d.cpp in Sources */,
 			);
