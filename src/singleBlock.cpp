@@ -66,11 +66,7 @@ void nuc3d::singleBlock::solvePDE()
         {
             output();
         }
-    }
-    
-    postprocess();
-    output();
-    
+    }    
     if(0==myMPI.getMyId()) std::cout<<"Calculation finished!!"<<std::endl;
 }
 
