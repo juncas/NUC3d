@@ -25,7 +25,7 @@ namespace nuc3d
     class IOController;
     class postproc;
     
-    #define TILE_SIZE 4;
+    #define TILE_SIZE 1;
     
     static double lag_coeff[1][2]={0.5,0.5
     };
