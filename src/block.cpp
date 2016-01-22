@@ -18,8 +18,6 @@
 #include "postproc.hpp"
 
 
-#define TILE_SIZE 4;
-
 nuc3d::block::block():
 time(0.0),
 dt(0.025),
