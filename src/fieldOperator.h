@@ -81,9 +81,6 @@ namespace nuc3d
     
     class fieldOperator3d//should only operate on fields
     {
-        int bufferSize_xi;
-        int bufferSize_eta;
-        int bufferSize_zeta;
         
         std::vector<std::shared_ptr<interoplation>> myInteroplators;
         std::vector<std::shared_ptr<interoplation>> myInteroplatorsBND;
@@ -97,6 +94,9 @@ namespace nuc3d
         
     public:
         
+        int bufferSize_xi;
+        int bufferSize_eta;
+        int bufferSize_zeta;
         
         fieldOperator3d();
         ~fieldOperator3d();

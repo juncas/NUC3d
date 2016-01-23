@@ -2,14 +2,16 @@
 #define fieldOperator3d_cpp
 
 #include "fieldOperator.h"
+#include "weno7js.hpp"
 #include "weno5js.h"
 #include "weno5z.hpp"
 #include "weno3js.hpp"
 #include "crweno5.hpp"
 #include "upwind1st.hpp"
 #include "TVD-RK3.h"
-#include "centraldifference6th.h"
 #include "centraldifference2nd.hpp"
+#include "centraldifference6th.h"
+#include "centraldifference8th.hpp"
 #include "boundaryScheme.hpp"
 #include "reconstructionBoundaryScheme.hpp"
 
@@ -124,6 +126,11 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
 {
     std::string s=MethodMap["scheme_x_ivs"];
     
+    if(s=="weno7js")
+    {
+        bufferSize_xi=4;
+        myInteroplators.push_back(std::make_shared<weno7js>());
+    }
     if(s=="weno5js")
     {
         bufferSize_xi=3;
@@ -162,7 +169,11 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
 {
     std::string s=MethodMap["scheme_y_ivs"];
     
-    if(s=="weno5js")
+    if(s=="weno7js")
+    {
+        bufferSize_eta=4;
+        myInteroplators.push_back(std::make_shared<weno7js>());
+    }    if(s=="weno5js")
     {
         bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
@@ -199,6 +210,11 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
 {
     std::string s=MethodMap["scheme_z_ivs"];
     
+    if(s=="weno7js")
+    {
+        bufferSize_zeta=4;
+        myInteroplators.push_back(std::make_shared<weno7js>());
+    }
     if(s=="weno5js")
     {
         bufferSize_zeta=3;
@@ -237,6 +253,10 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
 {
     std::string s=MethodMap["scheme_x_vis"];
     
+    if(s=="cd8")
+    {
+        myDifferenters.push_back(std::make_shared<centraldifference8th>());
+    }
     if(s=="cd6")
     {
         myDifferenters.push_back(std::make_shared<centraldifference6th>());
@@ -258,6 +278,10 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
 {
     std::string s=MethodMap["scheme_y_vis"];
     
+    if(s=="cd8")
+    {
+        myDifferenters.push_back(std::make_shared<centraldifference8th>());
+    }
     if(s=="cd6")
     {
         myDifferenters.push_back(std::make_shared<centraldifference6th>());
@@ -278,6 +302,10 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
 {
     std::string s=MethodMap["scheme_z_vis"];
     
+    if(s=="cd8")
+    {
+        myDifferenters.push_back(std::make_shared<centraldifference8th>());
+    }
     if(s=="cd6")
     {
         myDifferenters.push_back(

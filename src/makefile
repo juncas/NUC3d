@@ -3,6 +3,7 @@
 boundaryConditions.cpp\
 bufferData.cpp\
 centraldifference6th.cpp\
+centraldifference8th.cpp\
 euler3d.cpp\
 NaiverStokes3d.cpp\
 field.cpp\
@@ -16,6 +17,7 @@ physicsModel.cpp\
 singleBlock.cpp\
 TVD-RK3.cpp\
 	weno5js.cpp\
+	weno7js.cpp\
  	weno5z.cpp\
 	weno3js.cpp\
 	crweno5.cpp\

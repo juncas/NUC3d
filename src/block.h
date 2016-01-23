@@ -151,7 +151,7 @@ namespace nuc3d
             &nuc3d::block::initial_taylorgreen
         };
         
-        void initialData(int,int,int,physicsModel &);
+        void initialData(int,int,int,physicsModel &,fieldOperator3d &);
         
         void getXYZ_center();
         

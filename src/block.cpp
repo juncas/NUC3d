@@ -54,7 +54,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     myFile.open(filename_mesh);
     if (myFile)
     {
-        myFile >> nx0 >> ny0 >> nz0>> bfsize;
+        myFile >> nx0 >> ny0 >> nz0;
         nx=nx0-1;
         ny=ny0-1;
         nz=nz0-1;
@@ -81,7 +81,7 @@ void nuc3d::block::initial(fieldOperator3d &myOP,
     myFile.close();
     
     if(myMPI.getMyId()==0) std::cout<<"Jacobians has been calculated!"<<std::endl;
-    initialData(nx, ny, nz, myPhyMod);
+    initialData(nx, ny, nz, myPhyMod,myOP);
     myBC.initialBC(mybuffer,myMPI);
     getJacobians();
     outputGEO_tecplot(myMPI.getMyId());
@@ -476,7 +476,7 @@ double nuc3d::block::interpolation_derlag_center_zeta(const int ibeg,
     return value_zeta;
 }
 
-void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
+void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy,fieldOperator3d &myOP)
 {
     myPDE.initPDEData3d(nx, ny, nz, myPhy.getEqNum());
     if("Euler3d"==myPhy.getMyModelName())
@@ -503,6 +503,8 @@ void nuc3d::block::initialData(int nx0,int ny0,int nz0,physicsModel &myPhy)
         exit(-1);
     }
     
+    bfsize=std::max(myOP.bufferSize_xi,myOP.bufferSize_eta);
+    bfsize=std::max(bfsize,myOP.bufferSize_zeta);
     for(int n=0;n<myPhy.getEqNum();n++)
     {
         mybuffer.push_back(bufferData(nx,ny,nz,bfsize));
