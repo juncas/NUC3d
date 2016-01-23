@@ -131,7 +131,7 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
         bufferSize_xi=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
     }
-    if(s=="weno5js")
+    else if(s=="weno5js")
     {
         bufferSize_xi=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
@@ -173,7 +173,8 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
     {
         bufferSize_eta=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
-    }    if(s=="weno5js")
+    }
+    else if(s=="weno5js")
     {
         bufferSize_eta=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
@@ -215,7 +216,7 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
         bufferSize_zeta=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
     }
-    if(s=="weno5js")
+    else if(s=="weno5js")
     {
         bufferSize_zeta=3;
         myInteroplators.push_back(std::make_shared<weno5js>());
@@ -257,7 +258,7 @@ void nuc3d::fieldOperator3d::setDiffMethodX()
     {
         myDifferenters.push_back(std::make_shared<centraldifference8th>());
     }
-    if(s=="cd6")
+    else if(s=="cd6")
     {
         myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
@@ -282,7 +283,7 @@ void nuc3d::fieldOperator3d::setDiffMethodY()
     {
         myDifferenters.push_back(std::make_shared<centraldifference8th>());
     }
-    if(s=="cd6")
+    else if(s=="cd6")
     {
         myDifferenters.push_back(std::make_shared<centraldifference6th>());
     }
@@ -306,7 +307,7 @@ void nuc3d::fieldOperator3d::setDiffMethodZ()
     {
         myDifferenters.push_back(std::make_shared<centraldifference8th>());
     }
-    if(s=="cd6")
+    else if(s=="cd6")
     {
         myDifferenters.push_back(
                                  std::make_shared<centraldifference6th>());
