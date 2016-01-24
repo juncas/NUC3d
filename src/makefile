@@ -18,6 +18,7 @@ singleBlock.cpp\
 TVD-RK3.cpp\
 	weno5js.cpp\
 	weno7js.cpp\
+	hccs.cpp\
  	weno5z.cpp\
 	weno3js.cpp\
 	crweno5.cpp\

@@ -2,6 +2,7 @@
 #define fieldOperator3d_cpp
 
 #include "fieldOperator.h"
+#include "hccs.hpp"
 #include "weno7js.hpp"
 #include "weno5js.h"
 #include "weno5z.hpp"
@@ -131,6 +132,11 @@ void nuc3d::fieldOperator3d::setMethodIvsX()
         bufferSize_xi=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
     }
+    else if(s=="hccs")
+    {
+        bufferSize_xi=4;
+        myInteroplators.push_back(std::make_shared<hccs>());
+    }
     else if(s=="weno5js")
     {
         bufferSize_xi=3;
@@ -174,6 +180,11 @@ void nuc3d::fieldOperator3d::setMethodIvsY()
         bufferSize_eta=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
     }
+    else if(s=="hccs")
+    {
+        bufferSize_eta=4;
+        myInteroplators.push_back(std::make_shared<hccs>());
+    }
     else if(s=="weno5js")
     {
         bufferSize_eta=3;
@@ -215,6 +226,11 @@ void nuc3d::fieldOperator3d::setMethodIvsZ()
     {
         bufferSize_zeta=4;
         myInteroplators.push_back(std::make_shared<weno7js>());
+    }
+    else if(s=="hccs")
+    {
+        bufferSize_zeta=4;
+        myInteroplators.push_back(std::make_shared<hccs>());
     }
     else if(s=="weno5js")
     {

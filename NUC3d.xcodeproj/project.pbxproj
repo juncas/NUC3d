@@ -30,6 +30,7 @@
 		E3A7AF471BEA1C2300385249 /* PDEData3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7AF451BEA1C2300385249 /* PDEData3d.cpp */; };
 		E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4EF1BEB18F300F84DBF /* bufferData.cpp */; };
 		E3A7C4F41BEB1F7E00F84DBF /* boundaryConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */; };
+		E3BE42931C54AF1200676ADE /* hccs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BE42911C54AF1200676ADE /* hccs.cpp */; };
 		E3DAB3231C40C25000E255C1 /* boundaryScheme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */; };
 		E3E352731C4F55D3003769AD /* crweno5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352711C4F55D3003769AD /* crweno5.cpp */; };
 		E3E352761C4F85DC003769AD /* weno7js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E352741C4F85DC003769AD /* weno7js.cpp */; };
@@ -101,6 +102,8 @@
 		E3A7C4F01BEB18F300F84DBF /* bufferData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bufferData.hpp; path = src/bufferData.hpp; sourceTree = SOURCE_ROOT; };
 		E3A7C4F21BEB1F7E00F84DBF /* boundaryConditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = boundaryConditions.cpp; path = src/boundaryConditions.cpp; sourceTree = SOURCE_ROOT; };
 		E3A7C4F31BEB1F7E00F84DBF /* boundaryConditions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = boundaryConditions.hpp; path = src/boundaryConditions.hpp; sourceTree = SOURCE_ROOT; };
+		E3BE42911C54AF1200676ADE /* hccs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hccs.cpp; path = src/hccs.cpp; sourceTree = SOURCE_ROOT; };
+		E3BE42921C54AF1200676ADE /* hccs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hccs.hpp; path = src/hccs.hpp; sourceTree = SOURCE_ROOT; };
 		E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = boundaryScheme.cpp; path = src/boundaryScheme.cpp; sourceTree = SOURCE_ROOT; };
 		E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = boundaryScheme.hpp; path = src/boundaryScheme.hpp; sourceTree = SOURCE_ROOT; };
 		E3E352711C4F55D3003769AD /* crweno5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = crweno5.cpp; path = src/crweno5.cpp; sourceTree = SOURCE_ROOT; };
@@ -219,6 +222,8 @@
 				E3E5AEC11C1C564E00238C41 /* weno5z.hpp */,
 				E3E352741C4F85DC003769AD /* weno7js.cpp */,
 				E3E352751C4F85DC003769AD /* weno7js.hpp */,
+				E3BE42911C54AF1200676ADE /* hccs.cpp */,
+				E3BE42921C54AF1200676ADE /* hccs.hpp */,
 			);
 			name = FieldOperator;
 			sourceTree = "<group>";
@@ -350,6 +355,7 @@
 				E3E352731C4F55D3003769AD /* crweno5.cpp in Sources */,
 				E31076111C44BA060090915F /* gradvector.cpp in Sources */,
 				E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */,
+				E3BE42931C54AF1200676ADE /* hccs.cpp in Sources */,
 				E3A7C4F11BEB18F300F84DBF /* bufferData.cpp in Sources */,
 				E34642A31BD1329B007BB96D /* MPICommunicator.cpp in Sources */,
 				E38692CD1BE8F945001FB4EA /* eulerReactive3d.cpp in Sources */,
