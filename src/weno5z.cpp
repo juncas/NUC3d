@@ -3,7 +3,7 @@
 #include "weno5z.hpp"
 #include "schemes.hpp"
 nuc3d::weno5z::weno5z():
-ss(1.0e-6),
+ss(1.0e-40),
 p(2.0)
 {
     

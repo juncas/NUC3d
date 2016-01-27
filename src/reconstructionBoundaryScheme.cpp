@@ -333,8 +333,8 @@ void nuc3d::ReconstructionboundaryScheme::thirdOrderP(double *f,double *fout)
     double q20=-0.5*f[0]+1.5*f[1];
     double q21=0.5*f[1]+0.5*f[2];
     
-    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2.0);
-    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2.0);
+    double aa0=1.0/3.0/std::pow(1.0e-40+is0,2.0);
+    double aa1=2.0/3.0/std::pow(1.0e-40+is1,2.0);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -372,9 +372,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderP(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f[3]
     +coeff_weno5_alpha[2][2]*f[4];
     
-    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2.0);
-    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2.0);
-    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2.0);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-40+is0),2.0);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-40+is1),2.0);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-40+is2),2.0);
     
     
     alphaSum=alpha0+alpha1+alpha2;
@@ -413,8 +413,8 @@ void nuc3d::ReconstructionboundaryScheme::thirdOrderN(double *f,double *fout)
     double q20=-0.5*f0+1.5*f1;
     double q21=0.5*f1+0.5*f2;
     
-    double aa0=1.0/3.0/std::pow(1.0e-6+is0,2.0);
-    double aa1=2.0/3.0/std::pow(1.0e-6+is1,2.0);
+    double aa0=1.0/3.0/std::pow(1.0e-40+is0,2.0);
+    double aa1=2.0/3.0/std::pow(1.0e-40+is1,2.0);
     
     double w0=aa0/(aa0+aa1);
     double w1=aa1/(aa0+aa1);
@@ -458,9 +458,9 @@ void nuc3d::ReconstructionboundaryScheme::fifthOrderN(double *f,double *fout)
     +coeff_weno5_alpha[2][1]*f3
     +coeff_weno5_alpha[2][2]*f4;
     
-    alpha0=coeff_weno5_c[0]/std::pow((1.0e-6+is0),2.0);
-    alpha1=coeff_weno5_c[1]/std::pow((1.0e-6+is1),2.0);
-    alpha2=coeff_weno5_c[2]/std::pow((1.0e-6+is2),2.0);
+    alpha0=coeff_weno5_c[0]/std::pow((1.0e-40+is0),2.0);
+    alpha1=coeff_weno5_c[1]/std::pow((1.0e-40+is1),2.0);
+    alpha2=coeff_weno5_c[2]/std::pow((1.0e-40+is2),2.0);
     
     
     alphaSum=alpha0+alpha1+alpha2;
