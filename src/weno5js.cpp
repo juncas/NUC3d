@@ -4,7 +4,7 @@
 #include "schemes.hpp"
 
 nuc3d::weno5js::weno5js():
-ss(1.0e-40),
+ss(1.0e-6),
 p(2.0)
 {
     

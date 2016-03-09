@@ -11,7 +11,7 @@
 #include "schemes.hpp"
 
 nuc3d::hccs::hccs():
-ss(1.0e-40),
+ss(1.0e-6),
 p(2.0)
 {
     

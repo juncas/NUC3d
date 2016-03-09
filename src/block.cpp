@@ -613,6 +613,7 @@ void nuc3d::block::Post(fieldOperator3d &myOp,
                       myFluxes->getXi_xyz(),
                       myFluxes->getEta_xyz(),
                       myFluxes->getZeta_xyz(),
+                      myPhys,
                       myOp, mybuffer, myMPI, myBC,myIO,istep,time);
     
     if(("yes")==(myIO.getType("PostProc")))
