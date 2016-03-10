@@ -1540,7 +1540,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 +w_aver[idx_xi]*tau_xz_aver[idx_xi];
                 
                 uk_tauky_aver[idx_xi]=u_aver[idx_xi]*tau_xy_aver[idx_xi]
-                +v_aver[idx_xi]*tau_yz_aver[idx_xi]
+                +v_aver[idx_xi]*tau_yy_aver[idx_xi]
                 +w_aver[idx_xi]*tau_yz_aver[idx_xi];
                 
                 uk_taukz_aver[idx_xi]=u_aver[idx_xi]*tau_xz_aver[idx_xi]
@@ -1790,10 +1790,10 @@ void nuc3d::postproc::solveGrad(Field &myField,
     
 }
 
-void nuc3d::postproc::solveGrad_x(Field Q_x,
-                                  Field Q_xi,
-                                  Field Q_eta,
-                                  Field Q_zeta,
+void nuc3d::postproc::solveGrad_x(Field &Q_x,
+                                  Field &Q_xi,
+                                  Field &Q_eta,
+                                  Field &Q_zeta,
                                   VectorField &xi_xyz,
                                   VectorField &eta_xyz,
                                   VectorField &zeta_xyz)
@@ -1833,10 +1833,10 @@ void nuc3d::postproc::solveGrad_x(Field Q_x,
     
 }
 
-void nuc3d::postproc::solveGrad_y(Field Q_y,
-                                  Field Q_xi,
-                                  Field Q_eta,
-                                  Field Q_zeta,
+void nuc3d::postproc::solveGrad_y(Field &Q_y,
+                                  Field &Q_xi,
+                                  Field &Q_eta,
+                                  Field &Q_zeta,
                                   VectorField &xi_xyz,
                                   VectorField &eta_xyz,
                                   VectorField &zeta_xyz)
@@ -1876,10 +1876,10 @@ void nuc3d::postproc::solveGrad_y(Field Q_y,
     
 }
 
-void nuc3d::postproc::solveGrad_z(Field Q_z,
-                                  Field Q_xi,
-                                  Field Q_eta,
-                                  Field Q_zeta,
+void nuc3d::postproc::solveGrad_z(Field &Q_z,
+                                  Field &Q_xi,
+                                  Field &Q_eta,
+                                  Field &Q_zeta,
                                   VectorField &xi_xyz,
                                   VectorField &eta_xyz,
                                   VectorField &zeta_xyz)
@@ -1919,12 +1919,12 @@ void nuc3d::postproc::solveGrad_z(Field Q_z,
     
 }
 
-void nuc3d::postproc::solveGrad_xyz(Field Q_x,
-                                    Field Q_y,
-                                    Field Q_z,
-                                    Field Q_xi,
-                                    Field Q_eta,
-                                    Field Q_zeta,
+void nuc3d::postproc::solveGrad_xyz(Field &Q_x,
+                                    Field &Q_y,
+                                    Field &Q_z,
+                                    Field &Q_xi,
+                                    Field &Q_eta,
+                                    Field &Q_zeta,
                                     VectorField &xi_xyz,
                                     VectorField &eta_xyz,
                                     VectorField &zeta_xyz)
