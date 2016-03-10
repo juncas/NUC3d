@@ -902,15 +902,15 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
     double *tau_zzdwdz_temp=TemporalTkeField[38].getDataPtr();
     
     double *rhouuu_temp=TemporalTkeField[39].getDataPtr();
-    double *rhouuv_temp=TemporalTkeField[39].getDataPtr();
-    double *rhouuw_temp=TemporalTkeField[39].getDataPtr();
-    double *rhouvv_temp=TemporalTkeField[39].getDataPtr();
-    double *rhouvw_temp=TemporalTkeField[39].getDataPtr();
-    double *rhouww_temp=TemporalTkeField[39].getDataPtr();
-    double *rhovvv_temp=TemporalTkeField[39].getDataPtr();
-    double *rhovvw_temp=TemporalTkeField[39].getDataPtr();
-    double *rhovww_temp=TemporalTkeField[39].getDataPtr();
-    double *rhowww_temp=TemporalTkeField[39].getDataPtr();
+    double *rhouuv_temp=TemporalTkeField[40].getDataPtr();
+    double *rhouuw_temp=TemporalTkeField[41].getDataPtr();
+    double *rhouvv_temp=TemporalTkeField[42].getDataPtr();
+    double *rhouvw_temp=TemporalTkeField[43].getDataPtr();
+    double *rhouww_temp=TemporalTkeField[44].getDataPtr();
+    double *rhovvv_temp=TemporalTkeField[45].getDataPtr();
+    double *rhovvw_temp=TemporalTkeField[46].getDataPtr();
+    double *rhovww_temp=TemporalTkeField[47].getDataPtr();
+    double *rhowww_temp=TemporalTkeField[48].getDataPtr();
     
     for (int k=0; k<nz; k++)
     {
@@ -1161,7 +1161,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 uk_taukz_aver[idx_xi]=u_aver[idx_xi]*tau_xz_aver[idx_xi]
                 +v_aver[idx_xi]*tau_yz_aver[idx_xi]
                 +w_aver[idx_xi]*tau_zz_aver[idx_xi];
-
+                
             }
         }
     }
@@ -1175,7 +1175,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
     //dwpdz
     solveGrad(TKEbudgetField[29], myOP, myBf[2], myMPI,myBC,2,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_z(TKEbudgetField[32],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
-
+    
     
     double *dupdx=TKEbudgetField[24].getDataPtr();
     double *dvpdy=TKEbudgetField[25].getDataPtr();
@@ -1211,7 +1211,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 p1[idx_xi]=-(u_aver[idx_xi]-rhou_aver[idx_xi]/rho_aver[idx_xi])*px_aver[idx_xi]
                 -(v_aver[idx_xi]-rhov_aver[idx_xi]/rho_aver[idx_xi])*py_aver[idx_xi]
                 -(w_aver[idx_xi]-rhow_aver[idx_xi]/rho_aver[idx_xi])*pz_aver[idx_xi];
-
+                
                 p2[idx_xi]=-dupdx[idx_xi]-dvpdy[idx_xi]-dwpdz[idx_xi];
                 
                 p3[idx_xi]=(pdudx_aver[idx_xi]-ux_aver[idx_xi]*p_aver[idx_xi])
@@ -1243,9 +1243,9 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 -(tau_xzdudz_aver[idx_xi]-uz_aver[idx_xi]*tau_xz_aver[idx_xi])
                 -(tau_yzdvdz_aver[idx_xi]-vz_aver[idx_xi]*tau_yz_aver[idx_xi])
                 -(tau_zzdwdz_aver[idx_xi]-wz_aver[idx_xi]*tau_zz_aver[idx_xi]);
-
+                
                 viscousDiffusion[idx_xi]=v1[idx_xi]+v2[idx_xi]+v3[idx_xi];
-
+                
             }
         }
     }
@@ -1280,9 +1280,9 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
     solveGrad(TKEbudgetField[35], myOP, myBf[2], myMPI,myBC,2,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_z(TKEbudgetField[38],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
     
-    double *drhoukdx=TKEbudgetField[33].getDataPtr();
-    double *drhovkdy=TKEbudgetField[34].getDataPtr();
-    double *drhowkdz=TKEbudgetField[35].getDataPtr();
+    double *drhoukdx=TKEbudgetField[36].getDataPtr();
+    double *drhovkdy=TKEbudgetField[37].getDataPtr();
+    double *drhowkdz=TKEbudgetField[38].getDataPtr();
     
     for (int k=0; k<nz; k++)
     {
@@ -1292,6 +1292,82 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             {
                 int idx_xi=nx*ny*k+nx*j+i;
                 convection[idx_xi]=drhoukdx[idx_xi]+drhovkdy[idx_xi]+drhowkdz[idx_xi];
+            }
+        }
+    }
+    
+    double *u_tke=TKEbudgetField[39].getDataPtr();
+    double *v_tke=TKEbudgetField[40].getDataPtr();
+    double *w_tke=TKEbudgetField[41].getDataPtr();
+    
+    double *rhouuu_aver=AveragedTkeField[39].getDataPtr();
+    double *rhouuv_aver=AveragedTkeField[40].getDataPtr();
+    double *rhouuw_aver=AveragedTkeField[41].getDataPtr();
+    double *rhouvv_aver=AveragedTkeField[42].getDataPtr();
+    double *rhouvw_aver=AveragedTkeField[43].getDataPtr();
+    double *rhouww_aver=AveragedTkeField[44].getDataPtr();
+    double *rhovvv_aver=AveragedTkeField[45].getDataPtr();
+    double *rhovvw_aver=AveragedTkeField[46].getDataPtr();
+    double *rhovww_aver=AveragedTkeField[47].getDataPtr();
+    double *rhowww_aver=AveragedTkeField[48].getDataPtr();
+    
+    for (int k=0; k<nz; k++)
+    {
+        for (int j=0; j<ny; j++)
+        {
+            for (int i=0; i<nx; i++)
+            {
+                int idx_xi=nx*ny*k+nx*j+i;
+                
+                u_tke[idx_xi]=0.5*rhouuu_aver[idx_xi]-rhouu_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhouvv_aver[idx_xi]-rhouv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhouww_aver[idx_xi]-rhouw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                -rhou_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
+                
+                v_tke[idx_xi]=0.5*rhouuv_aver[idx_xi]-rhouv_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovvv_aver[idx_xi]-rhovv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovww_aver[idx_xi]-rhovw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                -rhov_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
+                
+                w_tke[idx_xi]=0.5*rhouuw_aver[idx_xi]-rhouw_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovvw_aver[idx_xi]-rhovw_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhowww_aver[idx_xi]-rhoww_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                -rhow_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                                                         +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
+                
+                
+            }
+        }
+    }
+    
+    
+    //drhoukdx
+    solveGrad(TKEbudgetField[39], myOP, myBf[0], myMPI,myBC,0,dtempdxi,dtempdeta,dtempdzeta);
+    solveGrad_x(TKEbudgetField[42],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
+    //drhovkdy
+    solveGrad(TKEbudgetField[40], myOP, myBf[1], myMPI,myBC,1,dtempdxi,dtempdeta,dtempdzeta);
+    solveGrad_y(TKEbudgetField[43],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
+    //drhowkdz
+    solveGrad(TKEbudgetField[41], myOP, myBf[2], myMPI,myBC,2,dtempdxi,dtempdeta,dtempdzeta);
+    solveGrad_z(TKEbudgetField[44],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
+    
+    double *du_tkedx=TKEbudgetField[42].getDataPtr();
+    double *dv_tkedy=TKEbudgetField[43].getDataPtr();
+    double *dw_tkedz=TKEbudgetField[44].getDataPtr();
+    
+    for (int k=0; k<nz; k++)
+    {
+        for (int j=0; j<ny; j++)
+        {
+            for (int i=0; i<nx; i++)
+            {
+                int idx_xi=nx*ny*k+nx*j+i;
+                transportation[idx_xi]=du_tkedx[idx_xi]+dv_tkedy[idx_xi]+dw_tkedz[idx_xi];
             }
         }
     }

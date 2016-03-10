@@ -104,7 +104,10 @@ namespace nuc3d
             "dupdx","dvpdy","dwpdz",
             "uk'tau_kx'","uk'tau_kx'","uk'tau_kx'",
             "duk'tau_kx'dx","duk'tau_kx'dx","duk'tau_kx'dx",
-            "rhouk","rhovk","rhowk"
+            "rhouk","rhovk","rhowk",
+            "drhoukdx","drhovkdy","drhowkdz",
+            "u_tke","v_tke","w_tke",
+            "du_tkedx","dv_tkedy","dw_tkedz"
         };
         
         const std::vector<std::string> VarNameList_q={
