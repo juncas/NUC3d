@@ -28,7 +28,27 @@ dtempdzeta(nz0,nx0,ny0)
     
     std::string filename("inp/PostProc.in");
     std::ifstream file(filename);
-    
+    /*
+     PostProc.in file format
+     
+     0 AverageType            0:          nothing
+     1:          primarys and grads
+     2:          primarys, grads and derived variables
+     3:          primarys, grads, derived variables and TKE
+     
+     1 AverageStartStep       0:          new average
+     'step':     from saved file step
+     
+     2 SimutaneousData        0:nothing
+     1:Q
+     
+     3 AveragedSaveType       0:binary
+     1:binary and tecplot
+     
+     4 SimutaneousSaveType    0:not save
+     1:tecplot
+     
+     */
     std::string word0;
     std::string word1;
     if(file)
@@ -146,6 +166,8 @@ dtempdzeta(nz0,nx0,ny0)
         
         switch(variableScalarInt[0])//for average
         {
+            case 0:
+                break;
             case 1://averaged primarys and grads
                 for(int n=0;n<VarNameList_primary.size();n++)
                 {
@@ -214,8 +236,12 @@ dtempdzeta(nz0,nx0,ny0)
                 exit(-1);
         }
     }
+    else
+    {
+        averStep=0;
+    }
     
-    switch(variableScalarInt[1])//for simutaneous variables
+    switch(variableScalarInt[2])//for simutaneous variables
     {
         case 0:// do nonthing
             break;
@@ -252,10 +278,15 @@ void nuc3d::postproc::solvePost(VectorField &prims,
                                 int istep,
                                 double time)
 {
-    solveTemporal(prims, acous,xi_xyz, eta_xyz, zeta_xyz,myPhys, myOP, myBf, myMPI, myBC,istep,time);
+    if(variableScalarInt[0]!=0)
+    {
+        solveAveraged(prims, acous,xi_xyz, eta_xyz, zeta_xyz,myPhys, myOP, myBf, myMPI, myBC);
+    }
     
-    solveAveraged(prims, acous,xi_xyz, eta_xyz, zeta_xyz,myPhys, myOP, myBf, myMPI, myBC);
-    
+    if(variableScalarInt[2]!=0)
+    {
+        solveTemporal(prims, acous,xi_xyz, eta_xyz, zeta_xyz,myPhys, myOP, myBf, myMPI, myBC,istep,time);
+    }
 }
 
 void nuc3d::postproc::OutputPost(VectorField &prims,
@@ -272,7 +303,45 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
                                  int istep,
                                  double time)
 {
-    std::string forename_flow = ("flowData/Q_step_");
+    if(variableScalarInt[0]!=0)
+    {
+        switch(variableScalarInt[3])//for averaged variables
+        {
+            case 0:
+                OutputAveraged_bin(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
+                break;
+            case 1:
+                OutputAveraged_bin(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
+                OutputAveraged_tec(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
+                break;
+            default:
+                OutputAveraged_bin(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
+                break;
+        }
+    }
+    if(variableScalarInt[4]!=0)//for simutaneous variables
+    {
+        OutputTemporal(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
+    }
+    
+}
+
+
+void nuc3d::postproc::OutputTemporal(VectorField &prims,
+                                     VectorField &acous,
+                                     VectorField &xyz,
+                                     VectorField &xi_xyz,
+                                     VectorField &eta_xyz,
+                                     VectorField &zeta_xyz,
+                                     fieldOperator3d &myOP,
+                                     VectorBuffer &myBf,
+                                     MPIComunicator3d_nonblocking &myMPI,
+                                     boundaryCondition &myBC,
+                                     IOController &myIO,
+                                     int istep,
+                                     double time)
+{
+    std::string forename_flow = ("flowDataTemp/Q_tec_step_");
     std::string step;
     std::string mid("_id_");
     std::string id;
@@ -298,20 +367,14 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     myIOfile<<TECplotHeader[0]<<time<<"\n"
     <<TECplotHeader[1];
     
-    for(int i=0;i<postSize;i++)
+    for(int i=0;i<VarNameList_q.size();i++)
     {
-        std::string head("Val_");
-        std::string temp;
-        std::stringstream sstemp;
-        
-        sstemp<<i;
-        sstemp>>temp;
-        myIOfile<<","<<head+temp;
+        myIOfile<<","<<VarNameList_q[i];
     }
     
     myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
     <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
-    <<xyz.size()+postSize
+    <<xyz.size()+VarNameList_q.size()
     <<"]=CELLCENTERED)\n";
     
     for(auto iter=xyz.begin();iter!=xyz.end();iter++)
@@ -319,10 +382,10 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
         writeField(myIOfile, *iter);
     }
     
-    writeField(myIOfile, Q);
-    writeField(myIOfile, omega0);
-    writeField(myIOfile, omega1);
-    writeField(myIOfile, omega2);
+    for(int n=0;n<VarNameList_q.size();n++)
+    {
+        writeField(myIOfile,TemporalQField[n]);
+    }
     
     /* ADD arbitrary number of post values
      writeField(myIOfile, omega2);
@@ -330,8 +393,277 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
     
     
     myIOfile.close();
+    
+    
 }
 
+void nuc3d::postproc::OutputAveraged_bin(VectorField &prims,
+                                         VectorField &acous,
+                                         VectorField &xyz,
+                                         VectorField &xi_xyz,
+                                         VectorField &eta_xyz,
+                                         VectorField &zeta_xyz,
+                                         fieldOperator3d &myOP,
+                                         VectorBuffer &myBf,
+                                         MPIComunicator3d_nonblocking &myMPI,
+                                         boundaryCondition &myBC,
+                                         IOController &myIO,
+                                         int istep,
+                                         double time)
+{
+    std::string forename_flow = ("AveragedFlowData/Averaged_step_");
+    std::string step;
+    std::string mid("_id_");
+    std::string id;
+    std::string tailname = (".bin");
+    int myID=myMPI.getMyId();
+    
+    std::stringstream ss_step,ss_id;
+    ss_step << istep;
+    ss_step >> step;
+    
+    ss_id<<myID;
+    ss_id>>id;
+    
+    std::string filename_flow = forename_flow + step + mid + id + tailname;
+    
+    std::ofstream myIOfile;
+    
+    myIOfile.open(filename_flow,std::ios::out|std::ios::binary);
+    
+    myIOfile.write(reinterpret_cast<char *>(&averStep), sizeof(averStep));
+    
+    switch(variableScalarInt[0])//for average
+    {
+            
+        case 1://averaged primarys and grads
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField_binary(myIOfile, data);
+            }
+            break;
+        case 2://averaged primarys, grads and derived
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_derived.size();n++)
+            {
+                Field &data=AveragedDerivedField[n];
+                writeField_binary(myIOfile, data);
+            }
+            break;
+        case 3://average primarys, grads, derived and TKE
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_derived.size();n++)
+            {
+                Field &data=AveragedDerivedField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_TKE.size();n++)
+            {
+                Field &data=AveragedTkeField[n];
+                writeField_binary(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_TKEbudget.size();n++)
+            {
+                Field &data=TKEbudgetField[n];
+                writeField_binary(myIOfile, data);
+            }
+            break;
+        default:
+            std::cout<<"No such postproc data for "<<variableScalarInt[0]<<std::endl;
+            exit(-1);
+    }
+    
+    myIOfile.close();
+    
+    /* ADD arbitrary number of post values
+     writeField(myIOfile, omega2);
+     */
+    
+}
+
+void nuc3d::postproc::OutputAveraged_tec(VectorField &prims,
+                                         VectorField &acous,
+                                         VectorField &xyz,
+                                         VectorField &xi_xyz,
+                                         VectorField &eta_xyz,
+                                         VectorField &zeta_xyz,
+                                         fieldOperator3d &myOP,
+                                         VectorBuffer &myBf,
+                                         MPIComunicator3d_nonblocking &myMPI,
+                                         boundaryCondition &myBC,
+                                         IOController &myIO,
+                                         int istep,
+                                         double time)
+{
+    
+    std::string forename_flow = ("AveragedFlowData/Averaged_tec_step_");
+    std::string step;
+    std::string mid("_id_");
+    std::string id;
+    std::string tailname = (".dat");
+    int myID=myMPI.getMyId();
+    
+    std::stringstream ss_step,ss_id;
+    ss_step << istep;
+    ss_step >> step;
+    
+    ss_id<<myID;
+    ss_id>>id;
+    
+    std::string filename_flow = forename_flow + step + mid + id + tailname;
+    
+    std::ofstream myIOfile;
+    
+    myIOfile.open(filename_flow);
+    
+    std::string TECplotHeader[2]={"title=time_",
+        "variables=x,y,z"};
+    
+    myIOfile<<TECplotHeader[0]<<time<<"\n"
+    <<TECplotHeader[1];
+    
+    for(int i=0;i<VarNameList_q.size();i++)
+    {
+        myIOfile<<","<<VarNameList_q[i];
+    }
+    
+    unsigned long varnum = 0;
+    
+    switch(variableScalarInt[0])//for average
+    {
+        case 1:
+            varnum=xyz.size()
+            +VarNameList_primary.size()
+            +VarNameList_grads.size();
+            break;
+        case 2:
+            varnum=xyz.size()
+            +VarNameList_primary.size()
+            +VarNameList_grads.size()
+            +VarNameList_derived.size();
+            break;
+        case 3:
+            varnum=xyz.size()
+            +VarNameList_primary.size()
+            +VarNameList_grads.size()
+            +VarNameList_derived.size()
+            +VarNameList_TKE.size()
+            +VarNameList_TKEbudget.size();
+            break;
+    }
+    myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
+    <<"\n DATAPACKING=BLOCK, VARLOCATION=(["<<xyz.size()+1<<"-"
+    <<varnum
+    <<"]=CELLCENTERED)\n";
+    
+    for(auto iter=xyz.begin();iter!=xyz.end();iter++)
+    {
+        writeField(myIOfile, *iter);
+    }
+    
+    switch(variableScalarInt[0])//for average
+    {
+        case 1://averaged primarys and grads
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField(myIOfile, data);
+            }
+            break;
+        case 2://averaged primarys, grads and derived
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_derived.size();n++)
+            {
+                Field &data=AveragedDerivedField[n];
+                writeField(myIOfile, data);
+            }
+            break;
+        case 3://average primarys, grads, derived and TKE
+            for(int n=0;n<VarNameList_primary.size();n++)
+            {
+                Field &data=AveragedPrimaryField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_grads.size();n++)
+            {
+                Field &data=AveragedGradsField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_derived.size();n++)
+            {
+                Field &data=AveragedDerivedField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_TKE.size();n++)
+            {
+                Field &data=AveragedTkeField[n];
+                writeField(myIOfile, data);
+            }
+            
+            for(int n=0;n<VarNameList_TKEbudget.size();n++)
+            {
+                Field &data=TKEbudgetField[n];
+                writeField(myIOfile, data);
+            }
+            break;
+        default:
+            std::cout<<"No such postproc data for "<<variableScalarInt[0]<<std::endl;
+            exit(-1);
+    }
+    
+    myIOfile.close();
+}
 
 void nuc3d::postproc::solveTemporal(VectorField &prims,
                                     VectorField &acous,
@@ -395,7 +727,8 @@ void nuc3d::postproc::solveQ(VectorField &prims,
     double *pOmega0=TemporalQField[9].getDataPtr();
     double *pOmega1=TemporalQField[10].getDataPtr();
     double *pOmega2=TemporalQField[11].getDataPtr();
-    double *pQ=TemporalQField[12].getDataPtr();
+    double *pEns=TemporalQField[12].getDataPtr();
+    double *pQ=TemporalQField[13].getDataPtr();
     
     enstrophy=0.0;
     kinetic=0.0;
@@ -424,6 +757,7 @@ void nuc3d::postproc::solveQ(VectorField &prims,
                 pOmega0[idx_xi]=w0;
                 pOmega1[idx_xi]=w1;
                 pOmega2[idx_xi]=w2;
+                pEns[idx_xi]=w0*w0+w1*w1+w2*w2;
                 pQ[idx_xi]=q0;
                 enstrophy+=0.5*(w0*w0+w1*w1+w2*w2);
                 kinetic+=0.5*prho[idx_xi]*(pu[idx_xi]*pu[idx_xi]
@@ -479,6 +813,8 @@ void nuc3d::postproc::solveAveraged(VectorField &prims,
                               myMPI,
                               myBC);
     }
+    
+    averStep++;
 }
 
 void nuc3d::postproc::solveAveraged0(VectorField &prims,
@@ -1371,8 +1707,8 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             }
         }
     }
-
-
+    
+    
 }
 
 void nuc3d::postproc::solveGrad(Field &myField,

@@ -314,6 +314,49 @@ namespace nuc3d
         void writeField_binary(std::ofstream &myFile, nuc3d::Field &myField);
         void readField_binary(std::ifstream &myFile, nuc3d::Field &myField);
         
+        void OutputTemporal(VectorField &prims,
+                            VectorField &acous,
+                            VectorField &xyz,
+                            VectorField &xi_xyz,
+                            VectorField &eta_xyz,
+                            VectorField &zeta_xyz,
+                            fieldOperator3d &myOP,
+                            VectorBuffer &myBf,
+                            MPIComunicator3d_nonblocking &myMPI,
+                            boundaryCondition &myBC,
+                            IOController &myIO,
+                            int istep,
+                            double time);
+        
+        void OutputAveraged_bin(VectorField &prims,
+                            VectorField &acous,
+                            VectorField &xyz,
+                            VectorField &xi_xyz,
+                            VectorField &eta_xyz,
+                            VectorField &zeta_xyz,
+                            fieldOperator3d &myOP,
+                            VectorBuffer &myBf,
+                            MPIComunicator3d_nonblocking &myMPI,
+                            boundaryCondition &myBC,
+                            IOController &myIO,
+                            int istep,
+                            double time);
+        
+        void OutputAveraged_tec(VectorField &prims,
+                            VectorField &acous,
+                            VectorField &xyz,
+                            VectorField &xi_xyz,
+                            VectorField &eta_xyz,
+                            VectorField &zeta_xyz,
+                            fieldOperator3d &myOP,
+                            VectorBuffer &myBf,
+                            MPIComunicator3d_nonblocking &myMPI,
+                            boundaryCondition &myBC,
+                            IOController &myIO,
+                            int istep,
+                            double time);
+
+        
     };
 }
 
