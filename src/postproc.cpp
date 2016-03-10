@@ -553,11 +553,6 @@ void nuc3d::postproc::OutputAveraged_tec(VectorField &prims,
     myIOfile<<TECplotHeader[0]<<time<<"\n"
     <<TECplotHeader[1];
     
-    for(int i=0;i<VarNameList_q.size();i++)
-    {
-        myIOfile<<","<<VarNameList_q[i];
-    }
-    
     unsigned long varnum = 0;
     
     switch(variableScalarInt[0])//for average
@@ -566,12 +561,40 @@ void nuc3d::postproc::OutputAveraged_tec(VectorField &prims,
             varnum=xyz.size()
             +VarNameList_primary.size()
             +VarNameList_grads.size();
+            
+            for(int i=0;i<VarNameList_primary.size();i++)
+            {
+                myIOfile<<","<<VarNameList_primary[i];
+            }
+            
+            for(int i=0;i<VarNameList_grads.size();i++)
+            {
+                myIOfile<<","<<VarNameList_grads[i];
+            }
+
             break;
         case 2:
             varnum=xyz.size()
             +VarNameList_primary.size()
             +VarNameList_grads.size()
             +VarNameList_derived.size();
+            
+            
+            for(int i=0;i<VarNameList_primary.size();i++)
+            {
+                myIOfile<<","<<VarNameList_primary[i];
+            }
+            
+            for(int i=0;i<VarNameList_grads.size();i++)
+            {
+                myIOfile<<","<<VarNameList_grads[i];
+            }
+            
+            for(int i=0;i<VarNameList_derived.size();i++)
+            {
+                myIOfile<<","<<VarNameList_derived[i];
+            }
+
             break;
         case 3:
             varnum=xyz.size()
@@ -580,6 +603,32 @@ void nuc3d::postproc::OutputAveraged_tec(VectorField &prims,
             +VarNameList_derived.size()
             +VarNameList_TKE.size()
             +VarNameList_TKEbudget.size();
+            
+            for(int i=0;i<VarNameList_primary.size();i++)
+            {
+                myIOfile<<","<<VarNameList_primary[i];
+            }
+            
+            for(int i=0;i<VarNameList_grads.size();i++)
+            {
+                myIOfile<<","<<VarNameList_grads[i];
+            }
+            
+            for(int i=0;i<VarNameList_derived.size();i++)
+            {
+                myIOfile<<","<<VarNameList_derived[i];
+            }
+            
+            for(int i=0;i<VarNameList_TKE.size();i++)
+            {
+                myIOfile<<","<<VarNameList_TKE[i];
+            }
+            
+            for(int i=0;i<VarNameList_TKEbudget.size();i++)
+            {
+                myIOfile<<","<<VarNameList_TKEbudget[i];
+            }
+
             break;
     }
     myIOfile<<"\n Zone I = "<<nx+1<<", J= "<<ny+1<<", K="<<nz+1
