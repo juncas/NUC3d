@@ -48,6 +48,9 @@ dtempdzeta(nz0,nx0,ny0)
      4 SimutaneousSaveType    0:not save
      1:tecplot
      
+     dir:
+        AveragedFlowData/
+        flowDataTemp/
      */
     std::string word0;
     std::string word1;
@@ -1634,9 +1637,9 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 +(v_aver[idx_xi]-rhov_aver[idx_xi]/rho_aver[idx_xi])*dtau_yzdz_aver[idx_xi]
                 +(w_aver[idx_xi]-rhow_aver[idx_xi]/rho_aver[idx_xi])*dtau_zzdz_aver[idx_xi];
                 
-                v2[idx_xi]=(duktau_kxdx_aver-duktau_kxdx)
-                +(duktau_kydy_aver-duktau_kydy)
-                +(duktau_kxdx_aver-duktau_kzdz);
+                v2[idx_xi]=(duktau_kxdx_aver[idx_xi]-duktau_kxdx[idx_xi])
+                +(duktau_kydy_aver[idx_xi]-duktau_kydy[idx_xi])
+                +(duktau_kzdz_aver[idx_xi]-duktau_kzdz[idx_xi]);
                 
                 v3[idx_xi]=-(tau_xxdudx_aver[idx_xi]-ux_aver[idx_xi]*tau_xx_aver[idx_xi])
                 -(tau_yxdvdx_aver[idx_xi]-vx_aver[idx_xi]*tau_xy_aver[idx_xi])
