@@ -151,7 +151,7 @@ dtempdzeta(nz0,nx0,ny0)
         MPI_Comm_rank(MPI_COMM_WORLD, &myId);
         
         std::stringstream ss_step,ss_id;
-        ss_step << variableScalarInt[3];
+        ss_step << variableScalarInt[1];
         ss_step >> step;
         
         ss_id<<myId;
@@ -252,7 +252,7 @@ dtempdzeta(nz0,nx0,ny0)
             }
             break;
         default:
-            std::cout<<"No such postproc for "<<variableScalarInt[1]<<std::endl;
+            std::cout<<"No such postproc for "<<variableScalarInt[2]<<std::endl;
             exit(-1);
     }
     
@@ -287,6 +287,9 @@ void nuc3d::postproc::solvePost(VectorField &prims,
     {
         solveTemporal(prims, acous,xi_xyz, eta_xyz, zeta_xyz,myPhys, myOP, myBf, myMPI, myBC,istep,time);
     }
+    
+    MPI_Barrier(MPI_COMM_WORLD);
+
 }
 
 void nuc3d::postproc::OutputPost(VectorField &prims,
@@ -324,6 +327,8 @@ void nuc3d::postproc::OutputPost(VectorField &prims,
         OutputTemporal(prims, acous, xyz, xi_xyz, eta_xyz, zeta_xyz, myOP, myBf, myMPI, myBC, myIO, istep, time);
     }
     
+    MPI_Barrier(MPI_COMM_WORLD);
+
 }
 
 
@@ -419,7 +424,7 @@ void nuc3d::postproc::OutputAveraged_bin(VectorField &prims,
     int myID=myMPI.getMyId();
     
     std::stringstream ss_step,ss_id;
-    ss_step << istep;
+    ss_step << averStep;
     ss_step >> step;
     
     ss_id<<myID;
@@ -535,7 +540,7 @@ void nuc3d::postproc::OutputAveraged_tec(VectorField &prims,
     int myID=myMPI.getMyId();
     
     std::stringstream ss_step,ss_id;
-    ss_step << istep;
+    ss_step << averStep;
     ss_step >> step;
     
     ss_id<<myID;
@@ -728,6 +733,7 @@ void nuc3d::postproc::solveTemporal(VectorField &prims,
                                     double time)
 {
     solveQ(prims,xi_xyz,eta_xyz,zeta_xyz,myOP,myBf,myMPI,myBC,istep,time);
+    //other functions can be added
     
 }
 
@@ -806,7 +812,7 @@ void nuc3d::postproc::solveQ(VectorField &prims,
                 pOmega0[idx_xi]=w0;
                 pOmega1[idx_xi]=w1;
                 pOmega2[idx_xi]=w2;
-                pEns[idx_xi]=w0*w0+w1*w1+w2*w2;
+                pEns[idx_xi]=(w0*w0+w1*w1+w2*w2)*0.5;
                 pQ[idx_xi]=q0;
                 enstrophy+=0.5*(w0*w0+w1*w1+w2*w2);
                 kinetic+=0.5*prho[idx_xi]*(pu[idx_xi]*pu[idx_xi]
@@ -931,6 +937,9 @@ void nuc3d::postproc::solveAveraged0(VectorField &prims,
     double *Omega0_temp=TemporalGradsField[15].getDataPtr();
     double *Omega1_temp=TemporalGradsField[16].getDataPtr();
     double *Omega2_temp=TemporalGradsField[17].getDataPtr();
+    double *Omega02_temp=TemporalGradsField[18].getDataPtr();
+    double *Omega12_temp=TemporalGradsField[19].getDataPtr();
+    double *Omega22_temp=TemporalGradsField[20].getDataPtr();
     
     double *rho_temp=TemporalPrimaryField[0].getDataPtr();
     double *u_temp=TemporalPrimaryField[1].getDataPtr();
@@ -963,6 +972,10 @@ void nuc3d::postproc::solveAveraged0(VectorField &prims,
                 Omega0_temp[idx_xi]=wy_temp[idx_xi]-vz_temp[idx_xi];
                 Omega1_temp[idx_xi]=uz_temp[idx_xi]-wx_temp[idx_xi];
                 Omega2_temp[idx_xi]=vx_temp[idx_xi]-uy_temp[idx_xi];
+                
+                Omega02_temp[idx_xi]=std::pow(Omega0_temp[idx_xi],2.0);
+                Omega12_temp[idx_xi]=std::pow(Omega1_temp[idx_xi],2.0);
+                Omega22_temp[idx_xi]=std::pow(Omega2_temp[idx_xi],2.0);
             }
         }
     }
@@ -1046,6 +1059,9 @@ void nuc3d::postproc::solveAveraged1(VectorField &prims,
     double *Omega0_temp=TemporalGradsField[15].getDataPtr();
     double *Omega1_temp=TemporalGradsField[16].getDataPtr();
     double *Omega2_temp=TemporalGradsField[17].getDataPtr();
+    double *Omega02_temp=TemporalGradsField[18].getDataPtr();
+    double *Omega12_temp=TemporalGradsField[19].getDataPtr();
+    double *Omega22_temp=TemporalGradsField[20].getDataPtr();
     
     double *rhou_temp=TemporalDerivedField[0].getDataPtr();
     double *rhov_temp=TemporalDerivedField[1].getDataPtr();
@@ -1096,10 +1112,10 @@ void nuc3d::postproc::solveAveraged1(VectorField &prims,
                 ww_temp[idx_xi]=w_temp[idx_xi]*w_temp[idx_xi];
                 
                 rhouu_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi];
-                rhouv_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi];
-                rhouw_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi];
+                rhouv_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*v_temp[idx_xi];
+                rhouw_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*w_temp[idx_xi];
                 rhovv_temp[idx_xi]=rho_temp[idx_xi]*v_temp[idx_xi]*v_temp[idx_xi];
-                rhovw_temp[idx_xi]=rho_temp[idx_xi]*v_temp[idx_xi]*v_temp[idx_xi];
+                rhovw_temp[idx_xi]=rho_temp[idx_xi]*v_temp[idx_xi]*w_temp[idx_xi];
                 rhoww_temp[idx_xi]=rho_temp[idx_xi]*w_temp[idx_xi]*w_temp[idx_xi];
                 
                 double velgrad=ux_temp[idx_xi]+vy_temp[idx_xi]+wz_temp[idx_xi];
@@ -1181,6 +1197,9 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
     double *Omega0_temp=TemporalGradsField[15].getDataPtr();
     double *Omega1_temp=TemporalGradsField[16].getDataPtr();
     double *Omega2_temp=TemporalGradsField[17].getDataPtr();
+    double *Omega02_temp=TemporalGradsField[18].getDataPtr();
+    double *Omega12_temp=TemporalGradsField[19].getDataPtr();
+    double *Omega22_temp=TemporalGradsField[20].getDataPtr();
     
     double *rhou_temp=TemporalDerivedField[0].getDataPtr();
     double *rhov_temp=TemporalDerivedField[1].getDataPtr();
@@ -1330,16 +1349,16 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
                 tau_xxdudx_temp[idx_xi]=tau_xx_temp[idx_xi]*ux_temp[idx_xi];
                 tau_yxdvdx_temp[idx_xi]=tau_xy_temp[idx_xi]*vx_temp[idx_xi];
                 tau_zxdwdx_temp[idx_xi]=tau_xz_temp[idx_xi]*wx_temp[idx_xi];
-                tau_xydudy_temp[idx_xi]=tau_xy_temp[idx_xi]*ux_temp[idx_xi];
-                tau_yydvdy_temp[idx_xi]=tau_yy_temp[idx_xi]*vx_temp[idx_xi];
-                tau_zydwdy_temp[idx_xi]=tau_yz_temp[idx_xi]*wx_temp[idx_xi];
+                tau_xydudy_temp[idx_xi]=tau_xy_temp[idx_xi]*uy_temp[idx_xi];
+                tau_yydvdy_temp[idx_xi]=tau_yy_temp[idx_xi]*vy_temp[idx_xi];
+                tau_zydwdy_temp[idx_xi]=tau_yz_temp[idx_xi]*wy_temp[idx_xi];
                 tau_xzdudz_temp[idx_xi]=tau_xz_temp[idx_xi]*uz_temp[idx_xi];
                 tau_yzdvdz_temp[idx_xi]=tau_yz_temp[idx_xi]*vz_temp[idx_xi];
                 tau_zzdwdz_temp[idx_xi]=tau_zz_temp[idx_xi]*wz_temp[idx_xi];
                 
                 rhouuu_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi];
                 rhouuv_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi]*v_temp[idx_xi];
-                rhouuw_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*w_temp[idx_xi];
+                rhouuw_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*u_temp[idx_xi]*w_temp[idx_xi];
                 rhouvv_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*v_temp[idx_xi]*v_temp[idx_xi];
                 rhouvw_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*v_temp[idx_xi]*w_temp[idx_xi];
                 rhouww_temp[idx_xi]=rho_temp[idx_xi]*u_temp[idx_xi]*w_temp[idx_xi]*w_temp[idx_xi];
@@ -1513,13 +1532,13 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             }
         }
     }
-    //dupdx
+    //dupdx_f
     solveGrad(TKEbudgetField[21], myOP, myBf[0], myMPI,myBC,0,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_x(TKEbudgetField[24],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
-    //dvpdy
+    //dvpdy_f
     solveGrad(TKEbudgetField[22], myOP, myBf[1], myMPI,myBC,1,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_y(TKEbudgetField[25],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
-    //dwpdz
+    //dwpdz_f
     solveGrad(TKEbudgetField[23], myOP, myBf[2], myMPI,myBC,2,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_z(TKEbudgetField[26],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
     
@@ -1551,13 +1570,13 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
         }
     }
     
-    //dupdx
+    //duktau_kxdx_f
     solveGrad(TKEbudgetField[27], myOP, myBf[0], myMPI,myBC,0,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_x(TKEbudgetField[30],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
-    //dvpdy
+    //duktau_kydy_f
     solveGrad(TKEbudgetField[28], myOP, myBf[1], myMPI,myBC,1,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_y(TKEbudgetField[31],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
-    //dwpdz
+    //duktau_kzdz_f
     solveGrad(TKEbudgetField[29], myOP, myBf[2], myMPI,myBC,2,dtempdxi,dtempdeta,dtempdzeta);
     solveGrad_z(TKEbudgetField[32],dtempdxi,dtempdeta,dtempdzeta,xi_xyz, eta_xyz, zeta_xyz);
     
@@ -1676,7 +1695,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             for (int i=0; i<nx; i++)
             {
                 int idx_xi=nx*ny*k+nx*j+i;
-                convection[idx_xi]=drhoukdx[idx_xi]+drhovkdy[idx_xi]+drhowkdz[idx_xi];
+                convection[idx_xi]=-drhoukdx[idx_xi]-drhovkdy[idx_xi]-drhowkdz[idx_xi];
             }
         }
     }
@@ -1704,23 +1723,32 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             {
                 int idx_xi=nx*ny*k+nx*j+i;
                 
-                u_tke[idx_xi]=0.5*rhouuu_aver[idx_xi]-rhouu_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhouvv_aver[idx_xi]-rhouv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhouww_aver[idx_xi]-rhouw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhou_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                u_tke[idx_xi]=0.5*rhouuu_aver[idx_xi]-rhouu_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhou_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhouvv_aver[idx_xi]-rhouv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhou_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhouww_aver[idx_xi]-rhouw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhou_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
                 -rhou_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
                 
-                v_tke[idx_xi]=0.5*rhouuv_aver[idx_xi]-rhouv_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhovvv_aver[idx_xi]-rhovv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhovww_aver[idx_xi]-rhovw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhov_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                v_tke[idx_xi]=0.5*rhouuv_aver[idx_xi]-rhouv_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhov_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovvv_aver[idx_xi]-rhovv_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhov_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovww_aver[idx_xi]-rhovw_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhov_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
                 -rhov_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
                 
-                w_tke[idx_xi]=0.5*rhouuw_aver[idx_xi]-rhouw_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhovvw_aver[idx_xi]-rhovw_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
-                +0.5*rhowww_aver[idx_xi]-rhoww_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]+0.5*rhow_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                w_tke[idx_xi]=0.5*rhouuw_aver[idx_xi]-rhouw_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhow_aver[idx_xi]*rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhovvw_aver[idx_xi]-rhovw_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhow_aver[idx_xi]*rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhowww_aver[idx_xi]-rhoww_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]
+                +0.5*rhow_aver[idx_xi]*rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]/rho_aver[idx_xi]
                 -rhow_aver[idx_xi]/rho_aver[idx_xi]*0.5*(rhouu_aver[idx_xi]-rhou_aver[idx_xi]*rhou_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhovv_aver[idx_xi]-rhov_aver[idx_xi]*rhov_aver[idx_xi]/rho_aver[idx_xi]
                                                          +rhoww_aver[idx_xi]-rhow_aver[idx_xi]*rhow_aver[idx_xi]/rho_aver[idx_xi]);
@@ -1752,7 +1780,7 @@ void nuc3d::postproc::solveAveraged2(VectorField &prims,
             for (int i=0; i<nx; i++)
             {
                 int idx_xi=nx*ny*k+nx*j+i;
-                transportation[idx_xi]=du_tkedx[idx_xi]+dv_tkedy[idx_xi]+dw_tkedz[idx_xi];
+                transportation[idx_xi]=-du_tkedx[idx_xi]-dv_tkedy[idx_xi]-dw_tkedz[idx_xi];
             }
         }
     }

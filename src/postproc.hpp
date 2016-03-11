@@ -59,11 +59,16 @@ namespace nuc3d
         
         
         const std::vector<std::string> VarNameList_derived={
-            "rhou","rhov","rhow","rhoe",
-            "uu","uv","uw","vv","vw","ww",
-            "rhouu","rhouv","rhouw","rhovv","rhovw","rhoww",
-            "tau_xx","tau_xy","tau_xz","tau_yy","tau_yz","tau_zz",
-            "rhotau_xx","rhotau_xy","rhotau_xz","rhotau_yy","rhotau_yz","rhotau_zz"
+            "rhou","rhov","rhow",
+            "rhoe",
+            "uu","uv","uw",
+            "vv","vw","ww",
+            "rhouu","rhouv","rhouw",
+            "rhovv","rhovw","rhoww",
+            "tau_xx","tau_xy","tau_xz",
+            "tau_yy","tau_yz","tau_zz",
+            "rhotau_xx","rhotau_xy","rhotau_xz",
+            "rhotau_yy","rhotau_yz","rhotau_zz"
         };
         
         const std::vector<std::string> VarNameList_TKE={
@@ -84,6 +89,8 @@ namespace nuc3d
             "rhovww","rhowww",
         };
         
+        
+        // uv_t denote u'v'
         const std::vector<std::string> VarNameList_TKEbudget={
             "tke",
             "production",
@@ -100,10 +107,10 @@ namespace nuc3d
             "drhoudx","drhoudy","drhoudz",
             "drhovdx","drhovdy","drhovdz",
             "drhowdx","drhowdy","drhowdz",
-            "upf","vpf","wpf",
-            "dupdx","dvpdy","dwpdz",
-            "uktau_kx_f","uktau_ky_f","uktau_kz_f",
-            "duktau_kxdx_f","duktau_kydy_f","duktau_kzdz_f",
+            "up_t","vp_t","wp_t",
+            "dupdx_t","dvpdy_t","dwpdz_t",
+            "uktau_kx_t","uktau_ky_t","uktau_kz_t",
+            "duktau_kxdx_t","duktau_kydy_t","duktau_kzdz_t",
             "rhouk","rhovk","rhowk",
             "drhoukdx","drhovkdy","drhowkdz",
             "u_tke","v_tke","w_tke",
