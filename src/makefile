@@ -19,6 +19,7 @@ TVD-RK3.cpp\
 	weno5js.cpp\
 	weno7js.cpp\
 	hccs.cpp\
+	hccs77.cpp\
  	weno5z.cpp\
 	weno3js.cpp\
 	crweno5.cpp\

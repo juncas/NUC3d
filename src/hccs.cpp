@@ -123,10 +123,10 @@ void nuc3d::hccs::hccsp(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*pIn[idx_f+2]+coeff_weno7_alpha[3][3]*pIn[idx_f+3];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -231,10 +231,10 @@ void nuc3d::hccs::hccsp(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*pIn[idx_f+2]+coeff_weno7_alpha[3][3]*pIn[idx_f+3];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -349,10 +349,10 @@ void nuc3d::hccs::hccsn(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*pIn[idx_f-1]+coeff_weno7_alpha[3][3]*pIn[idx_f-2];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -457,10 +457,10 @@ void nuc3d::hccs::hccsn(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*pIn[idx_f-1]+coeff_weno7_alpha[3][3]*pIn[idx_f-2];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -607,10 +607,10 @@ void nuc3d::hccs::hccspBL(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*f[5]+coeff_weno7_alpha[3][3]*f[6];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -721,10 +721,10 @@ void nuc3d::hccs::hccsnBL(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*f[5]+coeff_weno7_alpha[3][3]*f[6];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;
@@ -970,10 +970,10 @@ void nuc3d::hccs::hccsnBR(const Field & fieldIN,
                 +coeff_weno7_alpha[3][2]*f[5]+coeff_weno7_alpha[3][3]*f[6];
                 
                 tau7=std::abs(is0-is3);
-                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2.0));
-                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2.0));
-                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2.0));
-                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2.0));
+                alpha0=coeff_weno7_c[0]*(1.0+std::pow(tau7/(ss+is0),2));
+                alpha1=coeff_weno7_c[1]*(1.0+std::pow(tau7/(ss+is1),2));
+                alpha2=coeff_weno7_c[2]*(1.0+std::pow(tau7/(ss+is2),2));
+                alpha3=coeff_weno7_c[3]*(1.0+std::pow(tau7/(ss+is3),2));
                 
                 
                 alphaSum=alpha0+alpha1+alpha2+alpha3;

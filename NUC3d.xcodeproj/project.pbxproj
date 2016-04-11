@@ -23,6 +23,7 @@
 		E34642AB1BD1329B007BB96D /* weno5js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429C1BD1329B007BB96D /* weno5js.cpp */; };
 		E34642AC1BD1329B007BB96D /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429E1BD1329B007BB96D /* field.cpp */; };
 		E34642AD1BD1329B007BB96D /* MPICommunicatorBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */; };
+		E37E9A331CBBAD9500845380 /* hccs77.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E37E9A311CBBAD9500845380 /* hccs77.cpp */; };
 		E38279D51C1DC79D00CBAB14 /* centraldifference2nd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38279D31C1DC79D00CBAB14 /* centraldifference2nd.cpp */; };
 		E38692CD1BE8F945001FB4EA /* eulerReactive3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692CB1BE8F945001FB4EA /* eulerReactive3d.cpp */; };
 		E38692D01BE8FA1E001FB4EA /* NaiverStokes3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38692CE1BE8FA1E001FB4EA /* NaiverStokes3d.cpp */; };
@@ -87,6 +88,8 @@
 		E346429E1BD1329B007BB96D /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = field.cpp; path = src/field.cpp; sourceTree = SOURCE_ROOT; };
 		E346429F1BD1329B007BB96D /* MPICommunicatorBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MPICommunicatorBase.cpp; path = src/MPICommunicatorBase.cpp; sourceTree = SOURCE_ROOT; };
 		E34642A01BD1329B007BB96D /* NUC3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NUC3d.h; path = src/NUC3d.h; sourceTree = SOURCE_ROOT; };
+		E37E9A311CBBAD9500845380 /* hccs77.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hccs77.cpp; path = src/hccs77.cpp; sourceTree = SOURCE_ROOT; };
+		E37E9A321CBBAD9500845380 /* hccs77.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hccs77.hpp; path = src/hccs77.hpp; sourceTree = SOURCE_ROOT; };
 		E38279D31C1DC79D00CBAB14 /* centraldifference2nd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = centraldifference2nd.cpp; path = src/centraldifference2nd.cpp; sourceTree = SOURCE_ROOT; };
 		E38279D41C1DC79D00CBAB14 /* centraldifference2nd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = centraldifference2nd.hpp; path = src/centraldifference2nd.hpp; sourceTree = SOURCE_ROOT; };
 		E38692CB1BE8F945001FB4EA /* eulerReactive3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = eulerReactive3d.cpp; path = src/eulerReactive3d.cpp; sourceTree = SOURCE_ROOT; };
@@ -195,6 +198,8 @@
 		E34642B01BD133CD007BB96D /* FieldOperator */ = {
 			isa = PBXGroup;
 			children = (
+				E37E9A311CBBAD9500845380 /* hccs77.cpp */,
+				E37E9A321CBBAD9500845380 /* hccs77.hpp */,
 				E3DAB3211C40C25000E255C1 /* boundaryScheme.cpp */,
 				E3DAB3221C40C25000E255C1 /* boundaryScheme.hpp */,
 				E3E352771C4FA635003769AD /* centraldifference8th.cpp */,
@@ -346,6 +351,7 @@
 				E30F01A41BD646F50091F90C /* singleBlock.cpp in Sources */,
 				E34642AA1BD1329B007BB96D /* TVD-RK3.cpp in Sources */,
 				E30F01A11BD646440091F90C /* block.cpp in Sources */,
+				E37E9A331CBBAD9500845380 /* hccs77.cpp in Sources */,
 				E3156F2E1C3AC1AD0001B3D2 /* postproc.cpp in Sources */,
 				E34642AC1BD1329B007BB96D /* field.cpp in Sources */,
 				E38692D31BE8FAF5001FB4EA /* NaiverStokesReactive3d.cpp in Sources */,
