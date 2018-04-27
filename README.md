@@ -4,7 +4,7 @@ This project is aimed at developing a block structured three dimensional paralle
 
 Previously developped NUC3d code has been successfully used to simulate roughness induced boundary layer transition on over 400 CPUs. However, some stability issues shall be resolved.
 
-![Roughness induced boundary transition](https://github.com/juncas/NUC3d/tree/master/images/q290000.jpg) 
+![Roughness induced boundary transition](https://github.com/juncas/NUC3d/blob/master/images/q290000.jpg) 
 
 **The NUC3d code is currently under reconstructing:**
 
